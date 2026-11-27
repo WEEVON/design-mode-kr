@@ -37,10 +37,10 @@ test('Send confirmation survives rerenders until its deadline', () => {
     icon: () => '', Date: { now: () => now },
   };
   runInNewContext(compiled, context);
-  assert.match(context.render(), / Sent!<\/button>/);
+  assert.match(context.render(), / 전송 완료!<\/button>/);
   now = 2499;
-  assert.match(context.render(), / Sent!<\/button>/);
+  assert.match(context.render(), / 전송 완료!<\/button>/);
   now = 2500;
-  assert.doesNotMatch(context.render(), / Sent!<\/button>/);
-  assert.match(context.render(), /Send to your AI agent/);
+  assert.doesNotMatch(context.render(), / 전송 완료!<\/button>/);
+  assert.match(context.render(), /AI 에이전트로 전송/);
 });

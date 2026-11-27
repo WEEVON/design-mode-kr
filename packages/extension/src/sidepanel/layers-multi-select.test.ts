@@ -53,7 +53,7 @@ test('Shift range takes priority over standalone toggle', async () => {
 });
 
 test('toggle is accessible and clear routes through the page synchronization path', () => {
-  assert.match(source, /data-dm-action="toggle-layer-multi-select" aria-label="Multi-select layers" aria-pressed=/);
+  assert.match(source, /data-dm-action="toggle-layer-multi-select" aria-label="레이어 다중 선택" aria-pressed=/);
   assert.match(source, /case 'clear-multi-select': \{\s+layerMultiSelectMode = false;\s+runInspectorAction\(pushMultiSelectIds\(\[\], operation\)/);
   assert.match(source, /action === 'clear-selection'\) \{ layerMultiSelectMode = false;[^\n]+pushMultiSelectIds\(\[\], operation\)/);
 });

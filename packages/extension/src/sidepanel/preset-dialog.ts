@@ -21,7 +21,7 @@ export async function persistPresetChange(id: string, edit?: { name: string; sty
   const key = 'dm_custom_presets';
   const data = await browser.storage.sync.get(key);
   const presets: EditablePreset[] = Array.isArray(data[key]) ? data[key] : [];
-  if (!presets.some(preset => preset.id === id)) throw new Error('This preset no longer exists.');
+  if (!presets.some(preset => preset.id === id)) throw new Error('이 프리셋이 더 이상 존재하지 않습니다.');
   const next = edit
     ? presets.map(preset => preset.id === id ? { ...preset, name: edit.name, styles: edit.styles } : preset)
     : presets.filter(preset => preset.id !== id);
@@ -43,7 +43,7 @@ export function openPresetDialog(
   dialog.style.cssText = 'width:min(340px,calc(100vw - 32px));max-height:80vh;box-sizing:border-box;overflow:auto;padding:16px;border:1px solid var(--dm-separator);border-radius:8px;background:var(--dm-bg,#fff);color:var(--dm-text,#222);font:inherit;font-size:12px;';
   const title = document.createElement('h2');
   title.id = 'dm-preset-dialog-title';
-  title.textContent = mode === 'delete' ? 'Delete preset?' : 'Edit preset';
+  title.textContent = mode === 'delete' ? '프리셋을 삭제할까요?' : '프리셋 편집';
   title.style.cssText = 'font-size:14px;margin:0 0 12px;';
   dialog.append(title);
   const fields: HTMLInputElement[] = [];
@@ -65,15 +65,15 @@ export function openPresetDialog(
   const values = new Map<string, HTMLInputElement>();
   if (mode === 'edit') {
     const badge = document.createElement('span');
-    badge.textContent = preset.kind + ' · Kind locked';
+    badge.textContent = preset.kind + ' · 유형 고정';
     badge.style.cssText = 'display:inline-block;border:1px solid var(--dm-separator);border-radius:999px;padding:2px 6px;';
     dialog.append(badge);
-    name = field('Preset name', preset.name);
+    name = field('프리셋 이름', preset.name);
     for (const [property, value] of Object.entries(preset.styles)) values.set(property, field(property, value));
   } else {
     const description = document.createElement('p');
     description.id = 'dm-preset-dialog-description';
-    description.textContent = `Delete “${preset.name}”? This cannot be undone. Applied styles will remain on the page.`;
+    description.textContent = `“${preset.name}”을 삭제할까요? 되돌릴 수 없습니다. 이미 적용한 스타일은 페이지에 남습니다.`;
     dialog.setAttribute('aria-describedby', description.id);
     dialog.append(description);
   }
@@ -88,11 +88,11 @@ export function openPresetDialog(
   actions.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;margin-top:16px;';
   const cancel = document.createElement('button');
   cancel.className = 'dm-defined-form-btn dm-defined-form-cancel';
-  cancel.textContent = 'Cancel';
+  cancel.textContent = '취소';
   cancel.onclick = () => dialog.close();
   const confirm = document.createElement('button');
   confirm.className = 'dm-defined-form-btn dm-defined-form-save';
-  confirm.textContent = mode === 'delete' ? 'Delete' : 'Save';
+  confirm.textContent = mode === 'delete' ? '삭제' : '저장';
   let busy = false;
   dialog.addEventListener('keydown', event => {
     if (event.key !== 'Tab') return;
@@ -123,7 +123,7 @@ export function openPresetDialog(
     if (busy) return;
     const trimmedName = name?.value.trim();
     if (mode === 'edit' && !trimmedName) {
-      reportError('Give the preset a name.');
+      reportError('프리셋 이름을 입력하세요.');
       name?.focus();
       return;
     }
@@ -138,10 +138,10 @@ export function openPresetDialog(
       await refresh();
       toast(validated.dropped.length ? 'error' : 'success', validated.dropped.length
         ? `Saved preset. Dropped invalid CSS: ${validated.dropped.join(', ')}.`
-        : mode === 'edit' ? 'Preset updated.' : 'Preset deleted.');
+        : mode === 'edit' ? '프리셋을 수정했습니다.' : '프리셋을 삭제했습니다.');
       dialog.close();
     } catch (error) {
-      reportError(error instanceof Error ? error.message : 'Could not save preset changes.');
+      reportError(error instanceof Error ? error.message : '프리셋 변경사항을 저장하지 못했습니다.');
     } finally {
       busy = false;
       confirm.disabled = false;

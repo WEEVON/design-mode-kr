@@ -30,7 +30,7 @@ it('updates only name and styles while preserving identity, kind, timestamp and 
   assert.equal(saved()[1].name, 'Original');
   await persistPresetChange('one');
   assert.deepEqual(saved().map(p => p.id), ['two']);
-  await assert.rejects(persistPresetChange('missing'), /no longer exists/);
+  await assert.rejects(persistPresetChange('missing'), /더 이상 존재하지 않습니다/);
 });
 
 it('propagates storage failures without changing the saved preset', async () => {
@@ -78,8 +78,8 @@ function dom() {
   return { trigger, elements, toast, open: (mode: 'edit' | 'delete') => {
     openPresetDialog(preset, mode, trigger as any, async () => {}, (_kind, text) => toast.push(text));
     const dialog = elements.find(element => element.tag === 'dialog')!;
-    const cancel = elements.find(element => element.textContent === 'Cancel')!;
-    const confirm = elements.find(element => element.textContent === (mode === 'edit' ? 'Save' : 'Delete'))!;
+    const cancel = elements.find(element => element.textContent === '취소')!;
+    const confirm = elements.find(element => element.textContent === (mode === 'edit' ? '저장' : '삭제'))!;
     return { dialog, cancel, confirm };
   } };
 }
@@ -116,7 +116,7 @@ it('editor locks kind, saves renamed preset, drops invalid CSS with toast', asyn
   const { confirm, dialog } = fixture.open('edit');
   const inputs = fixture.elements.filter(element => element.tag === 'input');
   assert.equal(document.activeElement, inputs[0]);
-  assert.ok(fixture.elements.some(element => element.textContent === 'fill · Kind locked'));
+  assert.ok(fixture.elements.some(element => element.textContent === 'fill · 유형 고정'));
   assert.equal(fixture.elements.some(element => element.tag === 'select'), false);
   inputs[0].value = 'Renamed';
   inputs[1].value = 'invalid';

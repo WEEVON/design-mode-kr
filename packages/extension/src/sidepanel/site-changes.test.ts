@@ -64,7 +64,7 @@ describe('site-wide changes panel', () => {
     const html = c.renderRouteGroups('<div>active-renderer</div>');
     assert.ok(html.indexOf(`data-dm-route-group="${a}"`) < html.indexOf(`data-dm-route-group="${b}"`));
     assert.doesNotMatch(html, /toggle-route-group|aria-expanded/);
-    assert.match(html, /class="dm-route-action dm-route-current" aria-current="page">Current/);
+    assert.match(html, /class="dm-route-action dm-route-current" aria-current="page">현재/);
     assert.match(html, /active-renderer/);
     assert.doesNotMatch(html, /color: red → blue/);
     assert.match(html, /data-dm-action="open-route"/);
@@ -108,7 +108,7 @@ describe('site-wide changes panel', () => {
     await c.action('delete-route', b);
     assert.equal(messages.length, 0);
 
-    assert.match(c.renderRouteGroups('active'), /Confirm route deletion/);
+    assert.match(c.renderRouteGroups('active'), /경로 삭제 확인/);
     await c.action('cancel-delete-route', b);
     assert.equal(c.deletingRouteKey, null);
     await c.action('delete-route', b);

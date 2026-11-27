@@ -13,7 +13,7 @@ test('Layers empty copy covers no tree and the original empty body, not text or 
     domTree, pageSealed, inspectWrapperOptedIn: false, renderSealedFrameNotice: () => 'sealed', icon: () => '',
   });
   const body = { tagName: 'body', hasText: false };
-  for (const tree of [[], [body]]) assert.match(render(tree), /No layers yet\. The page tree appears here once the page is ready\./);
+  for (const tree of [[], [body]]) assert.match(render(tree), /페이지 준비가 완료되면 레이어 트리가 표시됩니다\./);
   assert.equal(render([{ ...body, hasText: true }]), 'populated');
   assert.equal(render([body, { tagName: 'div', hasText: false }]), 'populated');
   assert.equal(render([body, { tagName: '::before', hasText: false }]), 'populated');

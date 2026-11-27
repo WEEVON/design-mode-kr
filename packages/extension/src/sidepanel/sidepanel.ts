@@ -562,10 +562,10 @@ const MOTION_TRIGGER_STATE: Record<string, string> = {
 // `appear` uses the @starting-style sentinel and carries "from" values —
 // the element animates from those to its natural resting state on mount.
 const MOTION_TRIGGERS: Array<{ trigger: string; state: string; label: string; verb: string; icon: keyof typeof icons }> = [
-  { trigger: 'hover',  state: ':hover',         label: 'Hover',  verb: 'On hover',  icon: 'mousePointer2' },
-  { trigger: 'press',  state: ':active',        label: 'Press',  verb: 'On press',  icon: 'move' },
-  { trigger: 'focus',  state: ':focus-visible', label: 'Focus',  verb: 'On focus',  icon: 'crosshair' },
-  { trigger: 'appear', state: '@starting',      label: 'Appear', verb: 'On appear', icon: 'sparkles' },
+  { trigger: 'hover',  state: ':hover',         label: '마우스 오버',  verb: 'On hover',  icon: 'mousePointer2' },
+  { trigger: 'press',  state: ':active',        label: '누르기',  verb: 'On press',  icon: 'move' },
+  { trigger: 'focus',  state: ':focus-visible', label: '포커스',  verb: 'On focus',  icon: 'crosshair' },
+  { trigger: 'appear', state: '@starting',      label: '나타나기', verb: 'On appear', icon: 'sparkles' },
 ];
 const MOTION_STATE_TRIGGER: Record<string, typeof MOTION_TRIGGERS[number]> =
   Object.fromEntries(MOTION_TRIGGERS.map(t => [t.state, t]));
@@ -573,15 +573,15 @@ type MotionPreset = { prop: string; value: string; label: string; icon: keyof ty
 // Interaction / press / focus animate TO a target; appear animates FROM a
 // start state, so the same gestures need different seed values per family.
 const MOTION_CHANGE_PRESETS: Record<string, MotionPreset> = {
-  fade:  { prop: 'opacity',         value: '0.6',       label: 'Fade',       icon: 'blend' },
-  lift:  { prop: 'translate',       value: '0px -8px',  label: 'Lift',       icon: 'move' },
-  scale: { prop: 'scale',           value: '1.05',      label: 'Scale',      icon: 'maximize' },
-  color: { prop: 'backgroundColor', value: '#3b82f6',   label: 'Background', icon: 'droplet' },
+  fade:  { prop: 'opacity',         value: '0.6',       label: '페이드',       icon: 'blend' },
+  lift:  { prop: 'translate',       value: '0px -8px',  label: '띄우기',       icon: 'move' },
+  scale: { prop: 'scale',           value: '1.05',      label: '크기 조절',      icon: 'maximize' },
+  color: { prop: 'backgroundColor', value: '#3b82f6',   label: '배경', icon: 'droplet' },
 };
 const MOTION_APPEAR_PRESETS: Record<string, MotionPreset> = {
-  fade:  { prop: 'opacity',   value: '0',        label: 'Fade in',  icon: 'blend' },
-  slide: { prop: 'translate', value: '0px 12px', label: 'Slide up', icon: 'move' },
-  scale: { prop: 'scale',     value: '0.9',      label: 'Scale in', icon: 'maximize' },
+  fade:  { prop: 'opacity',   value: '0',        label: '페이드 인',  icon: 'blend' },
+  slide: { prop: 'translate', value: '0px 12px', label: '위로 슬라이드', icon: 'move' },
+  scale: { prop: 'scale',     value: '0.9',      label: '확대 등장', icon: 'maximize' },
 };
 function motionPresetsFor(trigger: string): Record<string, MotionPreset> {
   return trigger === 'appear' ? MOTION_APPEAR_PRESETS : MOTION_CHANGE_PRESETS;
@@ -593,13 +593,13 @@ function motionChangeLabel(prop: string): string {
 // Built-in @keyframes offered in the Loop / Scroll cards (from the shared
 // keyframes library — names must match BUILTIN_KEYFRAMES in change-tracker).
 const MOTION_KEYFRAME_OPTIONS: Array<{ value: string; label: string }> = [
-  { value: 'dm-fade-in', label: 'Fade in' },
-  { value: 'dm-slide-up', label: 'Slide up' },
-  { value: 'dm-pulse', label: 'Pulse' },
-  { value: 'dm-bounce', label: 'Bounce' },
-  { value: 'dm-spin', label: 'Spin' },
-  { value: 'dm-wiggle', label: 'Wiggle' },
-  { value: 'dm-ping', label: 'Ping' },
+  { value: 'dm-fade-in', label: '페이드 인' },
+  { value: 'dm-slide-up', label: '위로 슬라이드' },
+  { value: 'dm-pulse', label: '맥동' },
+  { value: 'dm-bounce', label: '바운스' },
+  { value: 'dm-spin', label: '회전' },
+  { value: 'dm-wiggle', label: '흔들기' },
+  { value: 'dm-ping', label: '확산' },
 ];
 let fillAddOpen = false;
 let expandedFillIdx: number | null = null;
@@ -2876,6 +2876,7 @@ const SECTION_PROPS: Record<string, string[]> = {
 
 /* ── Shared render helpers ── */
 function sec(title: string, iconName: keyof typeof icons, content: string, defaultOpen = true, actions = ''): string {
+  const displayTitle = ({"Appearance": "모양", "Effects": "효과", "Fill": "채우기", "Icon": "아이콘", "Layout": "레이아웃", "Layout guide": "레이아웃 가이드", "Media": "미디어", "Motion": "모션", "Position": "위치", "Stroke": "테두리", "Typography": "타이포그래피"} as Record<string, string>)[title] || title;
   const id = 'dm-sec-' + title.toLowerCase().replace(/[\s&]+/g, '-');
   const resetKey = SECTION_PROPS[title.toLowerCase()] ? title.toLowerCase() : '';
   const isOpen = sectionStates[id] !== undefined ? sectionStates[id]! : defaultOpen;
@@ -2889,7 +2890,7 @@ function sec(title: string, iconName: keyof typeof icons, content: string, defau
     const propSet = new Set(SECTION_PROPS[resetKey]);
     const hasChanges = styleChanges.some(c => propSet.has(c.property));
     if (hasChanges) {
-      resetBtn = '<button class="dm-section-action" data-dm-reset-section="' + escapeAttr(resetKey) + '" title="Reset ' + escapeAttr(title) + ' changes on this element" aria-label="Reset section">' + icon('rotateCcw', 11) + '</button>';
+      resetBtn = '<button class="dm-section-action" data-dm-reset-section="' + escapeAttr(resetKey) + '" title="Reset ' + escapeAttr(title) + ' changes on this element" aria-label="영역 초기화">' + icon('rotateCcw', 11) + '</button>';
     }
   }
   // Action cluster sits between the title and the chevron. Per-section
@@ -2899,9 +2900,9 @@ function sec(title: string, iconName: keyof typeof icons, content: string, defau
     ? '<div class="dm-section-actions">' + actions + resetBtn + '</div>'
     : '';
   return '<div style="border-bottom:1px solid var(--dm-separator);">' +
-    '<div class="dm-section-header" data-dm-toggle-section="' + id + '" aria-expanded="' + isOpen + '" aria-label="' + title + ' section" style="display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;">' +
+    '<div class="dm-section-header" data-dm-toggle-section="' + id + '" aria-expanded="' + isOpen + '" aria-label="' + displayTitle + ' 영역" style="display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;">' +
     '<span style="color:var(--dm-text-muted);display:flex;align-items:center;">' + icon(iconName, 14) + '</span>' +
-    '<span style="font-size:11px;font-weight:600;color:var(--dm-text-secondary);flex:1;">' + title + '</span>' +
+    '<span style="font-size:11px;font-weight:600;color:var(--dm-text-secondary);flex:1;">' + displayTitle + '</span>' +
     actionCluster +
     '<span style="color:var(--dm-text-dim);display:flex;">' + icon(chevIcon as keyof typeof icons, 10) + '</span>' +
     '</div><div class="' + bodyClass + '" data-dm-section-body="' + id + '" style="' + bodyStyle + '">' + content + '</div></div>';
@@ -2916,7 +2917,7 @@ function opacityInput(value: string): string {
   const raw = parseFloat(value);
   const pct = isNaN(raw) ? 100 : Math.max(0, Math.min(100, Math.round(raw * 100)));
   return '<div class="dm-field">' +
-    '<div class="dm-input-shell" title="Opacity">' +
+    '<div class="dm-input-shell" title="불투명도">' +
     '<span class="dm-input-icon">' + icon('blend', 12) + '</span>' +
     '<input type="text" class="dm-input dm-input-bare" data-dm-prop="__opacity_pct" data-dm-numeric="1" data-dm-unit="" inputmode="decimal" value="' + pct + '"/>' +
     renderTokenBadge('opacity') +
@@ -3138,10 +3139,10 @@ function renderShadowVarChip(prop: string, menuKey: string, label: string, data:
   const badge = '<button type="button" class="dm-token-badge' + (open ? ' dm-token-badge-open' : '') + '" data-dm-shadow-token="' + escapeAttr(menuKey) + '" title="Composed from ' + n + ' token' + (n > 1 ? 's' : '') + '">◆<span class="dm-token-badge-name">' + n + '</span></button>';
   const menu = open
     ? '<div data-dm-token-popover="right" style="position:fixed;z-index:60;visibility:hidden;background:var(--dm-bg);border:1px solid var(--dm-separator-strong);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.18);padding:4px 0;min-width:200px;max-width:260px;">' +
-      '<div style="padding:5px 10px 3px;font-size:9px;color:var(--dm-text-dim);text-transform:uppercase;letter-spacing:0.4px;">Composed from</div>' +
+      '<div style="padding:5px 10px 3px;font-size:9px;color:var(--dm-text-dim);text-transform:uppercase;letter-spacing:0.4px;">구성 토큰</div>' +
       data.vars.map(v => '<button data-dm-shadow-edit-var="' + escapeAttr(v) + '" data-dm-shadow-scope="' + escapeAttr(data.scope) + '" title="Edit ' + escapeAttr(v) + ' globally" style="width:100%;display:block;padding:5px 10px;background:transparent;border:none;cursor:pointer;text-align:left;font-family:inherit;font-size:10px;color:var(--dm-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeAttr(v) + '</button>').join('') +
       '<div style="border-top:1px solid var(--dm-separator);margin:3px 0;"></div>' +
-      '<button data-dm-shadow-detach="' + escapeAttr(prop) + '" style="width:100%;display:block;padding:6px 10px;background:transparent;border:none;cursor:pointer;text-align:left;font-family:inherit;font-size:11px;color:var(--dm-text);">Detach from tokens</button>' +
+      '<button data-dm-shadow-detach="' + escapeAttr(prop) + '" style="width:100%;display:block;padding:6px 10px;background:transparent;border:none;cursor:pointer;text-align:left;font-family:inherit;font-size:11px;color:var(--dm-text);">토큰 연결 해제</button>' +
       '</div>'
     : '';
   return '<div class="dm-field" style="margin-bottom:8px;">' +
@@ -3182,12 +3183,12 @@ function sizeInput(label: string, prop: 'width' | 'height', resolvedValue: strin
     valueCell +
     renderTokenBadge(prop) +
     '<span class="dm-input-unit" title="' + escapeAttr(hint ? 'Computed ' + hint : '') + '">' + escapeAttr(unitLabel) + '</span>' +
-    '<select class="dm-size-mode" data-dm-size-mode="' + prop + '" title="Size mode" aria-label="' + label + ' size mode">' +
+    '<select class="dm-size-mode" data-dm-size-mode="' + prop + '" title="크기 모드" aria-label="' + label + ' size mode">' +
       (mode === 'unknown' ? '<option value="unknown" selected>—</option>' : '') +
-      '<option value="fixed"' + (mode === 'fixed' ? ' selected' : '') + '>Fixed</option>' +
-      '<option value="hug"' + (mode === 'hug' ? ' selected' : '') + '>Hug</option>' +
-      '<option value="fill"' + (mode === 'fill' ? ' selected' : '') + '>Fill</option>' +
-      '<option value="auto"' + (mode === 'auto' ? ' selected' : '') + '>Auto</option>' +
+      '<option value="fixed"' + (mode === 'fixed' ? ' selected' : '') + '>고정</option>' +
+      '<option value="hug"' + (mode === 'hug' ? ' selected' : '') + '>내용에 맞춤</option>' +
+      '<option value="fill"' + (mode === 'fill' ? ' selected' : '') + '>채우기</option>' +
+      '<option value="auto"' + (mode === 'auto' ? ' selected' : '') + '>자동</option>' +
     '</select>' +
     '</div>' + (hint ? '<span data-dm-computed-size="' + prop + '" style="display:block;font-size:9px;color:var(--dm-text-muted);padding-top:3px;">Computed: ' + escapeAttr(hint) + '</span>' : '') + renderTokenOverlays(prop) + '</div>';
 }
@@ -3225,16 +3226,16 @@ function gapInput(label: string, field: 'col' | 'row', s: Record<string, string>
   const labelHtml = '<label style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--dm-text-muted);text-transform:uppercase;letter-spacing:0.4px;">' + icon(iconName, 11) + ' ' + label + '</label>';
   const valueCell = isFixed
     ? '<input type="text" class="dm-input dm-input-bare" data-dm-prop="' + prop + '" data-dm-numeric="1" data-dm-unit="' + escapeAttr(formatted.writeUnit) + '" data-dm-kw="normal" inputmode="decimal" placeholder="0" value="' + escapeAttr(fixedVal ? formatted.display : '') + '"/>'
-    : '<span class="dm-input-readonly" data-dm-gap-readonly="' + prop + '" title="Auto (space-between) — switch to Fixed to enter a value">' + escapeAttr(autoDisplay) + '</span>';
+    : '<span class="dm-input-readonly" data-dm-gap-readonly="' + prop + '" title="자동(space-between) — 값을 입력하려면 고정으로 전환">' + escapeAttr(autoDisplay) + '</span>';
   const unit = isFixed && fixedVal ? formatted.unit : 'px';
   return '<div class="dm-field">' + labelHtml +
     '<div class="dm-input-shell">' +
     valueCell +
     renderTokenBadge(prop) +
     '<span class="dm-input-unit">' + unit + '</span>' +
-    '<select class="dm-size-mode" data-dm-gap-mode="' + field + '" title="Gap mode" aria-label="' + label + ' mode">' +
-      '<option value="fixed"' + (mode === 'fixed' ? ' selected' : '') + '>Fixed</option>' +
-      '<option value="auto"' + (mode === 'auto' ? ' selected' : '') + '>Auto</option>' +
+    '<select class="dm-size-mode" data-dm-gap-mode="' + field + '" title="간격 모드" aria-label="' + label + ' mode">' +
+      '<option value="fixed"' + (mode === 'fixed' ? ' selected' : '') + '>고정</option>' +
+      '<option value="auto"' + (mode === 'auto' ? ' selected' : '') + '>자동</option>' +
     '</select>' +
     '</div>' + renderTokenOverlays(prop) + '</div>';
 }
@@ -3260,7 +3261,7 @@ function inpKw(label: string, prop: string, value: string, unit: string, keyword
   return '<div class="dm-field">' +
     (label ? '<label class="dm-field-label">' + label + '</label>' : '') +
     '<div class="dm-input-shell">' +
-    '<input type="text" class="dm-input dm-input-bare" data-dm-prop="' + prop + '"' + (isLineHeight ? ' aria-label="Line height" title="Unitless multiplier (1.5), length (24px), or normal"' : ' data-dm-numeric="1" data-dm-unit="' + escapeAttr(unit) + '" inputmode="decimal"') + ' data-dm-kw="' + escapeAttr(keyword) + '" placeholder="' + placeholder + '" value="' + escapeAttr(displayVal) + '"/>' +
+    '<input type="text" class="dm-input dm-input-bare" data-dm-prop="' + prop + '"' + (isLineHeight ? ' aria-label="줄 높이" title="단위 없는 배율(1.5), 길이(24px) 또는 normal"' : ' data-dm-numeric="1" data-dm-unit="' + escapeAttr(unit) + '" inputmode="decimal"') + ' data-dm-kw="' + escapeAttr(keyword) + '" placeholder="' + placeholder + '" value="' + escapeAttr(displayVal) + '"/>' +
     renderTokenBadge(prop) +
     keywordChip +
     '</div>' + renderTokenOverlays(prop) + '</div>';
@@ -3286,15 +3287,15 @@ function selKV(label: string, prop: string, value: string, options: Array<{ valu
 }
 
 const FONT_WEIGHTS: Array<{ value: string; label: string }> = [
-  { value: '100', label: 'Thin (100)' },
-  { value: '200', label: 'Extra Light (200)' },
-  { value: '300', label: 'Light (300)' },
-  { value: '400', label: 'Regular (400)' },
-  { value: '500', label: 'Medium (500)' },
-  { value: '600', label: 'Semi Bold (600)' },
-  { value: '700', label: 'Bold (700)' },
-  { value: '800', label: 'Extra Bold (800)' },
-  { value: '900', label: 'Black (900)' },
+  { value: '100', label: '매우 얇게 (100)' },
+  { value: '200', label: '아주 얇게 (200)' },
+  { value: '300', label: '얇게 (300)' },
+  { value: '400', label: '보통 (400)' },
+  { value: '500', label: '중간 (500)' },
+  { value: '600', label: '약간 굵게 (600)' },
+  { value: '700', label: '굵게 (700)' },
+  { value: '800', label: '매우 굵게 (800)' },
+  { value: '900', label: '가장 굵게 (900)' },
 ];
 
 // ── Color math: HSV ↔ RGB ↔ HEX, plus a robust value parser. The custom
@@ -3492,7 +3493,7 @@ function renderContrastSettingsPopover(resolved: A11yResolvedCategory): string {
       (active ? '<span style="color:var(--dm-accent);display:flex;">' + icon('check', 11) + '</span>' : '') +
     '</button>';
   return '<div class="dm-popover dm-contrast-settings" data-dm-contrast-settings>' +
-    '<div class="dm-contrast-section-header">Category</div>' +
+    '<div class="dm-contrast-section-header">분류</div>' +
     item('Auto (' + CATEGORY_LABEL[resolved] + ')', 'data-dm-action="set-a11y-category" data-dm-cat="auto"', a11yCategory === 'auto') +
     item('Large text', 'data-dm-action="set-a11y-category" data-dm-cat="large"', a11yCategory === 'large') +
     item('Normal text', 'data-dm-action="set-a11y-category" data-dm-cat="normal"', a11yCategory === 'normal') +
@@ -3553,7 +3554,7 @@ function renderContrastRow(prop: string, value: string): string {
     '<span class="dm-contrast-rating" data-rating="' + res.rating + '" title="' + escapeAttr(meta.description) + '">' + meta.label + '</span>' +
     '<span class="dm-contrast-spacer"></span>' +
     renderLevelTabs(res.resolvedCategory, res.ratio) +
-    '<button data-dm-action="toggle-contrast-settings" class="dm-contrast-settings-btn" data-active="' + (contrastSettingsOpen ? 'true' : 'false') + '" aria-label="Contrast settings" aria-expanded="' + (contrastSettingsOpen ? 'true' : 'false') + '" title="Contrast settings">' +
+    '<button data-dm-action="toggle-contrast-settings" class="dm-contrast-settings-btn" data-active="' + (contrastSettingsOpen ? 'true' : 'false') + '" aria-label="대비 설정" aria-expanded="' + (contrastSettingsOpen ? 'true' : 'false') + '" title="대비 설정">' +
       icon('slidersHorizontal', 12) +
     '</button>' +
     popoverHtml +
@@ -3631,7 +3632,7 @@ function renderInlineColorPicker(prop: string, value: string, compact = false): 
       '<button data-dm-eyedropper="' + escapeAttr(prop) + '" aria-label="' + (hasNativeColourPicker(window as EyeDropperHost) ? 'Pick a screen colour' : 'Pick a page colour') + '" title="' + (hasNativeColourPicker(window as EyeDropperHost) ? 'Eyedropper — pick a colour from anywhere on screen' : 'Page colours — pick from a visible viewport snapshot only') + '" style="display:flex;align-items:center;gap:4px;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;">' +
         icon('penTool', 11) + (hasNativeColourPicker(window as EyeDropperHost) ? '' : ' Page') +
       '</button>' +
-      '<button data-dm-cycle-color-format style="display:flex;align-items:center;gap:3px;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;letter-spacing:0.4px;text-transform:uppercase;" title="Cycle color format">' +
+      '<button data-dm-cycle-color-format style="display:flex;align-items:center;gap:3px;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;letter-spacing:0.4px;text-transform:uppercase;" title="색상 형식 전환">' +
         '<span>' + (colorFormat === 'hex' ? 'HEX' : colorFormat === 'rgba' ? 'RGB' : 'HSL') + '</span>' +
         icon('chevronsUpDown', 11) +
       '</button>' +
@@ -3641,7 +3642,7 @@ function renderInlineColorPicker(prop: string, value: string, compact = false): 
     (compact ? advancedBlock :
       '<button data-dm-color-advanced="' + escapeAttr(prop) + '" style="display:flex;align-items:center;gap:4px;margin-top:8px;padding:3px 2px;background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">' +
         icon(advancedOpen ? 'chevronDown' : 'chevronRight', 11) +
-        '<span>Custom colour</span>' +
+        '<span>사용자 지정 색상</span>' +
       '</button>' +
       (advancedOpen ? advancedBlock : ''))
   );
@@ -3802,7 +3803,7 @@ function colorInp(label: string, prop: string, value: string, omitPanel = false,
   return '<div style="display:flex;flex-direction:column;gap:3px;min-width:0;position:relative;">' +
     (label ? '<label class="dm-field-label">' + label + '</label>' : '') +
     '<div style="display:flex;align-items:center;gap:4px;min-width:0;position:relative;">' +
-    '<button type="button" data-dm-color-trigger="' + escapeAttr(prop) + '" title="Pick a color" style="width:28px;height:28px;border:1px solid var(--dm-input-border);border-radius:5px;cursor:pointer;background:' + escapeAttr(value || hex || '#000') + ';padding:0;flex-shrink:0;outline:' + (isOpen ? '2px solid var(--dm-accent)' : 'none') + ';"></button>' +
+    '<button type="button" data-dm-color-trigger="' + escapeAttr(prop) + '" title="색상 선택" style="width:28px;height:28px;border:1px solid var(--dm-input-border);border-radius:5px;cursor:pointer;background:' + escapeAttr(value || hex || '#000') + ';padding:0;flex-shrink:0;outline:' + (isOpen ? '2px solid var(--dm-accent)' : 'none') + ';"></button>' +
     '<input type="text" class="dm-input" data-dm-prop="' + prop + '" data-dm-tokens-trigger="' + escapeAttr(prop) + '" value="' + escapeAttr(displayColor) + '" style="background:var(--dm-input-bg);border:1px solid var(--dm-input-border);flex:1;min-width:0;"/>' +
     renderTokenBadge(bp, false) +
     tokensPanel +
@@ -3927,8 +3928,8 @@ function positionDistributeRow(): string {
   const enabled = multiSelectActive && multiSelectIds.length >= 2;
   if (!enabled) return '';
   return iconButtonRow([
-    { icon: 'alignHorizontalSpaceAround', attr: 'data-dm-pos-distribute="horizontal"', title: 'Distribute horizontally' },
-    { icon: 'alignVerticalSpaceAround', attr: 'data-dm-pos-distribute="vertical"', title: 'Distribute vertically' },
+    { icon: 'alignHorizontalSpaceAround', attr: 'data-dm-pos-distribute="horizontal"', title: '가로 간격 균등 배치' },
+    { icon: 'alignVerticalSpaceAround', attr: 'data-dm-pos-distribute="vertical"', title: '세로 간격 균등 배치' },
   ]);
 }
 
@@ -3938,8 +3939,8 @@ function positionDistributeRow(): string {
 function rotateQuickButtons(s: Record<string, string>): string {
   void s;
   return iconButtonRow([
-    { icon: 'rotateCcw', attr: 'data-dm-rotate-step="-90"', title: 'Rotate 90° counter-clockwise', size: 18 },
-    { icon: 'rotateCw',  attr: 'data-dm-rotate-step="90"',  title: 'Rotate 90° clockwise',          size: 18 },
+    { icon: 'rotateCcw', attr: 'data-dm-rotate-step="-90"', title: '반시계 방향 90° 회전', size: 18 },
+    { icon: 'rotateCw',  attr: 'data-dm-rotate-step="90"',  title: '시계 방향 90° 회전',          size: 18 },
   ]);
 }
 
@@ -3947,8 +3948,8 @@ function rotateQuickButtons(s: Record<string, string>): string {
 function zOrderButtons(s: Record<string, string>): string {
   void s;
   return iconButtonRow([
-    { icon: 'arrowUpToLine', attr: 'data-dm-z-step="up"', title: 'Bring forward' },
-    { icon: 'arrowDownToLine', attr: 'data-dm-z-step="down"', title: 'Send backward' },
+    { icon: 'arrowUpToLine', attr: 'data-dm-z-step="up"', title: '앞으로 가져오기' },
+    { icon: 'arrowDownToLine', attr: 'data-dm-z-step="down"', title: '뒤로 보내기' },
   ]);
 }
 
@@ -3961,10 +3962,10 @@ function layoutModeRow(s: Record<string, string>): string {
   const isVStack = isFlex && (flexDir === 'column' || flexDir === 'column-reverse');
   const isGrid = display === 'grid' || display === 'inline-grid';
   return segmentedRow([
-    { icon: 'squareDashed', attr: 'data-dm-layout-mode="free"', active: isFree, title: 'Freeform (no layout)' },
-    { icon: 'columns3', attr: 'data-dm-layout-mode="hstack"', active: isHStack, title: 'Horizontal stack' },
-    { icon: 'rows3', attr: 'data-dm-layout-mode="vstack"', active: isVStack, title: 'Vertical stack' },
-    { icon: 'layoutGrid', attr: 'data-dm-layout-mode="grid"', active: isGrid, title: 'Grid' },
+    { icon: 'squareDashed', attr: 'data-dm-layout-mode="free"', active: isFree, title: '자유 배치' },
+    { icon: 'columns3', attr: 'data-dm-layout-mode="hstack"', active: isHStack, title: '가로 배치' },
+    { icon: 'rows3', attr: 'data-dm-layout-mode="vstack"', active: isVStack, title: '세로 배치' },
+    { icon: 'layoutGrid', attr: 'data-dm-layout-mode="grid"', active: isGrid, title: '그리드' },
   ]);
 }
 
@@ -4137,7 +4138,7 @@ function cornerRadiusUniformField(s: Record<string, string>): string {
   const isMixed = primary === 'Mixed';
   const formatted = formatPxValueForDisplay(isMixed ? '0px' : clampLenTokens(primary));
   return '<div class="dm-field">' +
-    '<div class="dm-input-shell" title="Corner radius">' +
+    '<div class="dm-input-shell" title="모서리 반경">' +
     '<span class="dm-input-icon">' + icon('maximize', 12) + '</span>' +
     '<input type="text" class="dm-input dm-input-bare" data-dm-prop="borderRadius" data-dm-numeric="1" data-dm-unit="' + escapeAttr(formatted.writeUnit) + '" inputmode="decimal" placeholder="' + (isMixed ? 'Mixed' : '0') + '" value="' + escapeAttr(isMixed ? '' : formatted.display) + '"/>' +
     renderTokenBadge('borderRadius') +
@@ -4179,10 +4180,10 @@ function cornerShapeRow(current: string, shapes: string[]): string {
 // Advanced section's raw inputs; not worth the always-paired UI here.
 function cornerRadius2x2(s: Record<string, string>): string {
   const cells: Array<{ glyph: string; prop: string; val: string; label: string }> = [
-    { glyph: '┌', prop: 'borderTopLeftRadius',     val: s.borderTopLeftRadius     || '0px', label: 'top-left radius' },
-    { glyph: '┐', prop: 'borderTopRightRadius',    val: s.borderTopRightRadius    || '0px', label: 'top-right radius' },
-    { glyph: '└', prop: 'borderBottomLeftRadius',  val: s.borderBottomLeftRadius  || '0px', label: 'bottom-left radius' },
-    { glyph: '┘', prop: 'borderBottomRightRadius', val: s.borderBottomRightRadius || '0px', label: 'bottom-right radius' },
+    { glyph: '┌', prop: 'borderTopLeftRadius',     val: s.borderTopLeftRadius     || '0px', label: '왼쪽 위 반경' },
+    { glyph: '┐', prop: 'borderTopRightRadius',    val: s.borderTopRightRadius    || '0px', label: '오른쪽 위 반경' },
+    { glyph: '└', prop: 'borderBottomLeftRadius',  val: s.borderBottomLeftRadius  || '0px', label: '왼쪽 아래 반경' },
+    { glyph: '┘', prop: 'borderBottomRightRadius', val: s.borderBottomRightRadius || '0px', label: '오른쪽 아래 반경' },
   ];
   const cornerCell = (c: typeof cells[0]): string => {
     // The corner cell takes any value but renders px / rem per the
@@ -4201,7 +4202,7 @@ function cornerRadius2x2(s: Record<string, string>): string {
     '</div>';
   };
   return '<div style="display:flex;justify-content:flex-end;margin-bottom:4px;">' +
-    '<button type="button" class="dm-icon-row-button" data-dm-corner-link aria-label="Link corner radii" aria-pressed="' + cornerRadiusLinked + '" data-active="' + cornerRadiusLinked + '" title="' + (cornerRadiusLinked ? 'Linked — all corners change together' : 'Unlinked — edit corners individually') + '">' + icon(cornerRadiusLinked ? 'link2' : 'unlink2', 14) + '</button></div>' +
+    '<button type="button" class="dm-icon-row-button" data-dm-corner-link aria-label="모서리 반경 연결" aria-pressed="' + cornerRadiusLinked + '" data-active="' + cornerRadiusLinked + '" title="' + (cornerRadiusLinked ? 'Linked — all corners change together' : 'Unlinked — edit corners individually') + '">' + icon(cornerRadiusLinked ? 'link2' : 'unlink2', 14) + '</button></div>' +
     '<div class="dm-corner-grid">' + cells.map(cornerCell).join('') + '</div>';
 }
 
@@ -4292,14 +4293,14 @@ function strokePositionRow(_s: Record<string, string>, current: 'inside' | 'outs
   // "where does the stroke sit relative to the box edge" — outside, on
   // the edge (centered), inside.
   return segmentedRow([
-    { label: 'Outside', attr: 'data-dm-stroke-pos="outside"', active: current === 'outside', title: 'Stroke outside (border)' },
-    { label: 'Center',  attr: 'data-dm-stroke-pos="center"',  active: current === 'center',  title: 'Stroke centered (outline + offset)' },
-    { label: 'Inside',  attr: 'data-dm-stroke-pos="inside"',  active: current === 'inside',  title: 'Stroke inside (inset shadow — only solid renders)' },
+    { label: '바깥쪽', attr: 'data-dm-stroke-pos="outside"', active: current === 'outside', title: '바깥쪽 테두리' },
+    { label: '가운데',  attr: 'data-dm-stroke-pos="center"',  active: current === 'center',  title: '중앙 테두리' },
+    { label: '안쪽',  attr: 'data-dm-stroke-pos="inside"',  active: current === 'inside',  title: '안쪽 테두리 (실선만 표시)' },
   ]);
 }
 
 function effectsAddMenuTrigger(isOpen: boolean): string {
-  const trigger = '<button class="dm-section-action" data-dm-effects-menu title="Add effect" data-active="' + (isOpen ? 'true' : 'false') + '">' +
+  const trigger = '<button class="dm-section-action" data-dm-effects-menu title="효과 추가" data-active="' + (isOpen ? 'true' : 'false') + '">' +
     icon('plus', 12) + '</button>';
   if (!isOpen) return '<div style="position:relative;display:inline-flex;">' + trigger + '</div>';
   // Figma-aligned 6-effect set. Drop shadow alone covers what used to
@@ -4307,12 +4308,12 @@ function effectsAddMenuTrigger(isOpen: boolean): string {
   // "Show behind transparent areas" checkbox switches between the
   // three underlying CSS paths.
   const items: PopoverItem[] = [
-    { icon: 'squareStack', label: 'Inner shadow', attr: 'data-dm-add-effect="inner-shadow"' },
-    { icon: 'sparkles', label: 'Drop shadow', attr: 'data-dm-add-effect="drop-shadow"' },
-    { icon: 'eye', label: 'Layer blur', attr: 'data-dm-add-effect="layer-blur"' },
-    { icon: 'panelRight', label: 'Background blur', attr: 'data-dm-add-effect="backdrop-blur"' },
-    { icon: 'sparkles', label: 'Noise', attr: 'data-dm-add-effect="noise"' },
-    { icon: 'sparkles', label: 'Texture', attr: 'data-dm-add-effect="texture"' },
+    { icon: 'squareStack', label: '내부 그림자', attr: 'data-dm-add-effect="inner-shadow"' },
+    { icon: 'sparkles', label: '외부 그림자', attr: 'data-dm-add-effect="drop-shadow"' },
+    { icon: 'eye', label: '레이어 흐림', attr: 'data-dm-add-effect="layer-blur"' },
+    { icon: 'panelRight', label: '배경 흐림', attr: 'data-dm-add-effect="backdrop-blur"' },
+    { icon: 'sparkles', label: '노이즈', attr: 'data-dm-add-effect="noise"' },
+    { icon: 'sparkles', label: '텍스처', attr: 'data-dm-add-effect="texture"' },
   ];
   return '<div style="position:relative;display:inline-flex;">' + trigger + popover(items) + '</div>';
 }
@@ -4321,16 +4322,16 @@ function effectsAddMenuTrigger(isOpen: boolean): string {
 // used to share the Effects + menu. State lives in `motionMenuOpen` so
 // the two popovers don't fight each other.
 function motionAddMenuTrigger(isOpen: boolean): string {
-  const trigger = '<button class="dm-section-action" data-dm-motion-menu title="Add motion" data-active="' + (isOpen ? 'true' : 'false') + '">' +
+  const trigger = '<button class="dm-section-action" data-dm-motion-menu title="모션 추가" data-active="' + (isOpen ? 'true' : 'false') + '">' +
     icon('plus', 12) + '</button>';
   if (!isOpen) return '<div style="position:relative;display:inline-flex;">' + trigger + '</div>';
   const items: PopoverItem[] = [
-    { icon: 'play', label: 'Transition', attr: 'data-dm-add-effect="transition"' },
-    { icon: 'activity', label: 'Animation', attr: 'data-dm-add-effect="animation"' },
-    { icon: 'move', label: 'Transform', attr: 'data-dm-add-effect="transform"' },
-    { icon: 'compass', label: 'Motion path', attr: 'data-dm-add-effect="motion-path"' },
-    { icon: 'shuffle', label: 'View transition', attr: 'data-dm-add-effect="view-transition"' },
-    { icon: 'arrowUpDown', label: 'Scroll-driven animation', attr: 'data-dm-add-effect="scroll-driven"' },
+    { icon: 'play', label: '전환 효과', attr: 'data-dm-add-effect="transition"' },
+    { icon: 'activity', label: '애니메이션', attr: 'data-dm-add-effect="animation"' },
+    { icon: 'move', label: '변형', attr: 'data-dm-add-effect="transform"' },
+    { icon: 'compass', label: '모션 경로', attr: 'data-dm-add-effect="motion-path"' },
+    { icon: 'shuffle', label: '뷰 전환', attr: 'data-dm-add-effect="view-transition"' },
+    { icon: 'arrowUpDown', label: '스크롤 기반 애니메이션', attr: 'data-dm-add-effect="scroll-driven"' },
   ];
   return '<div style="position:relative;display:inline-flex;">' + trigger + popover(items) + '</div>';
 }
@@ -4797,7 +4798,7 @@ function renderFillSolidRow(layer: FillLayer, idx: number, badgeProp?: string): 
   const swatchBg = resolveCssVarToColor(color) || color || '#000';
   // Swatch — clickable colour preview. Opening outline indicates the
   // active state so the user can tell which fill's panel is open.
-  const swatchBtn = '<button type="button" class="dm-fill-swatch" data-dm-color-trigger="' + swatchProp + '" title="Pick a colour" style="background:' + safeCssColor(swatchBg) + ';outline:' + (swatchOpen ? '2px solid var(--dm-accent)' : 'none') + ';outline-offset:1px;"></button>';
+  const swatchBtn = '<button type="button" class="dm-fill-swatch" data-dm-color-trigger="' + swatchProp + '" title="색상 선택" style="background:' + safeCssColor(swatchBg) + ';outline:' + (swatchOpen ? '2px solid var(--dm-accent)' : 'none') + ';outline-offset:1px;"></button>';
   // Colour code — uses data-dm-tokens-trigger so focusing the field
   // opens the design-token dropdown the rest of the panel uses for
   // colour inputs. Writes through __fill_color__N (the existing handler
@@ -4813,11 +4814,11 @@ function renderFillSolidRow(layer: FillLayer, idx: number, badgeProp?: string): 
     '</div>';
   // Hover-revealed actions on the right edge — eye toggle + delete.
   const eyeBtn = '<button class="dm-fill-action dm-fill-action-hover" data-dm-fill-toggle="' + idx + '" title="' + (visible ? 'Hide fill' : 'Show fill') + '" data-active="' + (visible ? 'true' : 'false') + '">' + icon(visible ? 'eye' : 'eyeOff', 12) + '</button>';
-  const trashBtn = '<button class="dm-fill-action dm-fill-action-hover" data-dm-fill-remove="' + idx + '" title="Remove fill" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>';
+  const trashBtn = '<button class="dm-fill-action dm-fill-action-hover" data-dm-fill-remove="' + idx + '" title="채우기 제거" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>';
   // Drag handle uses the same Layers-tab pattern (a <span>, not a
   // <button>) so Chromium reliably initiates a drag from it instead of
   // capturing focus on the way down.
-  const grip = '<span class="dm-section-action" data-dm-fill-drag="' + idx + '" title="Drag to reorder" style="cursor:grab;flex-shrink:0;">' + icon('gripVertical', 12) + '</span>';
+  const grip = '<span class="dm-section-action" data-dm-fill-drag="' + idx + '" title="드래그하여 순서 변경" style="cursor:grab;flex-shrink:0;">' + icon('gripVertical', 12) + '</span>';
   // ◆ badge — this row paints `background-color`, so when that value comes
   // from a token the diamond surfaces the token name / swap menu. The badge
   // writes through the real `backgroundColor` prop (not the row's virtual
@@ -4861,22 +4862,22 @@ function normalizePosition(raw: string): string {
 function fillPositionPad(idx: number, value: string): string {
   const norm = normalizePosition(value);
   const cells: Array<{ pos: string; glyph: string; title: string }> = [
-    { pos: '0% 0%',     glyph: '↖', title: 'Top-left' },
-    { pos: '50% 0%',    glyph: '↑', title: 'Top' },
-    { pos: '100% 0%',   glyph: '↗', title: 'Top-right' },
-    { pos: '0% 50%',    glyph: '←', title: 'Left' },
-    { pos: '50% 50%',   glyph: '·', title: 'Center' },
-    { pos: '100% 50%',  glyph: '→', title: 'Right' },
-    { pos: '0% 100%',   glyph: '↙', title: 'Bottom-left' },
-    { pos: '50% 100%',  glyph: '↓', title: 'Bottom' },
-    { pos: '100% 100%', glyph: '↘', title: 'Bottom-right' },
+    { pos: '0% 0%',     glyph: '↖', title: '왼쪽 위' },
+    { pos: '50% 0%',    glyph: '↑', title: '위' },
+    { pos: '100% 0%',   glyph: '↗', title: '오른쪽 위' },
+    { pos: '0% 50%',    glyph: '←', title: '왼쪽' },
+    { pos: '50% 50%',   glyph: '·', title: '가운데' },
+    { pos: '100% 50%',  glyph: '→', title: '오른쪽' },
+    { pos: '0% 100%',   glyph: '↙', title: '왼쪽 아래' },
+    { pos: '50% 100%',  glyph: '↓', title: '아래' },
+    { pos: '100% 100%', glyph: '↘', title: '오른쪽 아래' },
   ];
   const cellHtml = cells.map(c => {
     const active = c.pos === norm;
     return '<button data-dm-fill-pos-cell="' + c.pos + '" data-dm-fill-pos-idx="' + idx + '" data-active="' + (active ? 'true' : 'false') + '" title="' + c.title + ' (' + c.pos + ')" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:' + (active ? 'var(--dm-accent-bg)' : 'transparent') + ';border:1px solid ' + (active ? 'var(--dm-accent-border)' : 'transparent') + ';color:' + (active ? 'var(--dm-accent)' : 'var(--dm-text-muted)') + ';border-radius:3px;cursor:pointer;font-size:11px;padding:0;">' + c.glyph + '</button>';
   }).join('');
   return '<div class="dm-field">' +
-    '<label class="dm-field-label">Position</label>' +
+    '<label class="dm-field-label">위치</label>' +
     '<div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:2px;border:1px solid var(--dm-input-border);border-radius:4px;padding:2px;background:var(--dm-input-bg);">' +
     cellHtml +
     '</div>' +
@@ -4920,9 +4921,9 @@ function renderFillLayerBody(layer: FillLayer, idx: number): string {
     const stopRows = parsed.stops.map((stop, sIdx) => {
       return '<div style="display:grid;grid-template-columns:1fr 80px 28px;gap:6px;align-items:end;">' +
         colorInp('Stop ' + (sIdx + 1), '__fill_stop_color__' + idx + '_' + sIdx, stop.color || '#000000') +
-        inp('Pos', '__fill_stop_pos__' + idx + '_' + sIdx, stop.position || '', '') +
+        inp('위치', '__fill_stop_pos__' + idx + '_' + sIdx, stop.position || '', '') +
         '<div class="dm-field"><label style="font-size:10px;color:var(--dm-text-muted);visibility:hidden;">_</label>' +
-        '<button class="dm-section-action" data-dm-fill-stop-remove="' + idx + '_' + sIdx + '" title="Remove stop" style="width:100%;height:28px;color:var(--dm-danger);">' + icon('trash', 11) + '</button>' +
+        '<button class="dm-section-action" data-dm-fill-stop-remove="' + idx + '_' + sIdx + '" title="색상 지점 제거" style="width:100%;height:28px;color:var(--dm-danger);">' + icon('trash', 11) + '</button>' +
         '</div></div>';
     }).join('<div style="height:4px;"></div>');
     const addStopBtn = '<button class="dm-btn" data-dm-fill-stop-add="' + idx + '" style="width:100%;padding:6px;font-size:11px;display:flex;align-items:center;gap:4px;justify-content:center;">' + icon('plus', 11) + ' Add stop</button>';
@@ -4940,12 +4941,12 @@ function renderFillLayerBody(layer: FillLayer, idx: number): string {
     // 4-mode segmented (image only). Atomically writes {size, repeat} pairs.
     (layer.kind === 'image' ? fillFitRow(idx, layer) + sp() : '') +
     grid12([
-      { span: 6, content: sel('Size', '__fill_size__' + idx, layer.size || 'auto', sizeOpts) },
-      { span: 6, content: sel('Repeat', '__fill_repeat__' + idx, layer.repeat || 'repeat', repeatOpts) },
+      { span: 6, content: sel('크기', '__fill_size__' + idx, layer.size || 'auto', sizeOpts) },
+      { span: 6, content: sel('반복', '__fill_repeat__' + idx, layer.repeat || 'repeat', repeatOpts) },
     ]) + sp() +
     grid12([
       { span: 6, content: fillPositionPad(idx, layer.position || '0% 0%') },
-      { span: 6, content: sel('Blend', '__fill_blend__' + idx, layer.blendMode || 'normal', blendOpts) },
+      { span: 6, content: sel('혼합 모드', '__fill_blend__' + idx, layer.blendMode || 'normal', blendOpts) },
     ]);
   return head + perLayer;
 }
@@ -5155,13 +5156,13 @@ function layeredRow(opts: {
     ? ''
     : '<button class="dm-section-action" data-dm-' + opts.prefix + '-expand="' + opts.idx + '" title="' + (opts.expanded ? 'Collapse' : 'Settings') + '" data-active="' + (opts.expanded ? 'true' : 'false') + '">' + icon('slidersHorizontal', 12) + '</button>';
   const headRow = '<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--dm-bg-secondary);border:1px solid var(--dm-separator);border-radius:5px;">' +
-    '<span class="dm-section-action" data-dm-' + opts.prefix + '-drag="' + opts.idx + '" title="Drag to reorder" aria-label="Drag" style="cursor:grab;">' + icon('gripVertical', 12) + '</span>' +
+    '<span class="dm-section-action" data-dm-' + opts.prefix + '-drag="' + opts.idx + '" title="드래그하여 순서 변경" aria-label="드래그" style="cursor:grab;">' + icon('gripVertical', 12) + '</span>' +
     opts.swatch +
     '<span style="flex:1;min-width:0;font-size:11px;font-family:inherit;color:var(--dm-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeAttr(opts.label) + '</span>' +
     metaPart +
     '<button class="dm-section-action" data-dm-' + opts.prefix + '-toggle="' + opts.idx + '" title="' + (opts.visible ? 'Hide' : 'Show') + '" data-active="' + (opts.visible ? 'true' : 'false') + '">' + icon(opts.visible ? 'eye' : 'eyeOff', 12) + '</button>' +
     expandBtn +
-    '<button class="dm-section-action" data-dm-' + opts.prefix + '-remove="' + opts.idx + '" title="Remove" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>' +
+    '<button class="dm-section-action" data-dm-' + opts.prefix + '-remove="' + opts.idx + '" title="제거" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>' +
     '</div>';
   const bodyRow = (opts.expanded && opts.body)
     ? '<div style="margin:6px 0 10px 24px;padding:8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:5px;">' + opts.body + '</div>'
@@ -5670,7 +5671,7 @@ function renderShadowEntryEditor(entry: EffectEntry & { shadow: ShadowParts }): 
   const showBehindCheckbox = isDropShadow
     ? '<label style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--dm-text-secondary);cursor:pointer;">' +
         '<input type="checkbox" data-dm-prop="' + prefix + 'show_behind"' + (entry.chain === 'box' ? ' checked' : '') + ' style="margin:0;"/>' +
-        '<span>Show behind transparent areas</span>' +
+        '<span>투명 영역 뒤에 표시</span>' +
       '</label>'
     : '';
 
@@ -5760,7 +5761,7 @@ function renderTextureEntryEditor(entry: Extract<OverlayEntry, { kind: 'texture'
   const clipRow =
     '<label style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--dm-text-secondary);cursor:pointer;">' +
       '<input type="checkbox" data-dm-prop="' + prefix + 'clipToShape"' + (entry.clipToShape ? ' checked' : '') + ' style="margin:0;"/>' +
-      '<span>Clip to shape</span>' +
+      '<span>모양으로 자르기</span>' +
     '</label>';
   return '<div style="background:var(--dm-bg-secondary);border:1px solid var(--dm-separator);border-radius:6px;padding:8px;">' +
     sizeRow + sp() +
@@ -5780,13 +5781,13 @@ function renderBlurEntryEditor(entry: { kind: 'layer-blur' | 'backdrop-blur'; ch
     ? '__effd_lblur_' + entry.chainIdx + '_'
     : '__effd_bblur_' + entry.chainIdx + '_';
   const modeTabs = '<div style="display:flex;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;padding:2px;margin-bottom:8px;">' +
-    '<button type="button" data-dm-blur-mode="uniform" data-active="true" style="flex:1;padding:5px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text);cursor:pointer;font-size:10px;font-family:inherit;">Uniform</button>' +
-    '<button type="button" data-dm-blur-mode="progressive" data-active="false" disabled title="Progressive blur isn\'t available — CSS doesn\'t support a true gradient blur" style="flex:1;padding:5px 8px;background:none;border:none;color:var(--dm-text-dim);cursor:not-allowed;font-size:10px;font-family:inherit;opacity:0.5;">Progressive</button>' +
+    '<button type="button" data-dm-blur-mode="uniform" data-active="true" style="flex:1;padding:5px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text);cursor:pointer;font-size:10px;font-family:inherit;">균일</button>' +
+    '<button type="button" data-dm-blur-mode="progressive" data-active="false" disabled title="Progressive blur isn\'t available — CSS doesn\'t support a true gradient blur" style="flex:1;padding:5px 8px;background:none;border:none;color:var(--dm-text-dim);cursor:not-allowed;font-size:10px;font-family:inherit;opacity:0.5;">점진적</button>' +
     '</div>';
   return '<div style="background:var(--dm-bg-secondary);border:1px solid var(--dm-separator);border-radius:6px;padding:8px;">' +
     modeTabs +
     '<div class="dm-field">' +
-    '<label class="dm-field-label">Blur</label>' +
+    '<label class="dm-field-label">흐림</label>' +
     '<div style="display:flex;align-items:center;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;overflow:hidden;">' +
     '<input type="number" data-dm-prop="' + prefix + 'radius" min="0" value="' + entry.radius + '" style="background:none;border:none;padding:6px;width:100%;min-width:0;font-family:inherit;font-size:10px;color:var(--dm-text);"/>' +
     '<span style="font-size:9px;color:var(--dm-text-dim);padding-right:6px;opacity:0.6;flex-shrink:0;">px</span>' +
@@ -5796,18 +5797,18 @@ function renderBlurEntryEditor(entry: { kind: 'layer-blur' | 'backdrop-blur'; ch
 
 /* ── Filter presets ── */
 const FILTER_PRESETS: Array<{ value: string; label: string }> = [
-  { value: 'none', label: 'None' },
-  { value: 'blur(4px)', label: 'Blur — light' },
-  { value: 'blur(12px)', label: 'Blur — strong' },
-  { value: 'brightness(1.2)', label: 'Brighter' },
-  { value: 'brightness(0.7)', label: 'Darker' },
-  { value: 'contrast(1.2)', label: 'High contrast' },
-  { value: 'saturate(1.5)', label: 'Vivid' },
-  { value: 'saturate(0)', label: 'Grayscale' },
-  { value: 'sepia(1)', label: 'Sepia' },
-  { value: 'invert(1)', label: 'Invert' },
-  { value: 'hue-rotate(90deg)', label: 'Hue shift +90°' },
-  { value: 'drop-shadow(0 4px 8px rgba(0,0,0,0.25))', label: 'Drop shadow' },
+  { value: 'none', label: '없음' },
+  { value: 'blur(4px)', label: '약한 흐림' },
+  { value: 'blur(12px)', label: '강한 흐림' },
+  { value: 'brightness(1.2)', label: '밝게' },
+  { value: 'brightness(0.7)', label: '어둡게' },
+  { value: 'contrast(1.2)', label: '높은 대비' },
+  { value: 'saturate(1.5)', label: '선명하게' },
+  { value: 'saturate(0)', label: '흑백' },
+  { value: 'sepia(1)', label: '세피아' },
+  { value: 'invert(1)', label: '색상 반전' },
+  { value: 'hue-rotate(90deg)', label: '색조 +90°' },
+  { value: 'drop-shadow(0 4px 8px rgba(0,0,0,0.25))', label: '외부 그림자' },
 ];
 
 function renderFilterEditor(prop: string, label: string, value: string): string {
@@ -5818,9 +5819,9 @@ function renderFilterEditor(prop: string, label: string, value: string): string 
   return '<div style="background:var(--dm-bg-secondary);border:1px solid var(--dm-separator);border-radius:6px;padding:8px;">' +
     selKV(label, prop, FILTER_PRESETS.find(p => p.value === cur) ? cur : 'custom', [
       ...FILTER_PRESETS,
-      ...(FILTER_PRESETS.find(p => p.value === cur) ? [] : [{ value: 'custom', label: 'Custom (below)' }]),
+      ...(FILTER_PRESETS.find(p => p.value === cur) ? [] : [{ value: 'custom', label: '사용자 지정 (아래)' }]),
     ] as any) + sp() +
-    inp('Custom value', prop, cur, '') +
+    inp('사용자 지정 값', prop, cur, '') +
     '</div>';
 }
 
@@ -5857,11 +5858,11 @@ function renderTransformComponents(s: Record<string, string>): string {
   const sc = parseScale(s.scale || '');
   return grid(2,
     '<div class="dm-field">' +
-      '<label class="dm-field-label">Translate</label>' +
+      '<label class="dm-field-label">이동</label>' +
       grid(2, tcompField('translate', 'x', 'X', t.x, 'px'), tcompField('translate', 'y', 'Y', t.y, 'px')) +
     '</div>',
     '<div class="dm-field">' +
-      '<label class="dm-field-label">Scale</label>' +
+      '<label class="dm-field-label">크기 조절</label>' +
       grid(2, tcompField('scale', 'x', 'X', sc.x, ''), tcompField('scale', 'y', 'Y', sc.y, '')) +
     '</div>'
   );
@@ -5888,12 +5889,12 @@ interface FilterField {
   step: number;
 }
 const FILTER_FIELDS: FilterField[] = [
-  { name: 'blur',        label: 'Blur',        unit: 'px',  default: 0, min: 0,    max: 20,  step: 0.1 },
-  { name: 'brightness',  label: 'Brightness',  unit: '',    default: 1, min: 0,    max: 2,   step: 0.05 },
-  { name: 'contrast',    label: 'Contrast',    unit: '',    default: 1, min: 0,    max: 2,   step: 0.05 },
-  { name: 'saturate',    label: 'Saturate',    unit: '',    default: 1, min: 0,    max: 2,   step: 0.05 },
-  { name: 'hue-rotate',  label: 'Hue rotate',  unit: 'deg', default: 0, min: -180, max: 180, step: 1 },
-  { name: 'grayscale',   label: 'Grayscale',   unit: '',    default: 0, min: 0,    max: 1,   step: 0.01 },
+  { name: 'blur',        label: '흐림',        unit: 'px',  default: 0, min: 0,    max: 20,  step: 0.1 },
+  { name: 'brightness',  label: '밝기',  unit: '',    default: 1, min: 0,    max: 2,   step: 0.05 },
+  { name: 'contrast',    label: '대비',    unit: '',    default: 1, min: 0,    max: 2,   step: 0.05 },
+  { name: 'saturate',    label: '채도',    unit: '',    default: 1, min: 0,    max: 2,   step: 0.05 },
+  { name: 'hue-rotate',  label: '색조 회전',  unit: 'deg', default: 0, min: -180, max: 180, step: 1 },
+  { name: 'grayscale',   label: '흑백',   unit: '',    default: 0, min: 0,    max: 1,   step: 0.01 },
 ];
 
 function parseFilter(val: string): Record<string, number> {
@@ -5943,15 +5944,15 @@ function renderTransitionEditor(s: Record<string, string>): string {
   const customCurveBtn =
     '<button data-dm-viz-open="transition" title="Open the cubic-bezier / spring visualizer to author a custom timing curve" style="padding:6px;background:' + (customCurveActive ? 'var(--dm-accent-bg)' : 'var(--dm-btn-bg)') + ';border:1px solid ' + (customCurveActive ? 'var(--dm-accent-border)' : 'var(--dm-btn-border)') + ';border-radius:5px;color:' + (customCurveActive ? 'var(--dm-accent)' : 'var(--dm-text-secondary)') + ';cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;">' + icon('activity', 11) + ' Custom curve</button>';
   const previewBtn =
-    '<button data-dm-action="preview-transition" title="Preview transition" style="padding:6px;background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:5px;color:var(--dm-accent);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;">' + icon('play', 11) + ' Preview</button>';
+    '<button data-dm-action="preview-transition" title="전환 미리보기" style="padding:6px;background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:5px;color:var(--dm-accent);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;">' + icon('play', 11) + ' Preview</button>';
   return '<div style="background:var(--dm-bg-secondary);border:1px solid var(--dm-separator);border-radius:6px;padding:8px;">' +
     grid(2,
       selKV('Property', 'transitionProperty', prop, TRANSITION_PROPERTY_OPTIONS as any),
       selKV('Timing', 'transitionTimingFunction', timing, TIMING_FUNCTION_OPTIONS as any)
     ) + sp() +
     grid(2,
-      inp('Duration', 'transitionDuration', dur, 's'),
-      inp('Delay', 'transitionDelay', delay, 's')
+      inp('지속 시간', 'transitionDuration', dur, 's'),
+      inp('지연 시간', 'transitionDelay', delay, 's')
     ) + sp() +
     grid(2, customCurveBtn, previewBtn) +
     '</div>';
@@ -5973,22 +5974,22 @@ function renderAnimationEditor(s: Record<string, string>): string {
     '<div style="margin-top:4px;font-size:9px;color:var(--dm-text-dim);">Custom: <span style="font-family:inherit;color:var(--dm-text-muted);">' + escapeAttr(name) + '</span> (page must define @keyframes)</div>';
   const iterInput =
     '<div class="dm-field">' +
-    '<label class="dm-field-label">Iterations</label>' +
+    '<label class="dm-field-label">반복 횟수</label>' +
     '<div style="display:flex;align-items:center;gap:4px;">' +
     '<input type="text" class="dm-input" data-dm-prop="animationIterationCount" value="' + escapeAttr(iter) + '" style="flex:1;min-width:0;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;padding:6px;"/>' +
-    '<button data-dm-prop="animationIterationCount" data-dm-value="' + (isInfinite ? '1' : 'infinite') + '" title="Toggle infinite" style="padding:6px 8px;background:' + (isInfinite ? 'var(--dm-accent-bg)' : 'var(--dm-btn-bg)') + ';border:1px solid ' + (isInfinite ? 'var(--dm-accent-border)' : 'var(--dm-btn-border)') + ';border-radius:4px;color:' + (isInfinite ? 'var(--dm-accent)' : 'var(--dm-text-dim)') + ';cursor:pointer;font-size:11px;font-family:inherit;">∞</button>' +
+    '<button data-dm-prop="animationIterationCount" data-dm-value="' + (isInfinite ? '1' : 'infinite') + '" title="무한 반복 전환" style="padding:6px 8px;background:' + (isInfinite ? 'var(--dm-accent-bg)' : 'var(--dm-btn-bg)') + ';border:1px solid ' + (isInfinite ? 'var(--dm-accent-border)' : 'var(--dm-btn-border)') + ';border-radius:4px;color:' + (isInfinite ? 'var(--dm-accent)' : 'var(--dm-text-dim)') + ';cursor:pointer;font-size:11px;font-family:inherit;">∞</button>' +
     '</div></div>';
   const previewBtn =
-    '<button data-dm-action="preview-animation" title="Restart animation" style="padding:6px;background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:5px;color:var(--dm-accent);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;align-self:flex-end;">' + icon('play', 11) + ' Preview</button>';
+    '<button data-dm-action="preview-animation" title="애니메이션 재시작" style="padding:6px;background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:5px;color:var(--dm-accent);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;align-self:flex-end;">' + icon('play', 11) + ' Preview</button>';
   return '<div style="background:var(--dm-bg-secondary);border:1px solid var(--dm-separator);border-radius:6px;padding:8px;">' +
     selKV('Animation', 'animationName', knownName, ANIMATION_NAME_OPTIONS as any) +
     customLabel + sp() +
     grid(2,
-      inp('Duration', 'animationDuration', dur, 's'),
+      inp('지속 시간', 'animationDuration', dur, 's'),
       selKV('Timing', 'animationTimingFunction', timing, TIMING_FUNCTION_OPTIONS as any)
     ) + sp() +
     grid(2,
-      inp('Delay', 'animationDelay', delay, 's'),
+      inp('지연 시간', 'animationDelay', delay, 's'),
       iterInput
     ) + sp() +
     grid(2,
@@ -6035,7 +6036,7 @@ function motionCardHeader(iconName: keyof typeof icons, verb: string, trigger: s
     '<span style="color:var(--dm-text-secondary);display:flex;">' + icon(iconName, 13) + '</span>' +
     '<span style="font-size:11px;font-weight:600;color:var(--dm-text);flex:1;">' + verb + '</span>' +
     previewBtn +
-    '<button class="dm-fill-action" data-dm-motion-remove-trigger="' + trigger + '" title="Remove" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>' +
+    '<button class="dm-fill-action" data-dm-motion-remove-trigger="' + trigger + '" title="제거" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>' +
     '</div>';
 }
 function motionCardWrap(inner: string, active: boolean): string {
@@ -6053,7 +6054,7 @@ function renderMotionInteractionCard(t: typeof MOTION_TRIGGERS[number], changes:
     return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">' +
       '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">' + escapeAttr(motionChangeLabel(c.property)) + (t.trigger === 'appear' ? ' from' : '') + '</span>' +
       '<input type="text" class="dm-input dm-input-bare" data-dm-prop="' + vprop + '" value="' + escapeAttr(c.newValue) + '" spellcheck="false" style="flex:1;min-width:0;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:4px;"/>' +
-      '<button class="dm-fill-action" data-dm-motion-remove-change="' + t.trigger + ':' + escapeAttr(c.property) + '" title="Remove this change" style="color:var(--dm-danger);flex-shrink:0;">' + icon('x', 11) + '</button>' +
+      '<button class="dm-fill-action" data-dm-motion-remove-change="' + t.trigger + ':' + escapeAttr(c.property) + '" title="이 변경사항 제거" style="color:var(--dm-danger);flex-shrink:0;">' + icon('x', 11) + '</button>' +
       '</div>';
   };
 
@@ -6065,8 +6066,8 @@ function renderMotionInteractionCard(t: typeof MOTION_TRIGGERS[number], changes:
     .join('');
 
   const curve = '<div style="display:flex;align-items:center;gap:6px;margin-top:8px;">' +
-    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">Curve</span>' +
-    '<input type="text" class="dm-input dm-input-bare" data-dm-prop="transitionDuration" data-dm-numeric="1" data-dm-unit="s" inputmode="decimal" value="' + escapeAttr(parseFloat(dur).toString()) + '" title="Duration (seconds)" style="width:52px;flex-shrink:0;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:4px;"/>' +
+    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">곡선</span>' +
+    '<input type="text" class="dm-input dm-input-bare" data-dm-prop="transitionDuration" data-dm-numeric="1" data-dm-unit="s" inputmode="decimal" value="' + escapeAttr(parseFloat(dur).toString()) + '" title="지속 시간(초)" style="width:52px;flex-shrink:0;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:4px;"/>' +
     '<select class="dm-select" data-dm-prop="transitionTimingFunction" style="flex:1;min-width:0;font-size:10px;">' +
       TIMING_FUNCTION_OPTIONS.map(o => '<option value="' + o.value + '"' + (o.value === timing ? ' selected' : '') + '>' + o.label + '</option>').join('') +
     '</select>' +
@@ -6089,12 +6090,12 @@ function renderMotionLoopCard(s: Record<string, string>): string {
   const name = (s.animationName || 'none').split(',')[0].trim();
   const dur = (s.animationDuration || '1s').split(',')[0].trim();
   const picker = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">' +
-    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">Animation</span>' +
+    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">애니메이션</span>' +
     '<select class="dm-select" data-dm-prop="animationName" style="flex:1;min-width:0;font-size:10px;">' +
       MOTION_KEYFRAME_OPTIONS.map(o => '<option value="' + o.value + '"' + (o.value === name ? ' selected' : '') + '>' + o.label + '</option>').join('') +
     '</select></div>';
   const durRow = '<div style="display:flex;align-items:center;gap:6px;">' +
-    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">Duration</span>' +
+    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">지속 시간</span>' +
     '<input type="text" class="dm-input dm-input-bare" data-dm-prop="animationDuration" data-dm-numeric="1" data-dm-unit="s" inputmode="decimal" value="' + escapeAttr(parseFloat(dur).toString()) + '" style="width:52px;flex-shrink:0;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:4px;"/>' +
     '<span style="font-size:10px;color:var(--dm-text-dim);align-self:center;">· repeats forever</span></div>';
   return motionCardWrap(
@@ -6109,12 +6110,12 @@ function renderMotionScrollCard(s: Record<string, string>): string {
   const name = ((s as any).animationName || 'none').split(',')[0].trim();
   const range = ((s as any).animationRange || 'entry 0% cover 40%').trim();
   const picker = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">' +
-    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">Animation</span>' +
+    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">애니메이션</span>' +
     '<select class="dm-select" data-dm-prop="animationName" style="flex:1;min-width:0;font-size:10px;">' +
       MOTION_KEYFRAME_OPTIONS.map(o => '<option value="' + o.value + '"' + (o.value === name ? ' selected' : '') + '>' + o.label + '</option>').join('') +
     '</select></div>';
   const rangeRow = '<div style="display:flex;align-items:center;gap:6px;">' +
-    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">Range</span>' +
+    '<span style="font-size:10px;color:var(--dm-text-muted);width:74px;flex-shrink:0;">범위</span>' +
     '<input type="text" class="dm-input dm-input-bare" data-dm-prop="animationRange" value="' + escapeAttr(range) + '" spellcheck="false" title="Scroll range that drives the animation, e.g. &quot;entry 0% cover 40%&quot;" style="flex:1;min-width:0;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:4px;"/></div>';
   const note = '<div style="font-size:10px;color:var(--dm-text-dim);margin-top:8px;font-style:italic;">Plays as this element scrolls through the viewport (Chrome 115+).</div>';
   return motionCardWrap(
@@ -6145,15 +6146,15 @@ function renderMotionInteractions(s: Record<string, string>, elId: string): stri
   if (scrollSet) used.add('scroll');
   const addDefs: Array<{ trigger: string; label: string; icon: keyof typeof icons }> = [
     ...MOTION_TRIGGERS.map(t => ({ trigger: t.trigger, label: t.label, icon: t.icon })),
-    { trigger: 'loop', label: 'Loop', icon: 'activity' },
-    { trigger: 'scroll', label: 'Scroll', icon: 'arrowUpDown' },
+    { trigger: 'loop', label: '반복', icon: 'activity' },
+    { trigger: 'scroll', label: '스크롤', icon: 'arrowUpDown' },
   ];
   const addChips = addDefs.filter(t => !used.has(t.trigger)).map(t =>
     '<button class="dm-btn" data-dm-motion-add-trigger="' + t.trigger + '" title="Animate ' + t.label + '" style="padding:4px 8px;font-size:10px;display:inline-flex;align-items:center;gap:4px;">' + icon(t.icon, 11) + t.label + '</button>').join('');
   const anyCard = cards || timelineCards;
   const addRow = addChips
     ? '<div style="display:flex;flex-wrap:wrap;gap:5px;' + (anyCard ? 'margin-top:2px;' : '') + '">' +
-      '<span style="font-size:10px;color:var(--dm-text-dim);align-self:center;margin-right:2px;">When:</span>' + addChips + '</div>'
+      '<span style="font-size:10px;color:var(--dm-text-dim);align-self:center;margin-right:2px;">조건:</span>' + addChips + '</div>'
     : '';
   return cards + timelineCards + addRow;
 }
@@ -6254,13 +6255,13 @@ function renderTokensView(): string {
   const ds: DesignSystemPayload = designSystem || { tokens: [], scales: { spacing: [], radius: [], fontSize: [], shadow: [] }, systems: [], scopes: [] };
 
   const header = '<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--dm-separator-strong);flex-shrink:0;background:var(--dm-bg);">' +
-    '<button data-dm-action="close-tokens" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:2px;" title="Back">' + icon('chevronLeft', 14) + '</button>' +
-    '<span style="font-size:13px;font-weight:600;color:var(--dm-text);flex:1;">Design system</span>' +
-    '<label class="dm-token-io-btn dm-token-io-btn-labelled" title="Import design-system JSON">' +
-      icon('upload', 11) + '<span>Import</span>' +
+    '<button data-dm-action="close-tokens" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:2px;" title="뒤로">' + icon('chevronLeft', 14) + '</button>' +
+    '<span style="font-size:13px;font-weight:600;color:var(--dm-text);flex:1;">디자인 시스템</span>' +
+    '<label class="dm-token-io-btn dm-token-io-btn-labelled" title="디자인 시스템 JSON 가져오기">' +
+      icon('upload', 11) + '<span>가져오기</span>' +
       '<input type="file" accept=".json" data-dm-tokens-import style="display:none;"/></label>' +
     '<button data-dm-action="tokens-export" class="dm-token-io-btn dm-token-io-btn-labelled" title="감지된 디자인 시스템을 JSON으로 내보내기">' + icon('download', 11) + '<span>내보내기</span></button>' +
-    '<button data-dm-action="refresh-tokens" class="dm-token-io-btn" title="Rescan the page">' + icon('rotateCw', 11) + '</button>' +
+    '<button data-dm-action="refresh-tokens" class="dm-token-io-btn" title="페이지 다시 분석">' + icon('rotateCw', 11) + '</button>' +
     '</div>';
 
   // Per-tab chip count — the same chip strip is shown on every tab but
@@ -6313,7 +6314,7 @@ function renderTokensView(): string {
     const groupOption = (key: TokenFilter, label: string) =>
       '<option value="' + key + '"' + (tokenFilter === key ? ' selected' : '') + '>' + escapeAttr(label) + ' (' + countFor(key) + ')</option>';
     const groupSelect = '<span style="position:relative;display:inline-flex;align-items:center;flex-shrink:0;">' +
-      '<select class="dm-select" data-dm-token-group title="Filter by token group" style="width:auto;font-size:10px;padding-right:22px;">' +
+      '<select class="dm-select" data-dm-token-group title="토큰 그룹으로 필터링" style="width:auto;font-size:10px;padding-right:22px;">' +
         groupOption('all', 'All') +
         groupOption('colour', 'Colours') +
         groupOption('typography', 'Type') +
@@ -6355,7 +6356,7 @@ function renderTokensView(): string {
     // wants to switch between sit at the top of the list.
     const sorted = Array.from(declaredScopes.values()).sort((a, b) =>
       Number(b.scope.active) - Number(a.scope.active) || b.count - a.count);
-    const opts = ['<option value="all"' + (tokenScopeFilter === 'all' ? ' selected' : '') + '>All scopes</option>'];
+    const opts = ['<option value="all"' + (tokenScopeFilter === 'all' ? ' selected' : '') + '>모든 범위</option>'];
     for (const { scope: s, count } of sorted) {
       const label = s.selector + ' · ' + count + (s.active ? '' : ' · inactive');
       opts.push('<option value="' + escapeAttr(s.selector) + '"' + (tokenScopeFilter === s.selector ? ' selected' : '') + '>' + escapeAttr(label) + '</option>');
@@ -6369,10 +6370,10 @@ function renderTokensView(): string {
     '<div style="padding:8px 10px;border-bottom:1px solid var(--dm-separator);flex-shrink:0;display:flex;flex-direction:column;gap:6px;background:var(--dm-bg);position:relative;z-index:2;">' +
       filterRow +
       scopePicker +
-      '<input type="text" class="dm-input" data-dm-token-search value="' + escapeAttr(tokenSearch) + '" placeholder="Search tokens…" style="width:100%;font-size:10px;padding:5px 8px;box-sizing:border-box;"/>' +
+      '<input type="text" class="dm-input" data-dm-token-search value="' + escapeAttr(tokenSearch) + '" placeholder="토큰 검색…" style="width:100%;font-size:10px;padding:5px 8px;box-sizing:border-box;"/>' +
       '<label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--dm-text-secondary);cursor:pointer;">' +
         '<input type="checkbox" data-dm-tokens-used-only' + (tokenUsedOnlyFilter ? ' checked' : '') + ' style="accent-color:var(--dm-accent);"/>' +
-        '<span>Show only tokens used on this page</span>' +
+        '<span>이 페이지에서 사용하는 토큰만 표시</span>' +
       '</label>' +
     '</div>';
 
@@ -6428,12 +6429,12 @@ function renderTokensView(): string {
   // Groups for the Declared tab — only declared :root token buckets.
   // Detected scales render on the Detected tab via a separate branch.
   const declaredGroups: { key: TokenGroup; label: string; tokens: DesignToken[] }[] = [];
-  if (showGroup('colour')) declaredGroups.push({ key: 'colour', label: 'Colour', tokens: tFilter('colour') });
-  if (showGroup('typography')) declaredGroups.push({ key: 'typography', label: 'Typography', tokens: tFilter('typography') });
-  if (showGroup('spacing')) declaredGroups.push({ key: 'spacing', label: 'Spacing', tokens: tFilter('spacing') });
-  if (showGroup('radius')) declaredGroups.push({ key: 'radius', label: 'Radius', tokens: tFilter('radius') });
-  if (showGroup('shadow')) declaredGroups.push({ key: 'shadow', label: 'Shadow', tokens: tFilter('shadow') });
-  if (showGroup('other')) declaredGroups.push({ key: 'other', label: 'Other', tokens: tFilter('other') });
+  if (showGroup('colour')) declaredGroups.push({ key: 'colour', label: '색상', tokens: tFilter('colour') });
+  if (showGroup('typography')) declaredGroups.push({ key: 'typography', label: '타이포그래피', tokens: tFilter('typography') });
+  if (showGroup('spacing')) declaredGroups.push({ key: 'spacing', label: '간격', tokens: tFilter('spacing') });
+  if (showGroup('radius')) declaredGroups.push({ key: 'radius', label: '반경', tokens: tFilter('radius') });
+  if (showGroup('shadow')) declaredGroups.push({ key: 'shadow', label: '그림자', tokens: tFilter('shadow') });
+  if (showGroup('other')) declaredGroups.push({ key: 'other', label: '기타', tokens: tFilter('other') });
 
   // Detected groups for the Detected tab. Filter by chip + search.
   // Chip maps: Spacing→spacing scale, Radius→radius scale,
@@ -6442,16 +6443,16 @@ function renderTokensView(): string {
     tokenFilter === 'all' || tokenFilter === chipKey;
   const detectedGroups: { key: string; label: string; group: TokenGroup; entries: ScaleEntry[] }[] = [];
   if (showDetectedScale('spacing')) {
-    detectedGroups.push({ key: 'detected-spacing',  label: 'Spacing',   group: 'spacing',    entries: ds.scales.spacing.filter(e => matchesFilter(e.value)) });
+    detectedGroups.push({ key: 'detected-spacing',  label: '간격',   group: 'spacing',    entries: ds.scales.spacing.filter(e => matchesFilter(e.value)) });
   }
   if (showDetectedScale('radius')) {
-    detectedGroups.push({ key: 'detected-radius',   label: 'Radius',    group: 'radius',     entries: ds.scales.radius.filter(e => matchesFilter(e.value)) });
+    detectedGroups.push({ key: 'detected-radius',   label: '반경',    group: 'radius',     entries: ds.scales.radius.filter(e => matchesFilter(e.value)) });
   }
   if (showDetectedScale('typography')) {
-    detectedGroups.push({ key: 'detected-fontSize', label: 'Font size', group: 'typography', entries: ds.scales.fontSize.filter(e => matchesFilter(e.value)) });
+    detectedGroups.push({ key: 'detected-fontSize', label: '글자 크기', group: 'typography', entries: ds.scales.fontSize.filter(e => matchesFilter(e.value)) });
   }
   if (showDetectedScale('shadow')) {
-    detectedGroups.push({ key: 'detected-shadow',   label: 'Shadow',    group: 'shadow',     entries: ds.scales.shadow.filter(e => matchesFilter(e.value)) });
+    detectedGroups.push({ key: 'detected-shadow',   label: '그림자',    group: 'shadow',     entries: ds.scales.shadow.filter(e => matchesFilter(e.value)) });
   }
 
   // Per-row preview swatch — type-aware. For colours we paint a chip; for
@@ -6511,7 +6512,7 @@ function renderTokensView(): string {
       '<input class="dm-input dm-token-value" type="text" ' + valueInputAttrs + ' />' +
       '<button class="dm-token-uses" data-dm-token-find-uses="' + escapeAttr(t.cssVar) + '" data-unused="' + (usageCount === 0 ? 'true' : 'false') + '" data-active="' + (tokenUsesActiveVar === t.cssVar ? 'true' : 'false') + '" title="' + escapeAttr(tokenUsesActiveVar === t.cssVar ? 'Click to hide highlights' : usageTitle) + '">' + usageLabel + '</button>' +
       (edited
-        ? '<button class="dm-token-reset" data-dm-token-reset="' + escapeAttr(t.cssVar) + '" data-dm-token-scope="' + escapeAttr(scopeSel) + '" title="Restore original value">' + icon('rotateCcw', 10) + '</button>'
+        ? '<button class="dm-token-reset" data-dm-token-reset="' + escapeAttr(t.cssVar) + '" data-dm-token-scope="' + escapeAttr(scopeSel) + '" title="원래 값 복원">' + icon('rotateCcw', 10) + '</button>'
         : '<span class="dm-token-reset-placeholder"></span>') +
       '</div>';
   };
@@ -6593,7 +6594,7 @@ function renderTokensView(): string {
             ).join('');
             replaceSelect =
               '<select class="dm-detected-replace" data-dm-detected-replace title="Replace every on-page occurrence of ' + escapeAttr(e.value) + ' with a declared token">' +
-                '<option value="" selected>Replace with…</option>' +
+                '<option value="" selected>다음으로 교체…</option>' +
                 optionsHtml +
               '</select>';
           }
@@ -6617,15 +6618,15 @@ function renderTokensView(): string {
   let body = '';
   if (tokensTab === 'declared') {
     const emptyState = !designSystem
-      ? '<div class="dm-tokens-empty">Scanning the page…</div>'
+      ? '<div class="dm-tokens-empty">페이지 분석 중…</div>'
       : (declaredHtml === '' && !filter
-          ? '<div class="dm-tokens-empty">No declared CSS variables on this page.</div>'
+          ? '<div class="dm-tokens-empty">선언된 CSS 변수가 없습니다.</div>'
           : declaredHtml === ''
             ? '<div class="dm-tokens-empty">Nothing matches "' + escapeAttr(filter) + '".</div>'
             : '');
     body = declaredHtml || emptyState;
   } else if (tokensTab === 'detected') {
-    body = detectedHtml || '<div class="dm-tokens-empty">No detected scales — the page may be empty or off-screen.</div>';
+    body = detectedHtml || '<div class="dm-tokens-empty">감지된 스케일이 없습니다. 페이지가 비어 있거나 화면 밖에 있을 수 있습니다.</div>';
   } else {
     body = definedHtml;
   }
@@ -6707,12 +6708,12 @@ function renderDefinedTab(allowedKinds: Set<PresetKindLocal>, searchFilter: stri
     ? '<div class="dm-defined-cta"><button data-dm-action="add-preset-open" class="dm-defined-add-btn"' +
         (hasSelection ? '' : ' disabled') +
         ' title="' + (hasSelection ? '선택한 요소의 스타일을 프리셋으로 저장' : '먼저 페이지에서 요소를 선택하세요') + '">' +
-        icon('plus', 11) + '<span>Add preset</span></button></div>'
+        icon('plus', 11) + '<span>프리셋 추가</span></button></div>'
     : available.length === 0
       ? '<div class="dm-defined-add-form">' +
-          '<div style="font-size:11px;color:var(--dm-text-secondary);line-height:1.5;">Nothing non-default to save from this element.</div>' +
+          '<div style="font-size:11px;color:var(--dm-text-secondary);line-height:1.5;">이 요소에 저장할 사용자 지정 속성이 없습니다.</div>' +
           '<div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px;">' +
-            '<button data-dm-action="add-preset-cancel" class="dm-defined-form-btn dm-defined-form-cancel">Close</button>' +
+            '<button data-dm-action="add-preset-cancel" class="dm-defined-form-btn dm-defined-form-cancel">닫기</button>' +
           '</div>' +
         '</div>'
       : (() => {
@@ -6723,7 +6724,7 @@ function renderDefinedTab(allowedKinds: Set<PresetKindLocal>, searchFilter: stri
             '<div style="display:flex;flex-direction:column;gap:6px;">' +
               '<div style="display:flex;align-items:center;gap:6px;">' +
                 '<select class="dm-select dm-defined-kind" data-dm-defined-kind>' + kindOptions + '</select>' +
-                '<input type="text" class="dm-input dm-defined-name" data-dm-defined-name placeholder="Preset name" autofocus />' +
+                '<input type="text" class="dm-input dm-defined-name" data-dm-defined-name placeholder="프리셋 이름" autofocus />' +
               '</div>' +
               '<div style="display:flex;justify-content:flex-end;gap:6px;">' +
                 '<button data-dm-action="add-preset-cancel" class="dm-defined-form-btn dm-defined-form-cancel">취소</button>' +
@@ -6742,25 +6743,25 @@ function renderDefinedTab(allowedKinds: Set<PresetKindLocal>, searchFilter: stri
   const visiblePresets = customPresets.filter(p => allowedKinds.has(p.kind) && matchesSearch(p) && (!tokenUsedOnlyFilter || (p.usageCount || 0) > 0));
 
   const list = customPresets.length === 0
-    ? '<div class="dm-tokens-empty" style="line-height:1.6;">No saved presets yet.<br/><br/>Select an element on the page, choose a category<br/>(Typography, Fill, Stroke, …), and click Add.</div>'
+    ? '<div class="dm-tokens-empty" style="line-height:1.6;">저장된 프리셋이 없습니다.<br/><br/>페이지에서 요소를 선택하고 분류를 지정하세요<br/>(Typography, Fill, Stroke, …), and click Add.</div>'
     : visiblePresets.length === 0
-      ? '<div class="dm-tokens-empty">No presets match this filter.</div>'
+      ? '<div class="dm-tokens-empty">필터에 맞는 프리셋이 없습니다.</div>'
       : '<div class="dm-defined-list">' +
         visiblePresets.map(p => {
           const appliedGroup = appliedPresetGroups.get(p.id);
           const applied = !!appliedGroup && styleChanges.some(change => change.groupId === appliedGroup);
           const applyTitle = hasSelection ? '선택한 요소에 적용' : '먼저 페이지에서 요소를 선택하세요';
           const actionBtn = applied
-            ? '<button class="dm-preset-applied" data-dm-action="unapply-preset" data-preset-id="' + escapeAttr(p.id) + '" title="Revert the styles this preset added">' + icon('undo', 10) + ' Applied</button>'
+            ? '<button class="dm-preset-applied" data-dm-action="unapply-preset" data-preset-id="' + escapeAttr(p.id) + '" title="이 프리셋이 추가한 스타일 되돌리기">' + icon('undo', 10) + ' Applied</button>'
             : '<button class="dm-preset-apply" data-dm-action="apply-preset" data-preset-id="' + escapeAttr(p.id) + '"' +
-              (hasSelection ? '' : ' disabled') + ' title="' + escapeAttr(applyTitle) + '">Apply</button>';
+              (hasSelection ? '' : ' disabled') + ' title="' + escapeAttr(applyTitle) + '">적용</button>';
           return '<div class="dm-preset-row">' +
             previewSwatch(p) +
             '<span class="dm-preset-name" title="' + escapeAttr(p.name) + '">' + escapeAttr(p.name) + '</span>' +
             '<span style="' + kindBadgeStyle(p.kind) + '">' + escapeAttr(p.kind) + '</span>' +
             actionBtn +
-            '<button class="dm-preset-apply" data-dm-action="edit-preset" data-preset-id="' + escapeAttr(p.id) + '" title="Edit preset">Edit</button>' +
-            '<button class="dm-preset-delete" data-dm-action="delete-preset" data-preset-id="' + escapeAttr(p.id) + '" title="Delete preset">' + icon('trash', 10) + '</button>' +
+            '<button class="dm-preset-apply" data-dm-action="edit-preset" data-preset-id="' + escapeAttr(p.id) + '" title="프리셋 편집">편집</button>' +
+            '<button class="dm-preset-delete" data-dm-action="delete-preset" data-preset-id="' + escapeAttr(p.id) + '" title="프리셋 삭제">' + icon('trash', 10) + '</button>' +
           '</div>';
         }).join('') +
         '</div>';
@@ -6775,7 +6776,7 @@ function renderComputedCssOverlay(): string {
   return '<div style="position:absolute;left:0;right:0;bottom:0;top:0;background:var(--dm-bg);z-index:20;display:flex;flex-direction:column;">' +
     '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--dm-separator-strong);flex-shrink:0;">' +
     '<button data-dm-action="close-computed-css" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('x',14) + '</button>' +
-    '<span style="font-size:12px;font-weight:600;color:var(--dm-text);">Computed CSS</span>' +
+    '<span style="font-size:12px;font-weight:600;color:var(--dm-text);">계산된 CSS</span>' +
     '<button data-dm-action="copy-computed-css" style="margin-left:auto;padding:4px 8px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:5px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;gap:4px;">' + icon('copy',10) + ' Copy</button>' +
     '</div>' +
     '<pre style="flex:1;overflow:auto;margin:0;padding:12px;font-family:SF Mono,Monaco,monospace;font-size:10px;line-height:1.6;color:var(--dm-text);white-space:pre-wrap;word-break:break-all;">' + escapeAttr(computedCssText) + '</pre>' +
@@ -6807,7 +6808,7 @@ function renderMediaSection(displayInfo: any, s: Record<string, string>, isImg: 
       return sec('Media', 'image',
         '<div style="margin-bottom:8px;border-radius:6px;overflow:hidden;max-height:120px;"><img src="' + escapeAttr(displayInfo.imgSrc) + '" style="max-width:100%;display:block;"/></div>' +
         inp('Src', 'src', displayInfo.imgSrc || '', '') + sp() +
-        grid(2, sel('Fit', 'objectFit', s.objectFit || 'fill', ['fill','contain','cover','none','scale-down']), inp('Alt', 'alt', '', ''))
+        grid(2, sel('맞춤 방식', 'objectFit', s.objectFit || 'fill', ['fill','contain','cover','none','scale-down']), inp('대체 텍스트', 'alt', '', ''))
       );
     }
     return '';
@@ -6842,7 +6843,7 @@ function renderMediaSection(displayInfo: any, s: Record<string, string>, isImg: 
   let extra = '';
   if (m.kind === 'image' || m.kind === 'background') {
     extra = sp() + inp('Src', 'src', m.src, '') + sp() +
-      grid(2, sel('Fit', 'objectFit', s.objectFit || 'fill', ['fill','contain','cover','none','scale-down']), inp('Alt', 'alt', m.alt || '', ''));
+      grid(2, sel('맞춤 방식', 'objectFit', s.objectFit || 'fill', ['fill','contain','cover','none','scale-down']), inp('대체 텍스트', 'alt', m.alt || '', ''));
   } else if (m.kind === 'svg') {
     extra = sp() + '<button data-dm-action="copy-svg-markup" style="width:100%;padding:5px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:5px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;">' + icon('copy', 9) + ' Copy SVG markup</button>';
   }
@@ -6897,7 +6898,7 @@ function mcpStatusDisplay(): { dotStyle: string; textColor: string; label: strin
     return {
       dotStyle: 'width:7px;height:7px;border-radius:50%;background:var(--dm-text-muted);flex-shrink:0;',
       textColor: 'var(--dm-text-secondary)',
-      label: 'Offline',
+      label: '연결 안 됨',
       detail: isCloud
         ? (mcpCloudToken
             ? 'Cloud relay unreachable. Refresh to retry, or check the server URL + token below.'
@@ -6909,7 +6910,7 @@ function mcpStatusDisplay(): { dotStyle: string; textColor: string; label: strin
     return {
       dotStyle: 'width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;animation:dm-pulse 2s ease-in-out infinite;',
       textColor: '#22c55e',
-      label: 'Running',
+      label: '실행 중',
       detail: isCloud
         ? 'Cloud relay connected. Side panel must stay open for agent calls to land.'
         : 'MCP server is running, but no agent is connected yet.',
@@ -6941,22 +6942,22 @@ function renderHeader(): string {
   const themeIcon = resolvedTheme === 'dark' ? 'sun' : 'moon';
   return '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--dm-separator-strong);flex-shrink:0;background:var(--dm-bg);position:sticky;top:0;z-index:10;">' +
     domain + (IS_SAFARI ? '<span title="Safari Web Inspector" style="font-size:10px;color:var(--dm-text-dim);">v' + APP_VERSION + ' · Safari</span>' : '') + '<div style="flex:1;"></div>' + renderMcpStatus() +
-    '<button data-dm-action="toggle-theme" title="Toggle theme" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon(themeIcon as keyof typeof icons, 15) + '</button>' +
-    '<button data-dm-action="contribute" title="Contribute" aria-label="Open contribute panel" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('heartHandshake', 15) + '</button>' +
-    '<button data-dm-action="help" title="Help" aria-label="Open help" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('helpCircle', 15) + '</button>' +
-    '<button data-dm-action="settings" title="Settings" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('settings', 16) + '</button>' +
+    '<button data-dm-action="toggle-theme" title="테마 전환" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon(themeIcon as keyof typeof icons, 15) + '</button>' +
+    '<button data-dm-action="contribute" title="프로젝트 참여" aria-label="프로젝트 참여 패널 열기" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('heartHandshake', 15) + '</button>' +
+    '<button data-dm-action="help" title="도움말" aria-label="도움말 열기" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('helpCircle', 15) + '</button>' +
+    '<button data-dm-action="settings" title="설정" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('settings', 16) + '</button>' +
     // Docking controls (pop-out / pin-on-top / dock-back) sit last — they
     // manage the panel window itself, not the page, so they read as a
     // separate group after Settings. Safari remains Inspector-only.
     (!launchCapabilities.floating ? '' : isPip
-      ? '<button data-dm-action="pip-unpin" title="Pinned on top — click to unpin back to the floating window" aria-label="Pinned on top — click to unpin back to the floating window" style="background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:5px;color:var(--dm-accent);cursor:pointer;display:flex;padding:4px;">' + icon('pictureInPicture2', 15) + '</button>' +
+      ? '<button data-dm-action="pip-unpin" title="항상 위에 고정됨 — 클릭하여 플로팅 창으로 전환" aria-label="항상 위에 고정됨 — 클릭하여 플로팅 창으로 전환" style="background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:5px;color:var(--dm-accent);cursor:pointer;display:flex;padding:4px;">' + icon('pictureInPicture2', 15) + '</button>' +
         '<button data-dm-action="pip-dock-back" title="' + (IS_FIREFOX ? 'Focus the page, then click Design Mode there to finish docking' : 'Dock back to the side panel') + '" aria-label="' + (IS_FIREFOX ? 'Prepare docking; finish from the page toolbar' : 'Dock back to side panel') + '" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('panelRight', 15) + '</button>'
       : isPopout
         ? (pipAvailable
-            ? '<button data-dm-action="pip-pin" title="Pin on top of every window" aria-label="Pin on top of every window" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('pictureInPicture2', 15) + '</button>'
+            ? '<button data-dm-action="pip-pin" title="모든 창 위에 고정" aria-label="모든 창 위에 고정" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('pictureInPicture2', 15) + '</button>'
             : '') +
           '<button data-dm-action="dock-back" title="' + (IS_FIREFOX ? 'Focus the page, then click Design Mode there to finish docking' : 'Dock back to the side panel') + '" aria-label="' + (IS_FIREFOX ? 'Prepare docking; finish from the page toolbar' : 'Dock back to side panel') + '" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('panelRight', 15) + '</button>'
-        : '<button data-dm-action="pop-out" title="Pop out into a floating window" aria-label="Pop out into a floating window" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('externalLink', 15) + '</button>') +
+        : '<button data-dm-action="pop-out" title="플로팅 창으로 분리" aria-label="플로팅 창으로 분리" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('externalLink', 15) + '</button>') +
     '</div>';
 }
 
@@ -6970,22 +6971,22 @@ function renderActionRow(): string {
   const inspectTitle = commentMode ? 'Inspection paused while commenting' : inspecting ? 'Stop inspecting' : 'Start inspecting';
   const inspectStyle = bs(undefined, true) + (inspecting ? 'color:var(--dm-accent);background:var(--dm-accent-bg);border-color:var(--dm-accent-border);' : '');
   return '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:3px;padding:6px 12px;border-bottom:1px solid var(--dm-separator);flex-shrink:0;">' +
-    '<button type="button" data-dm-action="toggle-inspect" title="' + inspectTitle + '" aria-label="Inspect" aria-pressed="' + inspecting + '"' + (commentMode ? ' disabled' : '') + ' style="' + inspectStyle + '">' + icon('crosshair', 14) + '</button>' +
-    '<button data-dm-action="select-parent" title="Parent" style="' + bs() + '">' + icon('arrowUp', 14) + '</button>' +
-    '<button data-dm-action="select-child" title="Child" style="' + bs() + '">' + icon('arrowDown', 14) + '</button>' +
+    '<button type="button" data-dm-action="toggle-inspect" title="' + inspectTitle + '" aria-label="요소 검사" aria-pressed="' + inspecting + '"' + (commentMode ? ' disabled' : '') + ' style="' + inspectStyle + '">' + icon('crosshair', 14) + '</button>' +
+    '<button data-dm-action="select-parent" title="부모 요소" style="' + bs() + '">' + icon('arrowUp', 14) + '</button>' +
+    '<button data-dm-action="select-child" title="자식 요소" style="' + bs() + '">' + icon('arrowDown', 14) + '</button>' +
     // Spacer + the spacer before Undo flank the middle cluster, centering it as
     // the panel widens (Parent/Child pinned left, Undo/Redo pinned right).
     '<div style="flex:1;"></div>' +
-    '<button data-dm-action="duplicate" title="Duplicate" style="' + bs() + '">' + icon('copy', 14) + '</button>' +
-    '<button data-dm-action="delete" title="Remove" style="' + bs('var(--dm-danger)') + '">' + icon('trash', 14) + '</button>' +
-    '<button data-dm-action="comment" title="Comment" style="' + bs() + '">' + icon('messageSquare', 14) + '</button>' +
-    '<button data-dm-action="region-comment" title="Annotate" style="' + bs(undefined, true) + ';' + (awaitingRegionDraw ? 'color:var(--dm-accent);background:var(--dm-accent-bg);border-color:var(--dm-accent-border);' : '') + '">' + icon('squareDashedMousePointer', 14) + '</button>' +
-    '<button data-dm-action="screenshot" title="Screenshot" style="' + bs(undefined, true) + '">' + icon('camera', 14) + '</button>' +
+    '<button data-dm-action="duplicate" title="복제" style="' + bs() + '">' + icon('copy', 14) + '</button>' +
+    '<button data-dm-action="delete" title="제거" style="' + bs('var(--dm-danger)') + '">' + icon('trash', 14) + '</button>' +
+    '<button data-dm-action="comment" title="의견" style="' + bs() + '">' + icon('messageSquare', 14) + '</button>' +
+    '<button data-dm-action="region-comment" title="영역에 의견 추가" style="' + bs(undefined, true) + ';' + (awaitingRegionDraw ? 'color:var(--dm-accent);background:var(--dm-accent-bg);border-color:var(--dm-accent-border);' : '') + '">' + icon('squareDashedMousePointer', 14) + '</button>' +
+    '<button data-dm-action="screenshot" title="화면 캡처" style="' + bs(undefined, true) + '">' + icon('camera', 14) + '</button>' +
     '<div style="width:1px;height:16px;background:var(--dm-separator-strong);margin:0 2px;"></div>' +
-    '<button data-dm-action="open-tokens" title="Design system" style="' + bs(undefined, true) + ';' + (tokensOpen ? 'color:var(--dm-accent);background:var(--dm-accent-bg);border-color:var(--dm-accent-border);' : '') + '">' + icon('swatchBook', 14) + '</button>' +
+    '<button data-dm-action="open-tokens" title="디자인 시스템" style="' + bs(undefined, true) + ';' + (tokensOpen ? 'color:var(--dm-accent);background:var(--dm-accent-bg);border-color:var(--dm-accent-border);' : '') + '">' + icon('swatchBook', 14) + '</button>' +
     '<div style="flex:1;"></div>' +
-    '<button data-dm-action="undo" title="Undo (Ctrl+Z)" style="' + bs(undefined, true) + '">' + icon('undo', 14) + '</button>' +
-    '<button data-dm-action="redo" title="Redo (Ctrl+Shift+Z)" style="' + bs(undefined, true) + ';transform:scaleX(-1);">' + icon('undo', 14) + '</button></div>';
+    '<button data-dm-action="undo" title="실행 취소 (Ctrl+Z)" style="' + bs(undefined, true) + '">' + icon('undo', 14) + '</button>' +
+    '<button data-dm-action="redo" title="다시 실행 (Ctrl+Shift+Z)" style="' + bs(undefined, true) + ';transform:scaleX(-1);">' + icon('undo', 14) + '</button></div>';
 }
 
 function renderCommentCard(): string {
@@ -7026,7 +7027,7 @@ function renderLiveFeedbackStatus(): string {
   const detail = stopped ? 'The extension cannot cancel commands already running in your agent; they may still finish. Run /design-mode again to start a new loop.' : feedbackSession.state === 'waiting' ? 'Make your edits, then Send to your AI agent.' : 'You can keep editing. Send the next round when the agent is waiting.';
   return '<div style="padding:8px 12px 0;display:flex;gap:8px;align-items:center;">' +
     '<div role="status" aria-live="polite" style="flex:1;min-width:0;font-size:10px;line-height:1.5;color:var(--dm-text-secondary);"><strong style="color:var(--dm-text);">실시간 피드백 · ' + label + '</strong><div>' + detail + '</div></div>' +
-    (stopped ? '' : '<button data-dm-action="stop-live-feedback" title="End feedback rounds. Commands already running in your agent may still finish." style="padding:6px 9px;border-radius:5px;border:1px solid var(--dm-btn-border);background:var(--dm-btn-bg);color:var(--dm-danger);font:inherit;font-size:11px;cursor:pointer;">중지</button>') + '</div>';
+    (stopped ? '' : '<button data-dm-action="stop-live-feedback" title="피드백을 종료합니다. 이미 실행 중인 에이전트 명령은 계속될 수 있습니다." style="padding:6px 9px;border-radius:5px;border:1px solid var(--dm-btn-border);background:var(--dm-btn-bg);color:var(--dm-danger);font:inherit;font-size:11px;cursor:pointer;">중지</button>') + '</div>';
 }
 
 function renderStickyBottom(): string {
@@ -7172,7 +7173,7 @@ function closeSendSetup(dismissed = true) {
 function renderSealedFrameNotice(): string {
   return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;color:var(--dm-text-dim);text-align:center;padding:40px;gap:12px;">' +
     '<div style="color:var(--dm-text-dimmer);">' + icon('squareDashed', 32) + '</div>' +
-    '<div style="font-size:12px;font-weight:600;color:var(--dm-text-muted);">This page wraps a sandboxed HTML artifact</div>' +
+    '<div style="font-size:12px;font-weight:600;color:var(--dm-text-muted);">이 페이지는 샌드박스 HTML을 포함합니다</div>' +
     '<div style="font-size:11px;line-height:1.55;color:var(--dm-text-dim);max-width:280px;">The visible content lives inside an <code style="font-family:SF Mono,monospace;font-size:10px;">&lt;iframe sandbox&gt;</code> with its own locked-down origin. The browser walls that off from every extension, so Design Mode can’t inspect or edit the <b>wrapped</b> content — this isn’t a bug.</div>' +
     '<div style="font-size:11px;line-height:1.55;color:var(--dm-text-dim);max-width:280px;">You can still inspect and edit the <b>wrapper</b> HTML (the outer document). To reach the inner content, open the artifact’s own HTML file directly.</div>' +
     '<button data-dm-action="inspect-wrapper" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;">' + icon('code', 13) + ' Inspect wrapper HTML</button>' +
@@ -7181,14 +7182,14 @@ function renderSealedFrameNotice(): string {
 
 function renderLayersTab(): string {
   if (pageSealed && !inspectWrapperOptedIn) return renderSealedFrameNotice();
-  if (domTree.length === 0 || (domTree.length === 1 && domTree[0].tagName === 'body' && !domTree[0].hasText)) return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--dm-text-dim);text-align:center;padding:40px;gap:12px;"><div style="color:var(--dm-text-dimmer);">' + icon('layers', 32) + '</div><div style="font-size:12px;font-weight:500;color:var(--dm-text-muted);">No layers yet. The page tree appears here once the page is ready.</div><button type="button" data-dm-action="reload-layers" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text);cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;">' + icon('rotateCcw', 13) + ' Reload</button></div>';
+  if (domTree.length === 0 || (domTree.length === 1 && domTree[0].tagName === 'body' && !domTree[0].hasText)) return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--dm-text-dim);text-align:center;padding:40px;gap:12px;"><div style="color:var(--dm-text-dimmer);">' + icon('layers', 32) + '</div><div style="font-size:12px;font-weight:500;color:var(--dm-text-muted);">페이지 준비가 완료되면 레이어 트리가 표시됩니다.</div><button type="button" data-dm-action="reload-layers" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text);cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;">' + icon('rotateCcw', 13) + ' Reload</button></div>';
 
   const selectedId = info?.id || '';
   const visible = getVisibleLayers();
 
   const msCount = multiSelectIds.length;
   const selectionChip = msCount > 0
-    ? '<button data-dm-action="clear-multi-select" title="Clear multi-select" style="display:flex;align-items:center;gap:4px;padding:4px 8px;background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:6px;color:var(--dm-accent);cursor:pointer;font-size:10px;font-family:inherit;flex-shrink:0;font-weight:600;">' +
+    ? '<button data-dm-action="clear-multi-select" title="다중 선택 해제" style="display:flex;align-items:center;gap:4px;padding:4px 8px;background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:6px;color:var(--dm-accent);cursor:pointer;font-size:10px;font-family:inherit;flex-shrink:0;font-weight:600;">' +
       icon('layers', 11) +
       '<span>' + msCount + ' selected</span>' +
       '<span style="opacity:0.7;display:flex;">' + icon('x', 10) + '</span>' +
@@ -7198,7 +7199,7 @@ function renderLayersTab(): string {
     '<div style="position:relative;flex:1;min-width:60px;">' +
     '<span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--dm-text-dim);display:flex;pointer-events:none;">' + icon('search', 12) + '</span>' +
     '<input type="text" class="dm-layer-search" data-dm-layer-search placeholder="레이어 검색..." value="' + escapeAttr(layerSearch) + '"/></div>' +
-    '<button data-dm-action="toggle-layer-multi-select" aria-label="Multi-select layers" aria-pressed="' + layerMultiSelectMode + '" title="Multi-select layers (Shift-click selects a range)" style="display:flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--dm-separator);border-radius:6px;background:' + (layerMultiSelectMode ? 'var(--dm-accent-bg)' : 'transparent') + ';color:' + (layerMultiSelectMode ? 'var(--dm-accent)' : 'var(--dm-text-secondary)') + ';cursor:pointer;font-size:10px;font-family:inherit;flex-shrink:0;">' + icon('checkSquare', 12) + ' Multi-select</button>' +
+    '<button data-dm-action="toggle-layer-multi-select" aria-label="레이어 다중 선택" aria-pressed="' + layerMultiSelectMode + '" title="레이어 다중 선택 (Shift 클릭으로 범위 선택)" style="display:flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--dm-separator);border-radius:6px;background:' + (layerMultiSelectMode ? 'var(--dm-accent-bg)' : 'transparent') + ';color:' + (layerMultiSelectMode ? 'var(--dm-accent)' : 'var(--dm-text-secondary)') + ';cursor:pointer;font-size:10px;font-family:inherit;flex-shrink:0;">' + icon('checkSquare', 12) + ' Multi-select</button>' +
     selectionChip +
     '</div>';
 
@@ -7227,11 +7228,11 @@ function renderLayersTab(): string {
   const bulkBar = (msCount >= 2) ? (
     '<div style="position:sticky;left:0;display:flex;flex-wrap:wrap;gap:4px;padding:6px 10px;border-bottom:1px solid var(--dm-separator);background:var(--dm-accent-bg);">' +
       '<span style="font-size:9px;color:var(--dm-accent);font-weight:600;align-self:center;margin-right:4px;">' + msCount + ' selected:</span>' +
-      '<button data-dm-bulk-action="show-all" title="Make all visible" style="padding:3px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;">' + icon('eye', 10) + ' Show</button>' +
-      '<button data-dm-bulk-action="hide-all" title="Hide all" style="padding:3px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;">' + icon('eyeClosed', 10) + ' Hide</button>' +
-      '<button data-dm-bulk-action="duplicate-all" title="Duplicate all" style="padding:3px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;">' + icon('copy', 10) + ' Duplicate</button>' +
-      '<button data-dm-bulk-action="delete-all" title="Delete all" style="padding:3px 8px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:4px;color:var(--dm-danger);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;">' + icon('trash', 10) + ' Delete</button>' +
-      '<button data-dm-bulk-action="clear-selection" title="Exit multi-select" style="padding:3px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;margin-left:auto;">' + icon('x', 10) + ' Clear</button>' +
+      '<button data-dm-bulk-action="show-all" title="모두 표시" style="padding:3px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;">' + icon('eye', 10) + ' Show</button>' +
+      '<button data-dm-bulk-action="hide-all" title="모두 숨기기" style="padding:3px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;">' + icon('eyeClosed', 10) + ' Hide</button>' +
+      '<button data-dm-bulk-action="duplicate-all" title="모두 복제" style="padding:3px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;">' + icon('copy', 10) + ' Duplicate</button>' +
+      '<button data-dm-bulk-action="delete-all" title="모두 삭제" style="padding:3px 8px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:4px;color:var(--dm-danger);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;">' + icon('trash', 10) + ' Delete</button>' +
+      '<button data-dm-bulk-action="clear-selection" title="다중 선택 종료" style="padding:3px 8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:3px;margin-left:auto;">' + icon('x', 10) + ' Clear</button>' +
     '</div>'
   ) : '';
 
@@ -7296,19 +7297,19 @@ function renderLayersTab(): string {
     // the tree is panned horizontally; background:inherit picks up the
     // row's hover/selected colour so panned content doesn't bleed through.
     const hoverActions = '<span class="dm-layer-hover-actions" style="display:flex;gap:2px;margin-left:auto;flex-shrink:0;position:sticky;right:0;background:inherit;">' +
-      '<button data-dm-scroll-to="' + n.id + '" title="Scroll page to this layer" aria-label="Scroll to layer" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:2px;">' + icon('crosshair', 11) + '</button>' +
-      '<button data-dm-toggle-vis="' + n.id + '" title="' + (n.isVisible ? 'Hide layer' : 'Show layer') + '" aria-label="Toggle visibility" style="background:none;border:none;color:' + (n.isVisible ? 'var(--dm-text-muted)' : 'var(--dm-accent)') + ';cursor:pointer;display:flex;padding:2px;">' + icon(n.isVisible ? 'eye' : 'eyeClosed', 12) + '</button></span>';
+      '<button data-dm-scroll-to="' + n.id + '" title="이 레이어 위치로 스크롤" aria-label="레이어로 이동" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:2px;">' + icon('crosshair', 11) + '</button>' +
+      '<button data-dm-toggle-vis="' + n.id + '" title="' + (n.isVisible ? 'Hide layer' : 'Show layer') + '" aria-label="표시 여부 전환" style="background:none;border:none;color:' + (n.isVisible ? 'var(--dm-text-muted)' : 'var(--dm-accent)') + ';cursor:pointer;display:flex;padding:2px;">' + icon(n.isVisible ? 'eye' : 'eyeClosed', 12) + '</button></span>';
 
     const tagColor = isSel ? 'var(--dm-accent)' : 'var(--dm-text-secondary)';
     const borderColor = isSel ? 'var(--dm-accent)' : (isMulti ? 'var(--dm-accent-border)' : 'transparent');
     const multiBadge = isMulti && !isSel
-      ? '<span title="Part of multi-select" style="color:var(--dm-accent);display:flex;flex-shrink:0;">' + icon('checkSquare', 11) + '</span>'
+      ? '<span title="다중 선택에 포함" style="color:var(--dm-accent);display:flex;flex-shrink:0;">' + icon('checkSquare', 11) + '</span>'
       : '';
     // Tracked-change indicator dot — shown when the element has any
     // tracked change (style / text / DOM / comment). Click does nothing
     // beyond the row's own select handler.
     const changeDot = hasChanges
-      ? '<span title="This layer has tracked changes" style="width:6px;height:6px;border-radius:50%;background:var(--dm-accent);flex-shrink:0;display:inline-block;"></span>'
+      ? '<span title="이 레이어에 기록된 변경사항이 있습니다" style="width:6px;height:6px;border-radius:50%;background:var(--dm-accent);flex-shrink:0;display:inline-block;"></span>'
       : '';
     // Comment-count chip — small `💬 N` next to the change dot when this
     // layer has at least one comment.
@@ -7320,9 +7321,9 @@ function renderLayersTab(): string {
     const containerBadge = n.containerKind === 'shadow'
       ? '<span title="Shadow DOM (open)" style="font-size:8px;padding:1px 5px;border-radius:9999px;background:rgba(139,92,246,0.18);color:var(--dm-purple);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;">shadow</span>'
       : n.containerKind === 'iframe'
-        ? '<span title="Same-origin iframe" style="font-size:8px;padding:1px 5px;border-radius:9999px;background:rgba(245,158,11,0.18);color:#f59e0b;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;">iframe</span>'
+        ? '<span title="동일 출처 iframe" style="font-size:8px;padding:1px 5px;border-radius:9999px;background:rgba(245,158,11,0.18);color:#f59e0b;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;">iframe</span>'
         : n.containerKind === 'pseudo'
-          ? '<span title="CSS pseudo-element" style="font-size:8px;padding:1px 5px;border-radius:9999px;background:rgba(20,184,166,0.18);color:rgb(20,184,166);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;">pseudo</span>'
+          ? '<span title="CSS 가상 요소" style="font-size:8px;padding:1px 5px;border-radius:9999px;background:rgba(20,184,166,0.18);color:rgb(20,184,166);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;">pseudo</span>'
           : '';
     // Z-index chip — surfaces non-default stacking contexts.
     const zChip = n.zIndex
@@ -7445,7 +7446,7 @@ function renderDesignTab(): string {
         }
       }));
     }
-    return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--dm-text-dim);text-align:center;padding:40px;"><div style="margin-bottom:12px;color:var(--dm-text-dimmer);">' + icon('crosshair', 32) + '</div><div style="font-size:12px;font-weight:500;color:var(--dm-text-muted);">Loading page context…</div><div style="font-size:11px;margin-top:4px;color:var(--dm-text-dim);">Hover any element to focus on it.</div></div>';
+    return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--dm-text-dim);text-align:center;padding:40px;"><div style="margin-bottom:12px;color:var(--dm-text-dimmer);">' + icon('crosshair', 32) + '</div><div style="font-size:12px;font-weight:500;color:var(--dm-text-muted);">페이지 정보 불러오는 중…</div><div style="font-size:11px;margin-top:4px;color:var(--dm-text-dim);">요소 위에 마우스를 올려 선택하세요.</div></div>';
   }
 
   const s = displayInfo.computedStyles;
@@ -7492,17 +7493,17 @@ function renderDesignTab(): string {
     '<span style="font-size:10px;color:var(--dm-text-dim);font-family:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;">&lt;' + escapeAttr(tag) + '&gt;</span>' +
     multiBadge + matchingCtl + cssBtn + '</div>' +
     (!isPageContext && !isHovering && info?.breadcrumbs?.length
-      ? '<nav aria-label="Element breadcrumbs" style="padding:6px 12px;font-size:10px;color:var(--dm-text-secondary);overflow-wrap:anywhere;">' + info.breadcrumbs.map(escapeAttr).join(' › ') + '</nav>'
+      ? '<nav aria-label="요소 계층 경로" style="padding:6px 12px;font-size:10px;color:var(--dm-text-secondary);overflow-wrap:anywhere;">' + info.breadcrumbs.map(escapeAttr).join(' › ') + '</nav>'
       : '');
   const pageStateItems: Array<{ state: ':hover' | ':focus' | ':focus-visible' | ':active'; label: string }> = [
-    { state: ':hover', label: 'Hover' },
-    { state: ':focus', label: 'Focus' },
-    { state: ':focus-visible', label: 'Focus vis.' },
-    { state: ':active', label: 'Active' },
+    { state: ':hover', label: '마우스 오버' },
+    { state: ':focus', label: '포커스' },
+    { state: ':focus-visible', label: '포커스 표시' },
+    { state: ':active', label: '활성' },
   ];
   const selectedForStates = info;
   const pageStatesRow = (!isHovering && selectedForStates)
-    ? '<div class="dm-page-states" role="group" aria-label="Force CSS state">' +
+    ? '<div class="dm-page-states" role="group" aria-label="CSS 상태 강제 적용">' +
       pageStateItems.map((item) => {
         const count = selectedForStates.pageStates?.[item.state] || 0;
         const motionOn =
@@ -7548,7 +7549,7 @@ function renderDesignTab(): string {
     : rawInner ? getRichTextLinks(richHtml) : [];
   const richLinkSources = richLinks.length > 0
     ? '<div style="display:flex;flex-direction:column;gap:4px;margin-top:4px;">' +
-      '<span style="font-size:9px;color:var(--dm-text-muted);text-transform:uppercase;letter-spacing:0.4px;">Links</span>' +
+      '<span style="font-size:9px;color:var(--dm-text-muted);text-transform:uppercase;letter-spacing:0.4px;">링크</span>' +
       richLinks.map(link =>
         '<label style="display:flex;align-items:center;min-width:0;font:10px/1.4 SFMono-Regular,Consolas,monospace;color:var(--dm-text-secondary);">' +
         '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%;">[' + escapeAttr(link.label) + '](</span>' +
@@ -7561,10 +7562,10 @@ function renderDesignTab(): string {
     '<button data-dm-richtext-cmd="' + cmd + '" title="' + title + '" style="padding:3px 6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;min-width:22px;">' + label + '</button>';
   const richToolbar =
     '<div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px;">' +
-    '<button data-dm-richtext-cmd="bold" title="Bold (⌘B)" style="padding:3px 6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;">' + icon('bold', 11) + '</button>' +
-    '<button data-dm-richtext-cmd="italic" title="Italic (⌘I)" style="padding:3px 6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;">' + icon('italic', 11) + '</button>' +
-    '<button data-dm-richtext-cmd="underline" title="Underline (⌘U)" style="padding:3px 6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;">' + icon('underline', 11) + '</button>' +
-    '<button data-dm-richtext-cmd="strikeThrough" title="Strikethrough" style="padding:3px 6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;">' + icon('strikethrough', 11) + '</button>' +
+    '<button data-dm-richtext-cmd="bold" title="굵게 (⌘B)" style="padding:3px 6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;">' + icon('bold', 11) + '</button>' +
+    '<button data-dm-richtext-cmd="italic" title="기울임 (⌘I)" style="padding:3px 6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;">' + icon('italic', 11) + '</button>' +
+    '<button data-dm-richtext-cmd="underline" title="밑줄 (⌘U)" style="padding:3px 6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;">' + icon('underline', 11) + '</button>' +
+    '<button data-dm-richtext-cmd="strikeThrough" title="취소선" style="padding:3px 6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:4px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:flex;align-items:center;justify-content:center;">' + icon('strikethrough', 11) + '</button>' +
     '<div style="width:1px;background:var(--dm-separator);margin:2px 4px;"></div>' +
     tbBtn('insertUnorderedList', '• List', 'Bulleted list') +
     tbBtn('insertOrderedList', '1. List', 'Numbered list') +
@@ -7574,7 +7575,7 @@ function renderDesignTab(): string {
     '</div>';
   const textField = showTextEdit
     ? '<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:10px;">' +
-      '<label style="font-size:9px;color:var(--dm-text-muted);text-transform:uppercase;letter-spacing:0.4px;">Text Content</label>' +
+      '<label style="font-size:9px;color:var(--dm-text-muted);text-transform:uppercase;letter-spacing:0.4px;">텍스트 내용</label>' +
       richToolbar +
       '<div data-dm-richtext data-dm-element-id="' + escapeAttr(displayInfo.id || '') + '" contenteditable="true" class="dm-input" style="width:100%;min-height:88px;font-family:inherit;font-size:13px;line-height:1.5;padding:8px;box-sizing:border-box;outline:none;overflow-y:auto;max-height:280px;" spellcheck="false">' + richHtml + '</div>' +
       richLinkSources +
@@ -7598,11 +7599,11 @@ function renderDesignTab(): string {
   const iconInfo = (displayInfo as any).iconInfo;
   const iconSection = iconInfo ? sec('Icon', 'penTool',
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">' +
-    '<span style="font-size:10px;color:var(--dm-text-secondary);">Library:</span>' +
+    '<span style="font-size:10px;color:var(--dm-text-secondary);">라이브러리:</span>' +
     '<span style="font-size:10px;font-weight:600;color:var(--dm-accent);">' + escapeAttr(iconInfo.library) + '</span>' +
     '</div>' +
     '<div style="display:flex;align-items:center;gap:8px;">' +
-    '<span style="font-size:10px;color:var(--dm-text-secondary);">Icon:</span>' +
+    '<span style="font-size:10px;color:var(--dm-text-secondary);">아이콘:</span>' +
     '<span style="font-size:11px;font-family:inherit;color:var(--dm-text);">' + escapeAttr(iconInfo.name) + '</span>' +
     '</div>'
   ) : '';
@@ -7654,93 +7655,93 @@ function renderDesignTab(): string {
   const typographyAdvancedHtml = advancedDisclosure('typography', typographyAdvOpen,
     sub('Decoration') +
     grid12([
-      { span: 4, content: sel('Style', 'textDecorationStyle', (s as any).textDecorationStyle || 'solid', ['solid','double','dotted','dashed','wavy']) },
-      { span: 4, content: inp('Color', 'textDecorationColor', (s as any).textDecorationColor || 'currentColor', '') },
-      { span: 4, content: inp('Thickness', 'textDecorationThickness', (s as any).textDecorationThickness || 'auto') },
+      { span: 4, content: sel('스타일', 'textDecorationStyle', (s as any).textDecorationStyle || 'solid', ['solid','double','dotted','dashed','wavy']) },
+      { span: 4, content: inp('색상', 'textDecorationColor', (s as any).textDecorationColor || 'currentColor', '') },
+      { span: 4, content: inp('두께', 'textDecorationThickness', (s as any).textDecorationThickness || 'auto') },
     ]) + sp() +
     grid12([
-      { span: 4, content: inp('U. offset', 'textUnderlineOffset', (s as any).textUnderlineOffset || 'auto') },
-      { span: 4, content: sel('U. position', 'textUnderlinePosition', (s as any).textUnderlinePosition || 'auto', ['auto','under','from-font','left','right']) },
-      { span: 4, content: sel('Skip ink', 'textDecorationSkipInk', (s as any).textDecorationSkipInk || 'auto', ['auto','none','all']) },
+      { span: 4, content: inp('밑줄 오프셋', 'textUnderlineOffset', (s as any).textUnderlineOffset || 'auto') },
+      { span: 4, content: sel('밑줄 위치', 'textUnderlinePosition', (s as any).textUnderlinePosition || 'auto', ['auto','under','from-font','left','right']) },
+      { span: 4, content: sel('글자 겹침 생략', 'textDecorationSkipInk', (s as any).textDecorationSkipInk || 'auto', ['auto','none','all']) },
     ]) + sp() +
 
     sub('Wrapping') +
     grid12([
-      { span: 6, content: sel('White space', 'whiteSpace', s.whiteSpace || 'normal', ['normal','nowrap','pre','pre-wrap','pre-line','break-spaces']) },
-      { span: 6, content: sel('Text wrap', 'textWrap', (s as any).textWrap || 'wrap', ['wrap','nowrap','balance','pretty','stable']) },
+      { span: 6, content: sel('공백 처리', 'whiteSpace', s.whiteSpace || 'normal', ['normal','nowrap','pre','pre-wrap','pre-line','break-spaces']) },
+      { span: 6, content: sel('텍스트 줄바꿈', 'textWrap', (s as any).textWrap || 'wrap', ['wrap','nowrap','balance','pretty','stable']) },
     ]) + sp() +
     grid12([
-      { span: 6, content: sel('Word break', 'wordBreak', (s as any).wordBreak || 'normal', ['normal','break-all','keep-all','break-word']) },
-      { span: 6, content: sel('Overflow wrap', 'overflowWrap', (s as any).overflowWrap || 'normal', ['normal','break-word','anywhere']) },
+      { span: 6, content: sel('단어 줄바꿈', 'wordBreak', (s as any).wordBreak || 'normal', ['normal','break-all','keep-all','break-word']) },
+      { span: 6, content: sel('넘침 줄바꿈', 'overflowWrap', (s as any).overflowWrap || 'normal', ['normal','break-word','anywhere']) },
     ]) + sp() +
     grid12([
-      { span: 6, content: sel('Hyphens', 'hyphens', (s as any).hyphens || 'manual', ['none','manual','auto']) },
-      { span: 6, content: sel('Justify', 'textJustify', (s as any).textJustify || 'auto', ['auto','inter-word','inter-character','none']) },
+      { span: 6, content: sel('하이픈 처리', 'hyphens', (s as any).hyphens || 'manual', ['none','manual','auto']) },
+      { span: 6, content: sel('가로 정렬', 'textJustify', (s as any).textJustify || 'auto', ['auto','inter-word','inter-character','none']) },
     ]) + sp() +
     grid12([
-      { span: 6, content: sel('Last line', 'textAlignLast', (s as any).textAlignLast || 'auto', ['auto','start','end','left','right','center','justify']) },
-      { span: 6, content: sel('Line break', 'lineBreak', (s as any).lineBreak || 'auto', ['auto','loose','normal','strict','anywhere']) },
+      { span: 6, content: sel('마지막 줄', 'textAlignLast', (s as any).textAlignLast || 'auto', ['auto','start','end','left','right','center','justify']) },
+      { span: 6, content: sel('줄바꿈 규칙', 'lineBreak', (s as any).lineBreak || 'auto', ['auto','loose','normal','strict','anywhere']) },
     ]) + sp() +
 
     sub('Layout in text') +
     grid12([
-      { span: 4, content: inp('Indent', 'textIndent', (s as any).textIndent || '0px') },
-      { span: 4, content: inp('Tab size', 'tabSize', (s as any).tabSize || '8', '') },
-      { span: 4, content: inp('Word space', 'wordSpacing', (s as any).wordSpacing || 'normal') },
+      { span: 4, content: inp('들여쓰기', 'textIndent', (s as any).textIndent || '0px') },
+      { span: 4, content: inp('탭 크기', 'tabSize', (s as any).tabSize || '8', '') },
+      { span: 4, content: inp('단어 간격', 'wordSpacing', (s as any).wordSpacing || 'normal') },
     ]) + sp() +
     grid12([
-      { span: 12, content: sel('Vertical align', 'verticalAlign', (s as any).verticalAlign || 'baseline', ['baseline','top','middle','bottom','sub','super','text-top','text-bottom']) },
+      { span: 12, content: sel('세로 정렬', 'verticalAlign', (s as any).verticalAlign || 'baseline', ['baseline','top','middle','bottom','sub','super','text-top','text-bottom']) },
     ]) + sp() +
     grid12([
-      { span: 6, content: inp('Line clamp', '__line_clamp', lineClampVal || '0', '') },
-      { span: 6, content: '<div class="dm-field"><label class="dm-field-label dm-field-label-hidden">_</label><button class="dm-icon-row-button" data-dm-typo-action="truncate" title="Truncate (text-overflow: ellipsis + white-space: nowrap + overflow: hidden)" style="width:100%;height:30px;padding:6px;font-size:11px;">Truncate</button></div>' },
+      { span: 6, content: inp('최대 줄 수', '__line_clamp', lineClampVal || '0', '') },
+      { span: 6, content: '<div class="dm-field"><label class="dm-field-label dm-field-label-hidden">_</label><button class="dm-icon-row-button" data-dm-typo-action="truncate" title="Truncate (text-overflow: ellipsis + white-space: nowrap + overflow: hidden)" style="width:100%;height:30px;padding:6px;font-size:11px;">말줄임</button></div>' },
     ]) + sp() +
 
     sub('Direction (i18n)') +
     grid12([
-      { span: 6, content: sel('Direction', 'direction', (s as any).direction || 'ltr', ['ltr','rtl']) },
-      { span: 6, content: sel('Writing mode', 'writingMode', (s as any).writingMode || 'horizontal-tb', ['horizontal-tb','vertical-rl','vertical-lr','sideways-rl','sideways-lr']) },
+      { span: 6, content: sel('방향', 'direction', (s as any).direction || 'ltr', ['ltr','rtl']) },
+      { span: 6, content: sel('쓰기 방향', 'writingMode', (s as any).writingMode || 'horizontal-tb', ['horizontal-tb','vertical-rl','vertical-lr','sideways-rl','sideways-lr']) },
     ]) + sp() +
     grid12([
-      { span: 12, content: sel('Unicode bidi', 'unicodeBidi', (s as any).unicodeBidi || 'normal', ['normal','embed','isolate','bidi-override','isolate-override','plaintext']) },
+      { span: 12, content: sel('양방향 문자', 'unicodeBidi', (s as any).unicodeBidi || 'normal', ['normal','embed','isolate','bidi-override','isolate-override','plaintext']) },
     ]) + sp() +
 
     sub('Font features') +
     grid12([
-      { span: 6, content: inp('Stretch', 'fontStretch', (s as any).fontStretch || '100%', '%') },
-      { span: 6, content: inp('Size adjust', 'fontSizeAdjust', (s as any).fontSizeAdjust || 'none', '') },
+      { span: 6, content: inp('늘이기', 'fontStretch', (s as any).fontStretch || '100%', '%') },
+      { span: 6, content: inp('글꼴 크기 보정', 'fontSizeAdjust', (s as any).fontSizeAdjust || 'none', '') },
     ]) + sp() +
     grid12([
-      { span: 4, content: sel('Kerning', 'fontKerning', (s as any).fontKerning || 'auto', ['auto','normal','none']) },
-      { span: 4, content: sel('Optical', 'fontOpticalSizing', (s as any).fontOpticalSizing || 'auto', ['auto','none']) },
-      { span: 4, content: sel('Synthesis', 'fontSynthesis', (s as any).fontSynthesis || 'weight style small-caps', ['weight style small-caps','none','weight','style','small-caps']) },
+      { span: 4, content: sel('커닝', 'fontKerning', (s as any).fontKerning || 'auto', ['auto','normal','none']) },
+      { span: 4, content: sel('광학 크기', 'fontOpticalSizing', (s as any).fontOpticalSizing || 'auto', ['auto','none']) },
+      { span: 4, content: sel('글꼴 합성', 'fontSynthesis', (s as any).fontSynthesis || 'weight style small-caps', ['weight style small-caps','none','weight','style','small-caps']) },
     ]) + sp() +
     grid12([
-      { span: 6, content: sel('Caps', 'fontVariantCaps', (s as any).fontVariantCaps || 'normal', ['normal','small-caps','all-small-caps','petite-caps','all-petite-caps','unicase','titling-caps']) },
-      { span: 6, content: sel('Position', 'fontVariantPosition', (s as any).fontVariantPosition || 'normal', ['normal','sub','super']) },
+      { span: 6, content: sel('대문자 설정', 'fontVariantCaps', (s as any).fontVariantCaps || 'normal', ['normal','small-caps','all-small-caps','petite-caps','all-petite-caps','unicase','titling-caps']) },
+      { span: 6, content: sel('위치', 'fontVariantPosition', (s as any).fontVariantPosition || 'normal', ['normal','sub','super']) },
     ]) + sp() +
     grid12([
-      { span: 12, content: sel('Numeric', 'fontVariantNumeric', (s as any).fontVariantNumeric || 'normal', ['normal','ordinal','slashed-zero','lining-nums','oldstyle-nums','proportional-nums','tabular-nums','diagonal-fractions','stacked-fractions']) },
+      { span: 12, content: sel('숫자 형태', 'fontVariantNumeric', (s as any).fontVariantNumeric || 'normal', ['normal','ordinal','slashed-zero','lining-nums','oldstyle-nums','proportional-nums','tabular-nums','diagonal-fractions','stacked-fractions']) },
     ]) + sp() +
     grid12([
-      { span: 12, content: sel('Ligatures', 'fontVariantLigatures', (s as any).fontVariantLigatures || 'normal', ['normal','none','common-ligatures','no-common-ligatures','discretionary-ligatures','no-discretionary-ligatures','historical-ligatures','no-historical-ligatures','contextual','no-contextual']) },
+      { span: 12, content: sel('합자', 'fontVariantLigatures', (s as any).fontVariantLigatures || 'normal', ['normal','none','common-ligatures','no-common-ligatures','discretionary-ligatures','no-discretionary-ligatures','historical-ligatures','no-historical-ligatures','contextual','no-contextual']) },
     ]) + sp() +
     grid12([
-      { span: 12, content: inp('Feature settings', 'fontFeatureSettings', (s as any).fontFeatureSettings || 'normal', '') },
+      { span: 12, content: inp('글꼴 기능 설정', 'fontFeatureSettings', (s as any).fontFeatureSettings || 'normal', '') },
     ]) + sp() +
     grid12([
-      { span: 12, content: inp('Variation settings', 'fontVariationSettings', (s as any).fontVariationSettings || 'normal', '') },
+      { span: 12, content: inp('가변 글꼴 설정', 'fontVariationSettings', (s as any).fontVariationSettings || 'normal', '') },
     ]) + sp() +
 
     sub('List') +
     grid12([
-      { span: 6, content: sel('List position', 'listStylePosition', (s as any).listStylePosition || 'outside', ['outside','inside']) },
-      { span: 6, content: inp('List image', 'listStyleImage', (s as any).listStyleImage || 'none', '') },
+      { span: 6, content: sel('목록 위치', 'listStylePosition', (s as any).listStylePosition || 'outside', ['outside','inside']) },
+      { span: 6, content: inp('목록 이미지', 'listStyleImage', (s as any).listStyleImage || 'none', '') },
     ]) + sp() +
 
     sub('Rendering') +
     grid12([
-      { span: 12, content: sel('Text rendering', 'textRendering', (s as any).textRendering || 'auto', ['auto','optimizeSpeed','optimizeLegibility','geometricPrecision']) },
+      { span: 12, content: sel('텍스트 렌더링', 'textRendering', (s as any).textRendering || 'auto', ['auto','optimizeSpeed','optimizeLegibility','geometricPrecision']) },
     ])
   );
 
@@ -7748,7 +7749,7 @@ function renderDesignTab(): string {
 
   const typographySection = !vis.typography ? '' : sec('Typography', 'type', textField +
     renderFontFamilyPicker(s.fontFamily || '') + sp() +
-    grid(2, selKV('Weight', 'fontWeight', fontWeightCur, FONT_WEIGHTS, 'fontWeight'), inp('Size', 'fontSize', s.fontSize || '16px')) + sp() +
+    grid(2, selKV('Weight', 'fontWeight', fontWeightCur, FONT_WEIGHTS, 'fontWeight'), inp('크기', 'fontSize', s.fontSize || '16px')) + sp() +
     grid(2,
       inputWithIcon('moveVertical', 'lineHeight', styleChanges.find(c => c.elementId === info?.id && c.property === 'lineHeight' && !c.state)?.newValue || s.lineHeight || 'normal', 'normal', '', 'Line height — multiplier, length, or normal'),
       inputWithIcon('moveHorizontal', 'letterSpacing', s.letterSpacing || 'normal', 'normal', 'px', 'Letter spacing')
@@ -7757,14 +7758,14 @@ function renderDesignTab(): string {
     // Style + case row — 8 buttons across the full width (1.5 of 12 cols each).
     // Bold | Italic | Underline | Strikethrough | None | UPPER | lower | Title.
     iconButtonRow([
-      { icon: 'bold', attr: 'data-dm-text-toggle="bold"', active: isBold, title: 'Bold' },
-      { icon: 'italic', attr: 'data-dm-text-toggle="italic"', active: fontStyleCur === 'italic', title: 'Italic' },
-      { icon: 'underline', attr: 'data-dm-text-toggle="underline"', active: decoCur.includes('underline'), title: 'Underline' },
-      { icon: 'strikethrough', attr: 'data-dm-text-toggle="strikethrough"', active: decoCur.includes('line-through'), title: 'Strikethrough' },
-      { icon: 'minus', attr: 'data-dm-prop="textTransform" data-dm-value="none"', active: txCase === 'none', title: 'No case' },
-      { icon: 'caseUpper', attr: 'data-dm-prop="textTransform" data-dm-value="uppercase"', active: txCase === 'uppercase', title: 'UPPERCASE' },
-      { icon: 'caseLower', attr: 'data-dm-prop="textTransform" data-dm-value="lowercase"', active: txCase === 'lowercase', title: 'lowercase' },
-      { icon: 'caseSensitive', attr: 'data-dm-prop="textTransform" data-dm-value="capitalize"', active: txCase === 'capitalize', title: 'Title Case' },
+      { icon: 'bold', attr: 'data-dm-text-toggle="bold"', active: isBold, title: '굵게' },
+      { icon: 'italic', attr: 'data-dm-text-toggle="italic"', active: fontStyleCur === 'italic', title: '기울임' },
+      { icon: 'underline', attr: 'data-dm-text-toggle="underline"', active: decoCur.includes('underline'), title: '밑줄' },
+      { icon: 'strikethrough', attr: 'data-dm-text-toggle="strikethrough"', active: decoCur.includes('line-through'), title: '취소선' },
+      { icon: 'minus', attr: 'data-dm-prop="textTransform" data-dm-value="none"', active: txCase === 'none', title: '대소문자 유지' },
+      { icon: 'caseUpper', attr: 'data-dm-prop="textTransform" data-dm-value="uppercase"', active: txCase === 'uppercase', title: '대문자' },
+      { icon: 'caseLower', attr: 'data-dm-prop="textTransform" data-dm-value="lowercase"', active: txCase === 'lowercase', title: '소문자' },
+      { icon: 'caseSensitive', attr: 'data-dm-prop="textTransform" data-dm-value="capitalize"', active: txCase === 'capitalize', title: '단어 첫 글자 대문자' },
     ]) + sp() +
     // Alignment row: horizontal (4 buttons) + vertical (3 buttons), each
     // half taking 6 of 12 columns. The list-style row sits underneath
@@ -7774,22 +7775,22 @@ function renderDesignTab(): string {
     // list.
     grid12([
       { span: 6, content: iconButtonRow([
-        { icon: 'textAlignStart', attr: 'data-dm-prop="textAlign" data-dm-value="left"', active: txAlign === 'left' || txAlign === 'start', title: 'Align left' },
-        { icon: 'textAlignCenter', attr: 'data-dm-prop="textAlign" data-dm-value="center"', active: txAlign === 'center', title: 'Align center' },
-        { icon: 'textAlignEnd', attr: 'data-dm-prop="textAlign" data-dm-value="right"', active: txAlign === 'right' || txAlign === 'end', title: 'Align right' },
-        { icon: 'textAlignJustify', attr: 'data-dm-prop="textAlign" data-dm-value="justify"', active: txAlign === 'justify', title: 'Justify' },
+        { icon: 'textAlignStart', attr: 'data-dm-prop="textAlign" data-dm-value="left"', active: txAlign === 'left' || txAlign === 'start', title: '왼쪽 정렬' },
+        { icon: 'textAlignCenter', attr: 'data-dm-prop="textAlign" data-dm-value="center"', active: txAlign === 'center', title: '가운데 정렬' },
+        { icon: 'textAlignEnd', attr: 'data-dm-prop="textAlign" data-dm-value="right"', active: txAlign === 'right' || txAlign === 'end', title: '오른쪽 정렬' },
+        { icon: 'textAlignJustify', attr: 'data-dm-prop="textAlign" data-dm-value="justify"', active: txAlign === 'justify', title: '가로 정렬' },
       ]) },
       { span: 6, content: iconButtonRow([
-        { icon: 'arrowUpToLine', attr: 'data-dm-prop="alignContent" data-dm-value="start"', active: vAlignActive === 'top', title: 'Align top' },
-        { icon: 'foldVertical', attr: 'data-dm-prop="alignContent" data-dm-value="center"', active: vAlignActive === 'middle', title: 'Align middle' },
-        { icon: 'arrowDownToLine', attr: 'data-dm-prop="alignContent" data-dm-value="end"', active: vAlignActive === 'bottom', title: 'Align bottom' },
+        { icon: 'arrowUpToLine', attr: 'data-dm-prop="alignContent" data-dm-value="start"', active: vAlignActive === 'top', title: '위쪽 정렬' },
+        { icon: 'foldVertical', attr: 'data-dm-prop="alignContent" data-dm-value="center"', active: vAlignActive === 'middle', title: '세로 가운데 정렬' },
+        { icon: 'arrowDownToLine', attr: 'data-dm-prop="alignContent" data-dm-value="end"', active: vAlignActive === 'bottom', title: '아래쪽 정렬' },
       ]) },
     ]) + sp() +
     (isListLayer
       ? iconButtonRow([
-          { icon: 'minus', attr: 'data-dm-list-style="none"', active: lstStyle === 'none' || !lstStyle, title: 'No list marker' },
-          { icon: 'list', attr: 'data-dm-list-style="disc"', active: lstStyle === 'disc', title: 'Bulleted list' },
-          { icon: 'listOrdered', attr: 'data-dm-list-style="decimal"', active: lstStyle === 'decimal', title: 'Numbered list' },
+          { icon: 'minus', attr: 'data-dm-list-style="none"', active: lstStyle === 'none' || !lstStyle, title: '목록 기호 없음' },
+          { icon: 'list', attr: 'data-dm-list-style="disc"', active: lstStyle === 'disc', title: '글머리 기호' },
+          { icon: 'listOrdered', attr: 'data-dm-list-style="decimal"', active: lstStyle === 'decimal', title: '번호 목록' },
         ]) + sp()
       : '') +
     typographyAdvancedHtml,
@@ -7908,7 +7909,7 @@ function renderDesignTab(): string {
   const anchorPosActive = posType !== 'static'; // position-anchor / position-area / try-* / visibility
 
   const positionContent =
-    sel('Position', 'position', s.position || 'static', ['static','relative','absolute','fixed','sticky']) + sp() +
+    sel('위치', 'position', s.position || 'static', ['static','relative','absolute','fixed','sticky']) + sp() +
     // Alignment row \u2014 always visible (margin-auto / align-self / justify-self
     // work regardless of position type).
     grid12([
@@ -7946,63 +7947,63 @@ function renderDesignTab(): string {
       sub('Pivot (transform-origin)') +
       '<div style="display:grid;grid-template-columns:repeat(12, 1fr);gap:8px;align-items:start;">' +
         '<div style="grid-column:span 6;min-width:0;">' + pivotPad + '</div>' +
-        '<div style="grid-column:span 6;min-width:0;">' + inp('Raw', 'transformOrigin', s.transformOrigin || '50% 50%', '') + '</div>' +
+        '<div style="grid-column:span 6;min-width:0;">' + inp('직접 입력', 'transformOrigin', s.transformOrigin || '50% 50%', '') + '</div>' +
       '</div>' + sp() +
       sub('Skew') +
       grid12([
-        { span: 6, content: inp('Skew X', '__skew_x', skewX + 'deg', 'deg') },
-        { span: 6, content: inp('Skew Y', '__skew_y', skewY + 'deg', 'deg') },
+        { span: 6, content: inp('X 기울기', '__skew_x', skewX + 'deg', 'deg') },
+        { span: 6, content: inp('Y 기울기', '__skew_y', skewY + 'deg', 'deg') },
       ]) + sp() +
       // Right / Bottom anchors — hidden when position is static (offsets inert).
       (offsetActive ? sub('Anchor (right / bottom edges)') +
       grid12([
-        { span: 6, content: inp('Right', 'right', s.right || 'auto') },
-        { span: 6, content: inp('Bottom', 'bottom', s.bottom || 'auto') },
+        { span: 6, content: inp('오른쪽', 'right', s.right || 'auto') },
+        { span: 6, content: inp('아래', 'bottom', s.bottom || 'auto') },
       ]) + sp() : '') +
       sub('3D') +
       grid12([
-        { span: 6, content: inp('Perspective', 'perspective', (s as any).perspective || 'none', '') },
-        { span: 6, content: inp('Persp. origin', 'perspectiveOrigin', (s as any).perspectiveOrigin || '50% 50%', '') },
+        { span: 6, content: inp('원근', 'perspective', (s as any).perspective || 'none', '') },
+        { span: 6, content: inp('원근 중심', 'perspectiveOrigin', (s as any).perspectiveOrigin || '50% 50%', '') },
       ]) + sp() +
       grid12([
-        { span: 6, content: sel('Transform style', 'transformStyle', (s as any).transformStyle || 'flat', ['flat','preserve-3d']) },
-        { span: 6, content: sel('Backface', 'backfaceVisibility', (s as any).backfaceVisibility || 'visible', ['visible','hidden']) },
+        { span: 6, content: sel('변형 스타일', 'transformStyle', (s as any).transformStyle || 'flat', ['flat','preserve-3d']) },
+        { span: 6, content: sel('뒷면', 'backfaceVisibility', (s as any).backfaceVisibility || 'visible', ['visible','hidden']) },
       ]) + sp() +
       grid12([
-        { span: 12, content: sel('Transform reference box', 'transformBox', (s as any).transformBox || 'view-box', ['view-box','fill-box','stroke-box','border-box','content-box']) },
+        { span: 12, content: sel('변형 기준 박스', 'transformBox', (s as any).transformBox || 'view-box', ['view-box','fill-box','stroke-box','border-box','content-box']) },
       ]) + sp() +
       // Logical anchors — same gating as physical inset edges.
       (offsetActive ? sub('Logical anchors (i18n — flip with writing-mode / direction)') +
       grid12([
-        { span: 3, content: inp('Block start', 'insetBlockStart', (s as any).insetBlockStart || 'auto') },
-        { span: 3, content: inp('Block end', 'insetBlockEnd', (s as any).insetBlockEnd || 'auto') },
-        { span: 3, content: inp('Inline start', 'insetInlineStart', (s as any).insetInlineStart || 'auto') },
-        { span: 3, content: inp('Inline end', 'insetInlineEnd', (s as any).insetInlineEnd || 'auto') },
+        { span: 3, content: inp('블록 시작', 'insetBlockStart', (s as any).insetBlockStart || 'auto') },
+        { span: 3, content: inp('블록 끝', 'insetBlockEnd', (s as any).insetBlockEnd || 'auto') },
+        { span: 3, content: inp('인라인 시작', 'insetInlineStart', (s as any).insetInlineStart || 'auto') },
+        { span: 3, content: inp('인라인 끝', 'insetInlineEnd', (s as any).insetInlineEnd || 'auto') },
       ]) + sp() : '') +
       sub('Anchor positioning') +
       // anchor-name works on any element (it's just a name). position-anchor
       // and position-area need this element to be positioned, so disable
       // those two when position is static.
       grid12([
-        { span: 4, content: inp('Anchor name', 'anchorName', (s as any).anchorName || 'none', '') },
-        { span: 4, content: dis(inp('Position anchor', 'positionAnchor', (s as any).positionAnchor || 'auto', ''), !anchorPosActive, 'Position must not be static') },
-        { span: 4, content: dis(inp('Position area', 'positionArea', (s as any).positionArea || 'none', ''), !anchorPosActive, 'Position must not be static') },
+        { span: 4, content: inp('앵커 이름', 'anchorName', (s as any).anchorName || 'none', '') },
+        { span: 4, content: dis(inp('위치 앵커', 'positionAnchor', (s as any).positionAnchor || 'auto', ''), !anchorPosActive, 'Position must not be static') },
+        { span: 4, content: dis(inp('위치 영역', 'positionArea', (s as any).positionArea || 'none', ''), !anchorPosActive, 'Position must not be static') },
       ]) + sp() +
       // Try order / visibility / fallbacks — hidden entirely when static
       // (whole rows are inert).
       (anchorPosActive ? grid12([
-        { span: 6, content: sel('Try order', 'positionTryOrder', (s as any).positionTryOrder || 'normal', ['normal','most-width','most-height','most-block-size','most-inline-size']) },
-        { span: 6, content: sel('Visibility', 'positionVisibility', (s as any).positionVisibility || 'always', ['always','anchors-visible','no-overflow']) },
+        { span: 6, content: sel('대체 순서', 'positionTryOrder', (s as any).positionTryOrder || 'normal', ['normal','most-width','most-height','most-block-size','most-inline-size']) },
+        { span: 6, content: sel('가시성', 'positionVisibility', (s as any).positionVisibility || 'always', ['always','anchors-visible','no-overflow']) },
       ]) + sp() +
-      inp('Try fallbacks', 'positionTryFallbacks', (s as any).positionTryFallbacks || 'none', '') + sp() : '') +
+      inp('대체 위치', 'positionTryFallbacks', (s as any).positionTryFallbacks || 'none', '') + sp() : '') +
       sub('View transition name') +
       inp('', 'viewTransitionName', (s as any).viewTransitionName || 'none', '') + sp() +
       sub('Raw transform') +
       inp('', 'transform', s.transform || 'none', '') + sp() +
       sub('Self alignment override') +
       grid12([
-        { span: 6, content: inp('Align self', 'alignSelf', s.alignSelf || 'auto', '') },
-        { span: 6, content: inp('Justify self', 'justifySelf', s.justifySelf || 'auto', '') },
+        { span: 6, content: inp('자체 정렬', 'alignSelf', s.alignSelf || 'auto', '') },
+        { span: 6, content: inp('자체 가로 정렬', 'justifySelf', s.justifySelf || 'auto', '') },
       ])
     );
 
@@ -8059,10 +8060,10 @@ function renderDesignTab(): string {
     '</div>' + sp() +
     // Min W (3) + Max W (3) + Min H (3) + Max H (3)
     grid12([
-      { span: 3, content: inp('Min W', 'minWidth', s.minWidth || '0') },
-      { span: 3, content: inp('Max W', 'maxWidth', s.maxWidth || 'none') },
-      { span: 3, content: inp('Min H', 'minHeight', s.minHeight || '0') },
-      { span: 3, content: inp('Max H', 'maxHeight', s.maxHeight || 'none') },
+      { span: 3, content: inp('최소 너비', 'minWidth', s.minWidth || '0') },
+      { span: 3, content: inp('최대 너비', 'maxWidth', s.maxWidth || 'none') },
+      { span: 3, content: inp('최소 높이', 'minHeight', s.minHeight || '0') },
+      { span: 3, content: inp('최대 높이', 'maxHeight', s.maxHeight || 'none') },
     ]) + sp() +
     // Margin (4 field + 2 expand) and Padding (4 field + 2 expand) share one
     // row; each expander drops below its own half independently.
@@ -8081,7 +8082,7 @@ function renderDesignTab(): string {
     // Children align (6) + Col/Row gap stacked (6) \u2014 top-aligned so the
     // gap fields start at the same Y as the children-align pad.
     ((isFlex || isGrid) ? '<div style="display:grid;grid-template-columns:repeat(12, 1fr);gap:6px;align-items:start;">' +
-      '<div style="grid-column:span 6;min-width:0;display:flex;flex-direction:column;gap:3px;"><label class="dm-field-label">Children align</label>' + childrenAlignPad(s) + '</div>' +
+      '<div style="grid-column:span 6;min-width:0;display:flex;flex-direction:column;gap:3px;"><label class="dm-field-label">자식 요소 정렬</label>' + childrenAlignPad(s) + '</div>' +
       '<div style="grid-column:span 6;min-width:0;">' + gapsBlock + '</div>' +
     '</div>' + sp() +
     '<button type="button" class="dm-computed-layout-toggle" data-dm-action="toggle-computed-layout-overlay" data-active="' + (computedLayoutOverlayOn ? 'true' : 'false') + '" title="Session-only overlay of computed flex/grid tracks. Separate from layout guides and not recorded in Changes.">' +
@@ -8101,8 +8102,8 @@ function renderDesignTab(): string {
       // of this element itself. The Clip path label gets an info chip to
       // make that clear since the visual pairing implies otherwise.
       grid12([
-        { span: 6, content: '<div class="dm-field"><label class="dm-field-label">Clip content</label><div style="height:30px;display:flex;align-items:center;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;padding:0 8px;">' + clipBtn + '</div></div>' },
-        { span: 6, content: '<div class="dm-field" title="clip-path shapes this element\'s own visible area. It works independently of \'Clip content\' (overflow: hidden), which only clips overflowing children."><label class="dm-field-label" style="display:flex;align-items:center;gap:4px;">Clip path<span style="font-size:9px;color:var(--dm-text-dim);font-weight:400;text-transform:none;letter-spacing:0;">(independent of overflow)</span></label>' +
+        { span: 6, content: '<div class="dm-field"><label class="dm-field-label">내용 자르기</label><div style="height:30px;display:flex;align-items:center;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;padding:0 8px;">' + clipBtn + '</div></div>' },
+        { span: 6, content: '<div class="dm-field" title="clip-path shapes this element\'s own visible area. It works independently of \'Clip content\' (overflow: hidden), which only clips overflowing children."><label class="dm-field-label" style="display:flex;align-items:center;gap:4px;">클리핑 경로<span style="font-size:9px;color:var(--dm-text-dim);font-weight:400;text-transform:none;letter-spacing:0;">(independent of overflow)</span></label>' +
           '<select class="dm-select" data-dm-prop="clipPath">' +
             ['none','inset(10px)','circle(50%)','ellipse(50% 50%)','polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)','inset(0 round 12px)']
               .map(o => '<option value="' + o + '"' + (((s as any).clipPath || 'none') === o ? ' selected' : '') + '>' + o + '</option>')
@@ -8111,58 +8112,58 @@ function renderDesignTab(): string {
       ]) + sp() +
       // Overflow X (4) / Y (4) / Box-sizing (4)
       grid12([
-        { span: 4, content: sel('Overflow X', 'overflowX', s.overflowX || 'visible', ['visible','hidden','scroll','auto']) },
-        { span: 4, content: sel('Overflow Y', 'overflowY', s.overflowY || 'visible', ['visible','hidden','scroll','auto']) },
-        { span: 4, content: sel('Box sizing', 'boxSizing', (s as any).boxSizing || 'content-box', ['content-box','border-box']) },
+        { span: 4, content: sel('가로 넘침', 'overflowX', s.overflowX || 'visible', ['visible','hidden','scroll','auto']) },
+        { span: 4, content: sel('세로 넘침', 'overflowY', s.overflowY || 'visible', ['visible','hidden','scroll','auto']) },
+        { span: 4, content: sel('박스 크기 기준', 'boxSizing', (s as any).boxSizing || 'content-box', ['content-box','border-box']) },
       ]) + sp() +
-      inp('Aspect ratio (raw)', 'aspectRatio', aspectRatioCur || 'auto', '') + sp() +
+      inp('종횡비 (직접 입력)', 'aspectRatio', aspectRatioCur || 'auto', '') + sp() +
       // Container-level: align-content (only meaningful for flex+wrap or grid).
-      ((isFlex || isGrid) ? sel('Align content', 'alignContent', s.alignContent || 'normal',
+      ((isFlex || isGrid) ? sel('콘텐츠 정렬', 'alignContent', s.alignContent || 'normal',
         ['normal','start','center','end','flex-start','flex-end','space-between','space-around','space-evenly','stretch','baseline']) + sp() : '') +
       // Container-level shorthands (place-items / place-content).
       ((isFlex || isGrid) ? grid(2,
-        inp('Place items', 'placeItems', (s as any).placeItems || 'normal', ''),
-        inp('Place content', 'placeContent', (s as any).placeContent || 'normal', '')
+        inp('항목 정렬', 'placeItems', (s as any).placeItems || 'normal', ''),
+        inp('콘텐츠 정렬', 'placeContent', (s as any).placeContent || 'normal', '')
       ) + sp() : '') +
       // Flex item subsection (when this element's parent is flex).
       (ctx.isFlex ? sub('Flex item') + grid(4,
-        inp('Grow', 'flexGrow', s.flexGrow || '0', ''),
-        inp('Shrink', 'flexShrink', s.flexShrink || '1', ''),
-        inp('Basis', 'flexBasis', s.flexBasis || 'auto', ''),
-        inp('Order', 'order', (s as any).order || '0', '')
+        inp('확장', 'flexGrow', s.flexGrow || '0', ''),
+        inp('축소', 'flexShrink', s.flexShrink || '1', ''),
+        inp('기본 크기', 'flexBasis', s.flexBasis || 'auto', ''),
+        inp('순서', 'order', (s as any).order || '0', '')
       ) + sp() : '') +
       // Flex container — wrap stays here.
-      (isFlex ? sel('Wrap', 'flexWrap', s.flexWrap || 'nowrap', ['nowrap','wrap','wrap-reverse']) + sp() : '') +
+      (isFlex ? sel('줄바꿈', 'flexWrap', s.flexWrap || 'nowrap', ['nowrap','wrap','wrap-reverse']) + sp() : '') +
       // Grid container subsection.
       (isGrid ? sub('Grid container') +
-        inp('Cols', 'gridTemplateColumns', s.gridTemplateColumns || 'none', '') + sp() +
-        inp('Rows', 'gridTemplateRows', s.gridTemplateRows || 'none', '') + sp() +
-        '<div class="dm-field"><label class="dm-field-label">Areas</label><textarea class="dm-input" data-dm-prop="gridTemplateAreas" rows="3" placeholder=\'"a a b" "c c b"\' style="background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;padding:6px;font-family:inherit;resize:vertical;">' + escapeAttr((s as any).gridTemplateAreas || '') + '</textarea></div>' + sp() +
+        inp('열 수', 'gridTemplateColumns', s.gridTemplateColumns || 'none', '') + sp() +
+        inp('행 수', 'gridTemplateRows', s.gridTemplateRows || 'none', '') + sp() +
+        '<div class="dm-field"><label class="dm-field-label">영역</label><textarea class="dm-input" data-dm-prop="gridTemplateAreas" rows="3" placeholder=\'"a a b" "c c b"\' style="background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;padding:6px;font-family:inherit;resize:vertical;">' + escapeAttr((s as any).gridTemplateAreas || '') + '</textarea></div>' + sp() +
         grid(2,
-          inp('Auto cols', 'gridAutoColumns', (s as any).gridAutoColumns || 'auto', ''),
-          inp('Auto rows', 'gridAutoRows', (s as any).gridAutoRows || 'auto', '')
+          inp('자동 열', 'gridAutoColumns', (s as any).gridAutoColumns || 'auto', ''),
+          inp('자동 행', 'gridAutoRows', (s as any).gridAutoRows || 'auto', '')
         ) + sp() +
-        sel('Auto flow', 'gridAutoFlow', (s as any).gridAutoFlow || 'row', ['row','column','row dense','column dense']) + sp() : '') +
+        sel('자동 배치 흐름', 'gridAutoFlow', (s as any).gridAutoFlow || 'row', ['row','column','row dense','column dense']) + sp() : '') +
       // Grid item subsection (when this element's parent is grid).
       (ctx.isGrid ? sub('Grid item') +
         grid(3,
-          inp('Col', 'gridColumn', (s as any).gridColumn || 'auto', ''),
-          inp('Row', 'gridRow', (s as any).gridRow || 'auto', ''),
-          inp('Area', 'gridArea', (s as any).gridArea || 'auto', '')
+          inp('열', 'gridColumn', (s as any).gridColumn || 'auto', ''),
+          inp('행', 'gridRow', (s as any).gridRow || 'auto', ''),
+          inp('영역', 'gridArea', (s as any).gridArea || 'auto', '')
         ) + sp() +
-        inp('Place self', 'placeSelf', (s as any).placeSelf || 'auto', '') + sp() : '') +
+        inp('자체 배치', 'placeSelf', (s as any).placeSelf || 'auto', '') + sp() : '') +
       // Logical margin — block (top/bottom in horizontal-tb writing-mode)
       // and inline (left/right). Pairs with the logical-inset properties
       // already exposed in Position → Advanced. Useful when the project
       // targets RTL or vertical writing modes; auto-flips with `direction`.
       sub('Logical margin (auto-flips with writing-mode)') +
       grid(2,
-        inp('Block start', 'marginBlockStart', (s as any).marginBlockStart || '0px'),
-        inp('Block end', 'marginBlockEnd', (s as any).marginBlockEnd || '0px')
+        inp('블록 시작', 'marginBlockStart', (s as any).marginBlockStart || '0px'),
+        inp('블록 끝', 'marginBlockEnd', (s as any).marginBlockEnd || '0px')
       ) + sp() +
       grid(2,
-        inp('Inline start', 'marginInlineStart', (s as any).marginInlineStart || '0px'),
-        inp('Inline end', 'marginInlineEnd', (s as any).marginInlineEnd || '0px')
+        inp('인라인 시작', 'marginInlineStart', (s as any).marginInlineStart || '0px'),
+        inp('인라인 끝', 'marginInlineEnd', (s as any).marginInlineEnd || '0px')
       )
     );
 
@@ -8176,23 +8177,23 @@ function renderDesignTab(): string {
   const bdFilterCur = ((s as any).backdropFilter || 'none').toLowerCase();
   const bdFilterIs = (fn: string): boolean => bdFilterCur.includes(fn + '(');
   const colorAdjustRow = iconButtonRow([
-    { icon: 'sun', attr: 'data-dm-filter-fn="brightness"', active: filterIs('brightness'), title: 'Brightness' },
-    { icon: 'circleHalfFull', attr: 'data-dm-filter-fn="contrast"', active: filterIs('contrast'), title: 'Contrast' },
-    { icon: 'palette', attr: 'data-dm-filter-fn="saturate"', active: filterIs('saturate'), title: 'Saturation' },
-    { icon: 'rotate3d', attr: 'data-dm-filter-fn="hue-rotate"', active: filterIs('hue-rotate'), title: 'Hue rotate' },
-    { icon: 'circleOff', attr: 'data-dm-filter-fn="grayscale"', active: filterIs('grayscale'), title: 'Grayscale' },
-    { icon: 'contrast', attr: 'data-dm-filter-fn="invert"', active: filterIs('invert'), title: 'Invert' },
-    { icon: 'flame', attr: 'data-dm-filter-fn="sepia"', active: filterIs('sepia'), title: 'Sepia' },
+    { icon: 'sun', attr: 'data-dm-filter-fn="brightness"', active: filterIs('brightness'), title: '밝기' },
+    { icon: 'circleHalfFull', attr: 'data-dm-filter-fn="contrast"', active: filterIs('contrast'), title: '대비' },
+    { icon: 'palette', attr: 'data-dm-filter-fn="saturate"', active: filterIs('saturate'), title: '채도' },
+    { icon: 'rotate3d', attr: 'data-dm-filter-fn="hue-rotate"', active: filterIs('hue-rotate'), title: '색조 회전' },
+    { icon: 'circleOff', attr: 'data-dm-filter-fn="grayscale"', active: filterIs('grayscale'), title: '흑백' },
+    { icon: 'contrast', attr: 'data-dm-filter-fn="invert"', active: filterIs('invert'), title: '색상 반전' },
+    { icon: 'flame', attr: 'data-dm-filter-fn="sepia"', active: filterIs('sepia'), title: '세피아' },
     { icon: 'squareStack', attr: 'data-dm-filter-fn="drop-shadow"', active: filterIs('drop-shadow'), title: 'Drop shadow (filter — ignores overflow:hidden, follows alpha shape)' },
   ]);
   const backdropAdjustRow = iconButtonRow([
-    { icon: 'sun', attr: 'data-dm-bdfilter-fn="brightness"', active: bdFilterIs('brightness'), title: 'Backdrop brightness' },
-    { icon: 'circleHalfFull', attr: 'data-dm-bdfilter-fn="contrast"', active: bdFilterIs('contrast'), title: 'Backdrop contrast' },
-    { icon: 'palette', attr: 'data-dm-bdfilter-fn="saturate"', active: bdFilterIs('saturate'), title: 'Backdrop saturation' },
-    { icon: 'rotate3d', attr: 'data-dm-bdfilter-fn="hue-rotate"', active: bdFilterIs('hue-rotate'), title: 'Backdrop hue rotate' },
-    { icon: 'circleOff', attr: 'data-dm-bdfilter-fn="grayscale"', active: bdFilterIs('grayscale'), title: 'Backdrop grayscale' },
-    { icon: 'contrast', attr: 'data-dm-bdfilter-fn="invert"', active: bdFilterIs('invert'), title: 'Backdrop invert' },
-    { icon: 'flame', attr: 'data-dm-bdfilter-fn="sepia"', active: bdFilterIs('sepia'), title: 'Backdrop sepia' },
+    { icon: 'sun', attr: 'data-dm-bdfilter-fn="brightness"', active: bdFilterIs('brightness'), title: '배경 밝기' },
+    { icon: 'circleHalfFull', attr: 'data-dm-bdfilter-fn="contrast"', active: bdFilterIs('contrast'), title: '배경 대비' },
+    { icon: 'palette', attr: 'data-dm-bdfilter-fn="saturate"', active: bdFilterIs('saturate'), title: '배경 채도' },
+    { icon: 'rotate3d', attr: 'data-dm-bdfilter-fn="hue-rotate"', active: bdFilterIs('hue-rotate'), title: '배경 색조 회전' },
+    { icon: 'circleOff', attr: 'data-dm-bdfilter-fn="grayscale"', active: bdFilterIs('grayscale'), title: '배경 흑백' },
+    { icon: 'contrast', attr: 'data-dm-bdfilter-fn="invert"', active: bdFilterIs('invert'), title: '배경 반전' },
+    { icon: 'flame', attr: 'data-dm-bdfilter-fn="sepia"', active: bdFilterIs('sepia'), title: '배경 세피아' },
   ]);
 
   const isolationCur = ((s as any).isolation || 'auto') === 'isolate';
@@ -8213,7 +8214,7 @@ function renderDesignTab(): string {
   // of a px-line difference). Letting padding drive the height keeps the
   // button visually flush with the Opacity / Corner-radius fields.
   const cornerExpandRowBtn = '<div class="dm-field">' +
-    '<button class="dm-icon-row-button" data-dm-corner-expand title="Corners" data-active="' + (cornerRadiusExpanded ? 'true' : 'false') + '" style="width:100%;">' +
+    '<button class="dm-icon-row-button" data-dm-corner-expand title="모서리" data-active="' + (cornerRadiusExpanded ? 'true' : 'false') + '" style="width:100%;">' +
     icon('scan', 14) + '</button></div>';
   // corner-shape (CSS Borders L4) reshapes the corners border-radius rounds.
   // getComputedStyle can report it as four repeated tokens, so read the first
@@ -8227,7 +8228,7 @@ function renderDesignTab(): string {
     return CORNER_SHAPES.includes(first) ? first : 'round';
   })();
   const cornerShapeCell = '<div class="dm-field">' +
-    '<button class="dm-icon-row-button" data-dm-corner-shape-trigger title="Shape" data-active="' + (cornerShapePickerOpen ? 'true' : 'false') + '" style="width:100%;">' +
+    '<button class="dm-icon-row-button" data-dm-corner-shape-trigger title="모양" data-active="' + (cornerShapePickerOpen ? 'true' : 'false') + '" style="width:100%;">' +
     cornerShapeGlyph(cornerShapeVal, 14) + '</button></div>';
   const appearanceContent =
     grid12([
@@ -8245,7 +8246,7 @@ function renderDesignTab(): string {
       // events, etc.) rather than the always-visible top row.
       sub('Blend + stacking') +
       grid12([
-        { span: 8, content: sel('Blend', 'mixBlendMode', s.mixBlendMode || 'normal', ['normal','multiply','screen','overlay','darken','lighten','color-dodge','color-burn','hard-light','soft-light','difference','exclusion','hue','saturation','color','luminosity','plus-lighter']) },
+        { span: 8, content: sel('혼합 모드', 'mixBlendMode', s.mixBlendMode || 'normal', ['normal','multiply','screen','overlay','darken','lighten','color-dodge','color-burn','hard-light','soft-light','difference','exclusion','hue','saturation','color','luminosity','plus-lighter']) },
         { span: 4, content: isolationBtn },
       ]) + sp() +
 
@@ -8258,23 +8259,23 @@ function renderDesignTab(): string {
       // occasional-use, not the daily look-and-feel controls (opacity,
       // corner radius) that earn their seat at the top.
       '<div title="Quick toggles for individual filter functions (brightness, contrast, saturate, etc.). Edits the same CSS property as the raw Filter input below.">' + sub('Color adjust (filter quick toggles)') + colorAdjustRow + '</div>' + sp() +
-      '<div title="Raw value for the CSS `filter` shorthand — type custom filters here (e.g. blur(4px) saturate(150%)). Mirrors the toggles above.">' + inp('Filter (raw value)', 'filter', s.filter || 'none', '') + '</div>' + sp() +
+      '<div title="Raw value for the CSS `filter` shorthand — type custom filters here (e.g. blur(4px) saturate(150%)). Mirrors the toggles above.">' + inp('필터 (직접 입력)', 'filter', s.filter || 'none', '') + '</div>' + sp() +
 
       sub('Visibility & cursor') +
       grid12([
-        { span: 6, content: sel('Visible', 'visibility', s.visibility || 'visible', ['visible','hidden','collapse']) },
-        { span: 6, content: sel('Cursor', 'cursor', s.cursor || 'auto', ['auto','default','pointer','text','move','grab','grabbing','not-allowed','crosshair','wait','help','zoom-in','zoom-out','col-resize','row-resize','n-resize','s-resize','e-resize','w-resize','ne-resize','nw-resize','se-resize','sw-resize','none']) },
+        { span: 6, content: sel('표시', 'visibility', s.visibility || 'visible', ['visible','hidden','collapse']) },
+        { span: 6, content: sel('커서', 'cursor', s.cursor || 'auto', ['auto','default','pointer','text','move','grab','grabbing','not-allowed','crosshair','wait','help','zoom-in','zoom-out','col-resize','row-resize','n-resize','s-resize','e-resize','w-resize','ne-resize','nw-resize','se-resize','sw-resize','none']) },
       ]) + sp() +
       grid12([
-        { span: 6, content: sel('Color scheme', 'colorScheme', (s as any).colorScheme || 'normal', ['normal','light','dark','light dark','only light','only dark']) },
-        { span: 6, content: sel('Forced colors', 'forcedColorAdjust', (s as any).forcedColorAdjust || 'auto', ['auto','none','preserve-parent-color']) },
+        { span: 6, content: sel('색상 테마', 'colorScheme', (s as any).colorScheme || 'normal', ['normal','light','dark','light dark','only light','only dark']) },
+        { span: 6, content: sel('강제 색상', 'forcedColorAdjust', (s as any).forcedColorAdjust || 'auto', ['auto','none','preserve-parent-color']) },
       ]) + sp() +
 
       sub('Interaction') +
       grid12([
-        { span: 4, content: sel('Pointer events', 'pointerEvents', s.pointerEvents || 'auto', ['auto','none','all']) },
-        { span: 4, content: sel('User select', 'userSelect', s.userSelect || 'auto', ['auto','none','text','all','contain']) },
-        { span: 4, content: sel('Appearance', 'appearance', (s as any).appearance || 'auto', ['auto','none','textfield','menulist-button','searchfield','textarea','push-button','slider-horizontal','checkbox','radio','square-button','menulist','listbox','meter','progress-bar','button','button-bevel']) },
+        { span: 4, content: sel('포인터 이벤트', 'pointerEvents', s.pointerEvents || 'auto', ['auto','none','all']) },
+        { span: 4, content: sel('사용자 선택', 'userSelect', s.userSelect || 'auto', ['auto','none','text','all','contain']) },
+        { span: 4, content: sel('모양', 'appearance', (s as any).appearance || 'auto', ['auto','none','textfield','menulist-button','searchfield','textarea','push-button','slider-horizontal','checkbox','radio','square-button','menulist','listbox','meter','progress-bar','button','button-bevel']) },
       ]) + sp() +
 
       // Form-control colours \u2014 only meaningful on form layers, but harmless
@@ -8291,28 +8292,28 @@ function renderDesignTab(): string {
 
       sub('Backdrop adjust (backdrop-filter)') +
       backdropAdjustRow + sp() +
-      inp('Backdrop filter', 'backdropFilter', (s as any).backdropFilter || 'none', '') + sp() +
+      inp('배경 필터', 'backdropFilter', (s as any).backdropFilter || 'none', '') + sp() +
 
       sub('Clip path') +
       (() => {
         const cp = parseClipPath((s as any).clipPath || 'none');
         const shapeRow = grid12([
-          { span: 6, content: sel('Shape', '__clippath_shape', cp.kind, ['none','inset','circle','ellipse','polygon','path','url','custom']) },
-          { span: 6, content: inp('Raw', 'clipPath', (s as any).clipPath || 'none', '') },
+          { span: 6, content: sel('모양', '__clippath_shape', cp.kind, ['none','inset','circle','ellipse','polygon','path','url','custom']) },
+          { span: 6, content: inp('직접 입력', 'clipPath', (s as any).clipPath || 'none', '') },
         ]);
         let fields = '';
         if (cp.kind === 'inset') {
           fields = grid12([
-            { span: 3, content: inp('Top', '__clippath_inset_top', cp.top) },
-            { span: 3, content: inp('Right', '__clippath_inset_right', cp.right) },
-            { span: 3, content: inp('Bottom', '__clippath_inset_bottom', cp.bottom) },
-            { span: 3, content: inp('Left', '__clippath_inset_left', cp.left) },
+            { span: 3, content: inp('위', '__clippath_inset_top', cp.top) },
+            { span: 3, content: inp('오른쪽', '__clippath_inset_right', cp.right) },
+            { span: 3, content: inp('아래', '__clippath_inset_bottom', cp.bottom) },
+            { span: 3, content: inp('왼쪽', '__clippath_inset_left', cp.left) },
           ]);
         } else if (cp.kind === 'circle') {
           fields = grid12([
-            { span: 4, content: inp('Radius', '__clippath_circle_r', cp.r) },
-            { span: 4, content: inp('Center X', '__clippath_circle_x', cp.x) },
-            { span: 4, content: inp('Center Y', '__clippath_circle_y', cp.y) },
+            { span: 4, content: inp('반경', '__clippath_circle_r', cp.r) },
+            { span: 4, content: inp('가로 중심', '__clippath_circle_x', cp.x) },
+            { span: 4, content: inp('세로 중심', '__clippath_circle_y', cp.y) },
           ]);
         } else if (cp.kind === 'ellipse') {
           fields = grid12([
@@ -8334,18 +8335,18 @@ function renderDesignTab(): string {
               '<div style="font-size:9px;color:var(--dm-text-dim);font-family:inherit;padding-bottom:6px;text-align:right;">' + (i + 1) + '</div>' +
               inp('X', '__clippath_polygon_x_' + i, xv, '') +
               inp('Y', '__clippath_polygon_y_' + i, yv, '') +
-              '<button class="dm-section-action" data-dm-clippath-polygon-remove="' + i + '" title="Remove vertex" style="height:28px;color:var(--dm-danger);">' + icon('trash', 11) + '</button>' +
+              '<button class="dm-section-action" data-dm-clippath-polygon-remove="' + i + '" title="꼭짓점 제거" style="height:28px;color:var(--dm-danger);">' + icon('trash', 11) + '</button>' +
               '</div>';
           }).join('<div style="height:4px;"></div>');
           const addBtn = '<button class="dm-btn" data-dm-clippath-polygon-add style="width:100%;padding:6px;font-size:10px;display:flex;align-items:center;gap:4px;justify-content:center;">' + icon('plus', 11) + ' Add vertex</button>';
-          fields = sub('Vertices') + (vertexRows || '<div style="font-size:10px;color:var(--dm-text-dim);">No vertices yet — click Add vertex to start.</div>') + sp() + addBtn;
+          fields = sub('Vertices') + (vertexRows || '<div style="font-size:10px;color:var(--dm-text-dim);">꼭짓점이 없습니다. 꼭짓점 추가를 눌러 시작하세요.</div>') + sp() + addBtn;
         } else if (cp.kind === 'path') {
           fields = grid12([
             { span: 12, content: inp('SVG path d', '__clippath_path', cp.d, '') },
           ]);
         } else if (cp.kind === 'url') {
           fields = grid12([
-            { span: 12, content: inp('Fragment id (#…)', '__clippath_url', cp.target, '') },
+            { span: 12, content: inp('프래그먼트 ID (#…)', '__clippath_url', cp.target, '') },
           ]);
         }
         // Live preview — small SVG sketch of the current shape so the user
@@ -8397,18 +8398,18 @@ function renderDesignTab(): string {
 
       sub('Scrollbars') +
       grid12([
-        { span: 6, content: sel('Width', 'scrollbarWidth', (s as any).scrollbarWidth || 'auto', ['auto','thin','none']) },
-        { span: 6, content: sel('Gutter', 'scrollbarGutter', (s as any).scrollbarGutter || 'auto', ['auto','stable','stable both-edges']) },
+        { span: 6, content: sel('너비', 'scrollbarWidth', (s as any).scrollbarWidth || 'auto', ['auto','thin','none']) },
+        { span: 6, content: sel('여백', 'scrollbarGutter', (s as any).scrollbarGutter || 'auto', ['auto','stable','stable both-edges']) },
       ]) + sp() +
       grid12([
-        { span: 12, content: inp('Color (thumb track)', 'scrollbarColor', (s as any).scrollbarColor || 'auto', '') },
+        { span: 12, content: inp('색상 (스크롤바)', 'scrollbarColor', (s as any).scrollbarColor || 'auto', '') },
       ]) + sp() +
 
       sub('Performance') +
       grid12([
-        { span: 4, content: sel('Contain', 'contain', (s as any).contain || 'none', ['none','strict','content','size','layout','style','paint','inline-size','size layout','size paint','size style','layout paint','layout style']) },
-        { span: 4, content: sel('Content vis.', 'contentVisibility', (s as any).contentVisibility || 'visible', ['visible','auto','hidden']) },
-        { span: 4, content: inp('Will change', 'willChange', (s as any).willChange || 'auto', '') },
+        { span: 4, content: sel('포함 범위', 'contain', (s as any).contain || 'none', ['none','strict','content','size','layout','style','paint','inline-size','size layout','size paint','size style','layout paint','layout style']) },
+        { span: 4, content: sel('콘텐츠 가시성', 'contentVisibility', (s as any).contentVisibility || 'visible', ['visible','auto','hidden']) },
+        { span: 4, content: inp('변경 예정 속성', 'willChange', (s as any).willChange || 'auto', '') },
       ])
     );
 
@@ -8473,9 +8474,9 @@ function renderDesignTab(): string {
       '</div>'
     : '';
   const addFillBtn = '<div style="display:flex;gap:4px;margin-top:6px;">' +
-    '<button class="dm-btn" data-dm-fill-add="solid"' + (fillAtLimit ? ' disabled aria-disabled="true" title="Fill limit reached (' + FILL_LIMIT + ')"' : ' title="Add a solid fill (click the caret for gradient / image)"') + ' style="flex:1;display:flex;align-items:center;gap:6px;padding:8px;justify-content:center;' + (fillAtLimit ? 'opacity:0.5;cursor:not-allowed;' : '') + '">' +
-    icon('plus', 12) + '<span>Add fill</span></button>' +
-    '<button class="dm-btn" data-dm-fill-add-open data-active="' + (fillAddOpen ? 'true' : 'false') + '"' + (fillAtLimit ? ' disabled aria-disabled="true"' : '') + ' title="Add a gradient or image fill" style="padding:8px 10px;display:flex;align-items:center;justify-content:center;' + (fillAtLimit ? 'opacity:0.5;cursor:not-allowed;' : '') + '">' +
+    '<button class="dm-btn" data-dm-fill-add="solid"' + (fillAtLimit ? ' disabled aria-disabled="true" title="Fill limit reached (' + FILL_LIMIT + ')"' : ' title="단색 채우기 추가 (화살표에서 그라데이션/이미지 선택)"') + ' style="flex:1;display:flex;align-items:center;gap:6px;padding:8px;justify-content:center;' + (fillAtLimit ? 'opacity:0.5;cursor:not-allowed;' : '') + '">' +
+    icon('plus', 12) + '<span>채우기 추가</span></button>' +
+    '<button class="dm-btn" data-dm-fill-add-open data-active="' + (fillAddOpen ? 'true' : 'false') + '"' + (fillAtLimit ? ' disabled aria-disabled="true"' : '') + ' title="그라데이션 또는 이미지 채우기 추가" style="padding:8px 10px;display:flex;align-items:center;justify-content:center;' + (fillAtLimit ? 'opacity:0.5;cursor:not-allowed;' : '') + '">' +
     icon(fillAddOpen ? 'x' : 'chevronDown', 12) + '</button>' +
     '</div>';
 
@@ -8486,32 +8487,32 @@ function renderDesignTab(): string {
   const fillAdvancedHtml = advancedDisclosure('fill', fillAdvOpen,
     sub('Background painting box') +
     grid12([
-      { span: 6, content: sel('Clip', 'backgroundClip', (s as any).backgroundClip || 'border-box', ['border-box','padding-box','content-box','text']) },
-      { span: 6, content: sel('Origin', 'backgroundOrigin', (s as any).backgroundOrigin || 'padding-box', ['border-box','padding-box','content-box']) },
+      { span: 6, content: sel('자르기', 'backgroundClip', (s as any).backgroundClip || 'border-box', ['border-box','padding-box','content-box','text']) },
+      { span: 6, content: sel('원점', 'backgroundOrigin', (s as any).backgroundOrigin || 'padding-box', ['border-box','padding-box','content-box']) },
     ]) + sp() +
     grid12([
-      { span: 6, content: sel('Attachment', 'backgroundAttachment', s.backgroundAttachment || 'scroll', ['scroll','fixed','local']) },
-      { span: 6, content: '<div class="dm-field"><label class="dm-field-label dm-field-label-hidden">_</label><button class="dm-btn" data-dm-fill-action="gradient-text" title="Sets background-clip:text + -webkit-text-fill-color:transparent so the topmost gradient/image fills the glyph shape" style="height:30px;font-size:11px;">Gradient text</button></div>' },
+      { span: 6, content: sel('배경 고정 방식', 'backgroundAttachment', s.backgroundAttachment || 'scroll', ['scroll','fixed','local']) },
+      { span: 6, content: '<div class="dm-field"><label class="dm-field-label dm-field-label-hidden">_</label><button class="dm-btn" data-dm-fill-action="gradient-text" title="Sets background-clip:text + -webkit-text-fill-color:transparent so the topmost gradient/image fills the glyph shape" style="height:30px;font-size:11px;">그라데이션 텍스트</button></div>' },
     ]) + sp() +
 
     sub('Mask') +
     grid12([
-      { span: 12, content: inp('Image', 'maskImage', (s as any).maskImage || 'none', '') },
+      { span: 12, content: inp('이미지', 'maskImage', (s as any).maskImage || 'none', '') },
     ]) + sp() +
     grid12([
-      { span: 6, content: sel('Mode', 'maskMode', (s as any).maskMode || 'match-source', ['match-source','alpha','luminance']) },
-      { span: 6, content: sel('Composite', 'maskComposite', (s as any).maskComposite || 'add', ['add','subtract','intersect','exclude']) },
+      { span: 6, content: sel('모드', 'maskMode', (s as any).maskMode || 'match-source', ['match-source','alpha','luminance']) },
+      { span: 6, content: sel('합성', 'maskComposite', (s as any).maskComposite || 'add', ['add','subtract','intersect','exclude']) },
     ]) + sp() +
     grid12([
-      { span: 6, content: sel('Repeat', 'maskRepeat', (s as any).maskRepeat || 'repeat', ['repeat','no-repeat','repeat-x','repeat-y','space','round']) },
-      { span: 6, content: inp('Size', 'maskSize', (s as any).maskSize || 'auto', '') },
+      { span: 6, content: sel('반복', 'maskRepeat', (s as any).maskRepeat || 'repeat', ['repeat','no-repeat','repeat-x','repeat-y','space','round']) },
+      { span: 6, content: inp('크기', 'maskSize', (s as any).maskSize || 'auto', '') },
     ]) + sp() +
     grid12([
-      { span: 6, content: inp('Position', 'maskPosition', (s as any).maskPosition || '0% 0%', '') },
-      { span: 6, content: sel('Origin', 'maskOrigin', (s as any).maskOrigin || 'border-box', ['border-box','padding-box','content-box','margin-box','fill-box','stroke-box','view-box']) },
+      { span: 6, content: inp('위치', 'maskPosition', (s as any).maskPosition || '0% 0%', '') },
+      { span: 6, content: sel('원점', 'maskOrigin', (s as any).maskOrigin || 'border-box', ['border-box','padding-box','content-box','margin-box','fill-box','stroke-box','view-box']) },
     ]) + sp() +
     grid12([
-      { span: 12, content: sel('Clip', 'maskClip', (s as any).maskClip || 'border-box', ['border-box','padding-box','content-box','margin-box','fill-box','stroke-box','view-box','no-clip']) },
+      { span: 12, content: sel('자르기', 'maskClip', (s as any).maskClip || 'border-box', ['border-box','padding-box','content-box','margin-box','fill-box','stroke-box','view-box','no-clip']) },
     ])
   );
 
@@ -8522,23 +8523,23 @@ function renderDesignTab(): string {
     sub('SVG paint') +
     grid12([
       { span: 6, content: colorInp('Fill', 'fill', (s as any).fill || '#000000') },
-      { span: 6, content: inp('Opacity', 'fillOpacity', (s as any).fillOpacity || '1', '') },
+      { span: 6, content: inp('불투명도', 'fillOpacity', (s as any).fillOpacity || '1', '') },
     ]) + sp() +
     grid12([
-      { span: 12, content: sel('Fill rule', 'fillRule', (s as any).fillRule || 'nonzero', ['nonzero','evenodd']) },
+      { span: 12, content: sel('채우기 규칙', 'fillRule', (s as any).fillRule || 'nonzero', ['nonzero','evenodd']) },
     ]) + sp() +
     sub('SVG stroke') +
     grid12([
       { span: 6, content: colorInp('Color', 'stroke', (s as any).stroke || 'none') },
-      { span: 6, content: inp('Width', 'strokeWidth', (s as any).strokeWidth || '1', '') },
+      { span: 6, content: inp('너비', 'strokeWidth', (s as any).strokeWidth || '1', '') },
     ]) + sp() +
     grid12([
-      { span: 6, content: sel('Linecap', 'strokeLinecap', (s as any).strokeLinecap || 'butt', ['butt','round','square']) },
-      { span: 6, content: sel('Linejoin', 'strokeLinejoin', (s as any).strokeLinejoin || 'miter', ['miter','round','bevel']) },
+      { span: 6, content: sel('선 끝 모양', 'strokeLinecap', (s as any).strokeLinecap || 'butt', ['butt','round','square']) },
+      { span: 6, content: sel('선 연결 모양', 'strokeLinejoin', (s as any).strokeLinejoin || 'miter', ['miter','round','bevel']) },
     ]) + sp() +
     grid12([
-      { span: 6, content: inp('Dash array', 'strokeDasharray', (s as any).strokeDasharray || 'none', '') },
-      { span: 6, content: inp('Dash offset', 'strokeDashoffset', (s as any).strokeDashoffset || '0', '') },
+      { span: 6, content: inp('점선 배열', 'strokeDasharray', (s as any).strokeDasharray || 'none', '') },
+      { span: 6, content: inp('점선 오프셋', 'strokeDashoffset', (s as any).strokeDashoffset || '0', '') },
     ]) + sp() + sp()
   ) : '';
 
@@ -8591,8 +8592,8 @@ function renderDesignTab(): string {
   // Color + Weight + Style row + outline-offset.
   const centerStrokeRow = grid12([
     { span: 4, content: colorInp('Color', '__stroke_color', strokeColor, true, 'outlineColor') },
-    { span: 2, content: inp('Weight', '__stroke_weight', strokeWeight + 'px', 'px', 'outlineWidth') },
-    { span: 6, content: sel('Style', '__stroke_style', strokeStyleCur, styleOptions) },
+    { span: 2, content: inp('굵기', '__stroke_weight', strokeWeight + 'px', 'px', 'outlineWidth') },
+    { span: 6, content: sel('스타일', '__stroke_style', strokeStyleCur, styleOptions) },
   ]);
   const centerColorPanel = strokeColorPanelOpen ? sp() + renderColorPanel('__stroke_color', strokeColor) : '';
 
@@ -8601,7 +8602,7 @@ function renderDesignTab(): string {
   // it outward. Helper text lives inside the label parens so the field
   // can use the full 12-column row instead of stealing half for a chip.
   const offsetRow = sp() + grid12([
-    { span: 12, content: inp('Outline offset (negative pulls inward)', 'outlineOffset', s.outlineOffset || '0px') },
+    { span: 12, content: inp('외곽선 오프셋 (음수는 안쪽)', 'outlineOffset', s.outlineOffset || '0px') },
   ]);
 
   // Outside / Inside render one row per stroke layer (mirrors the Fill
@@ -8615,7 +8616,7 @@ function renderDesignTab(): string {
     const swatchOpen = activeColorPickerProp === colorProp;
     const swatchBg = resolveCssVarToColor(layer.color) || layer.color || '#000';
     const codeDisplay = formatColorForDisplay(layer.color);
-    const swatchBtn = '<button type="button" class="dm-fill-swatch" data-dm-color-trigger="' + colorProp + '" title="Pick a colour" style="background:' + safeCssColor(swatchBg) + ';outline:' + (swatchOpen ? '2px solid var(--dm-accent)' : 'none') + ';outline-offset:1px;"></button>';
+    const swatchBtn = '<button type="button" class="dm-fill-swatch" data-dm-color-trigger="' + colorProp + '" title="색상 선택" style="background:' + safeCssColor(swatchBg) + ';outline:' + (swatchOpen ? '2px solid var(--dm-accent)' : 'none') + ';outline-offset:1px;"></button>';
     const codeInput = '<input type="text" class="dm-fill-code" data-dm-prop="' + colorProp + '" data-dm-tokens-trigger="' + colorProp + '" value="' + escapeAttr(codeDisplay) + '" spellcheck="false" autocomplete="off"/>';
     // Weight input — replaces the fill-row Opacity cell. Locked-`px`
     // suffix mirrors Opacity's locked-`%` so the row reads as one unit.
@@ -8626,8 +8627,8 @@ function renderDesignTab(): string {
       '<span class="dm-input-unit">px</span>' +
       '</div>';
     const eyeBtn = '<button class="dm-fill-action dm-fill-action-hover" data-dm-stroke-toggle="' + idx + '" title="' + (visible ? 'Hide stroke' : 'Show stroke') + '" data-active="' + (visible ? 'true' : 'false') + '">' + icon(visible ? 'eye' : 'eyeOff', 12) + '</button>';
-    const trashBtn = '<button class="dm-fill-action dm-fill-action-hover" data-dm-stroke-remove="' + idx + '" title="Remove stroke" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>';
-    const grip = '<span class="dm-section-action" data-dm-stroke-drag="' + idx + '" title="Drag to reorder" style="cursor:grab;flex-shrink:0;">' + icon('gripVertical', 12) + '</span>';
+    const trashBtn = '<button class="dm-fill-action dm-fill-action-hover" data-dm-stroke-remove="' + idx + '" title="테두리 제거" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>';
+    const grip = '<span class="dm-section-action" data-dm-stroke-drag="' + idx + '" title="드래그하여 순서 변경" style="cursor:grab;flex-shrink:0;">' + icon('gripVertical', 12) + '</span>';
     const row = '<div class="dm-fill-row-solid">' + grip + swatchBtn + codeInput + weightCell + eyeBtn + trashBtn + '</div>';
     const colorPanel = swatchOpen ? renderColorPanel(colorProp, layer.color) : '';
     return '<div data-dm-stroke-row="' + idx + '" draggable="true" style="margin-bottom:6px;">' + row + colorPanel + '</div>';
@@ -8640,8 +8641,8 @@ function renderDesignTab(): string {
   const atStrokeLimit = strokeLayers.length >= STROKE_LIMIT;
   const showAddStroke = strokePos !== 'center' && !atStrokeLimit;
   const addStrokeBtn = showAddStroke
-    ? '<button class="dm-btn" data-dm-stroke-add title="Add another stroke on top" style="margin-top:8px;display:flex;align-items:center;gap:6px;padding:8px;width:100%;justify-content:center;">' +
-        icon('plus', 12) + '<span>Add stroke</span></button>'
+    ? '<button class="dm-btn" data-dm-stroke-add title="테두리 추가" style="margin-top:8px;display:flex;align-items:center;gap:6px;padding:8px;width:100%;justify-content:center;">' +
+        icon('plus', 12) + '<span>테두리 추가</span></button>'
     : '';
 
   // Outside/Inside strokes are box-shadow entries, so a token-composed
@@ -8651,10 +8652,10 @@ function renderDesignTab(): string {
     ? renderShadowVarChip('boxShadow', 'strokeBoxShadow', 'Stroke', info.shadowVars.boxShadow)
     : '';
   const borderSides = sub('CSS border widths') + linked2x2('width', borderWidthLinked,
-    inp('Top', 'borderTopWidth', s.borderTopWidth || '0px'),
-    inp('Right', 'borderRightWidth', s.borderRightWidth || '0px'),
-    inp('Bottom', 'borderBottomWidth', s.borderBottomWidth || '0px'),
-    inp('Left', 'borderLeftWidth', s.borderLeftWidth || '0px'));
+    inp('위', 'borderTopWidth', s.borderTopWidth || '0px'),
+    inp('오른쪽', 'borderRightWidth', s.borderRightWidth || '0px'),
+    inp('아래', 'borderBottomWidth', s.borderBottomWidth || '0px'),
+    inp('왼쪽', 'borderLeftWidth', s.borderLeftWidth || '0px'));
   const strokeContent = borderSides + sp() + (strokePos === 'center'
     ? strokePositionRow(s, strokePos) + sp() +
       centerStrokeRow +
@@ -8780,17 +8781,17 @@ function renderDesignTab(): string {
   const interactionsHtml = renderMotionInteractions(s, motionElId);
   if (interactionsHtml) motionPieces.push(interactionsHtml);
   if (hasTransition) motionRawPieces.push(
-    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;color:var(--dm-text-muted);"><span>' + icon('play', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">Transition</span></div>' +
+    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;color:var(--dm-text-muted);"><span>' + icon('play', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">전환 효과</span></div>' +
     renderTransitionEditor(s) +
     (vizProp === 'transition' ? renderVizPanel() : '')
   );
   if (hasAnimation) motionRawPieces.push(
-    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('film', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">Animation</span></div>' +
+    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('film', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">애니메이션</span></div>' +
     renderAnimationEditor(s)
   );
   if (transformIsSet) motionRawPieces.push(
-    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('move3d', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">Transform</span></div>' +
-    renderTransformComponents(s) + sp() + inp('Transform', 'transform', s.transform || 'none', '')
+    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('move3d', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">변형</span></div>' +
+    renderTransformComponents(s) + sp() + inp('변형', 'transform', s.transform || 'none', '')
   );
   // Motion Path — animate an element along a custom path. Renders only
   // when at least one offset-* property is non-default; the + menu has a
@@ -8798,19 +8799,19 @@ function renderDesignTab(): string {
   // <animateMotion>.
   const motionPathSet = (((s as any).offsetPath || 'none') !== 'none' && (s as any).offsetPath !== '');
   if (motionPathSet) motionRawPieces.push(
-    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('compass', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">Motion path</span></div>' +
+    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('compass', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">모션 경로</span></div>' +
     grid12([
-      { span: 12, content: inp('Path', 'offsetPath', (s as any).offsetPath || 'none', '') },
+      { span: 12, content: inp('경로', 'offsetPath', (s as any).offsetPath || 'none', '') },
     ]) + sp() +
     grid12([
-      { span: 6, content: inp('Distance', 'offsetDistance', (s as any).offsetDistance || '0%') },
-      { span: 6, content: inp('Rotate', 'offsetRotate', (s as any).offsetRotate || 'auto', '') },
+      { span: 6, content: inp('거리', 'offsetDistance', (s as any).offsetDistance || '0%') },
+      { span: 6, content: inp('회전', 'offsetRotate', (s as any).offsetRotate || 'auto', '') },
     ]) + sp() +
     grid12([
-      { span: 6, content: inp('Anchor', 'offsetAnchor', (s as any).offsetAnchor || 'auto', '') },
-      { span: 6, content: inp('Position', 'offsetPosition', (s as any).offsetPosition || 'auto', '') },
+      { span: 6, content: inp('앵커', 'offsetAnchor', (s as any).offsetAnchor || 'auto', '') },
+      { span: 6, content: inp('위치', 'offsetPosition', (s as any).offsetPosition || 'auto', '') },
     ]) + sp() +
-    '<div style="display:flex;justify-content:flex-end;"><button class="dm-btn" data-dm-effect-action="clear-motion-path" title="Clear motion path" style="padding:3px 8px;font-size:9px;">Clear motion path</button></div>'
+    '<div style="display:flex;justify-content:flex-end;"><button class="dm-btn" data-dm-effect-action="clear-motion-path" title="모션 경로 지우기" style="padding:3px 8px;font-size:9px;">모션 경로 지우기</button></div>'
   );
 
   // View transition — bridges the View Transitions API. Renders when the
@@ -8822,13 +8823,13 @@ function renderDesignTab(): string {
   const vtClass = ((s as any).viewTransitionClass || 'none').trim();
   const viewTransitionSet = vtName !== 'none' && vtName !== '' || vtClass !== 'none' && vtClass !== '';
   if (viewTransitionSet) motionRawPieces.push(
-    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('shuffle', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">View transition</span></div>' +
+    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('shuffle', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">뷰 전환</span></div>' +
     grid12([
-      { span: 6, content: inp('Name', 'viewTransitionName', vtName === 'none' ? '' : vtName, '') },
-      { span: 6, content: inp('Class', 'viewTransitionClass', vtClass === 'none' ? '' : vtClass, '') },
+      { span: 6, content: inp('이름', 'viewTransitionName', vtName === 'none' ? '' : vtName, '') },
+      { span: 6, content: inp('클래스', 'viewTransitionClass', vtClass === 'none' ? '' : vtClass, '') },
     ]) + sp() +
     '<div style="font-size:10px;color:var(--dm-text-dim);font-style:italic;">Active only during <code style="font-family:SF Mono,monospace;">document.startViewTransition()</code> calls. Set a unique <code>name</code> per element you want to animate across DOM swaps.</div>' + sp() +
-    '<div style="display:flex;justify-content:flex-end;"><button class="dm-btn" data-dm-effect-action="clear-view-transition" title="Clear view-transition properties" style="padding:3px 8px;font-size:9px;">Clear view transition</button></div>'
+    '<div style="display:flex;justify-content:flex-end;"><button class="dm-btn" data-dm-effect-action="clear-view-transition" title="뷰 전환 속성 지우기" style="padding:3px 8px;font-size:9px;">뷰 전환 지우기</button></div>'
   );
 
   // Scroll-driven animations. CSS-native scroll / view timelines that
@@ -8839,31 +8840,31 @@ function renderDesignTab(): string {
   const sdAnyViewTl   = (((s as any).viewTimelineName || 'none') !== 'none' && (s as any).viewTimelineName !== '');
   const scrollDrivenSet = sdAnyTimeline || sdAnyScrollTl || sdAnyViewTl;
   if (scrollDrivenSet) motionRawPieces.push(
-    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('arrowUpDown', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">Scroll-driven animation</span></div>' +
+    '<div style="display:flex;align-items:center;gap:6px;margin:10px 0 6px 0;color:var(--dm-text-muted);"><span>' + icon('arrowUpDown', 12) + '</span><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;">스크롤 기반 애니메이션</span></div>' +
     sub('Animation timeline') +
     grid12([
-      { span: 8, content: inp('Timeline', 'animationTimeline', (s as any).animationTimeline || 'auto', '') },
-      { span: 4, content: inp('Range', 'animationRange', (s as any).animationRange || 'normal', '') },
+      { span: 8, content: inp('타임라인', 'animationTimeline', (s as any).animationTimeline || 'auto', '') },
+      { span: 4, content: inp('범위', 'animationRange', (s as any).animationRange || 'normal', '') },
     ]) + sp() +
     sub('Scroll-timeline source (this element scrolls)') +
     grid12([
-      { span: 6, content: inp('Name', 'scrollTimelineName', (s as any).scrollTimelineName || 'none', '') },
-      { span: 6, content: sel('Axis', 'scrollTimelineAxis', (s as any).scrollTimelineAxis || 'block', ['block','inline','x','y']) },
+      { span: 6, content: inp('이름', 'scrollTimelineName', (s as any).scrollTimelineName || 'none', '') },
+      { span: 6, content: sel('축', 'scrollTimelineAxis', (s as any).scrollTimelineAxis || 'block', ['block','inline','x','y']) },
     ]) + sp() +
     sub('View-timeline source (this element\'s visibility)') +
     grid12([
-      { span: 6, content: inp('Name', 'viewTimelineName', (s as any).viewTimelineName || 'none', '') },
-      { span: 6, content: sel('Axis', 'viewTimelineAxis', (s as any).viewTimelineAxis || 'block', ['block','inline','x','y']) },
+      { span: 6, content: inp('이름', 'viewTimelineName', (s as any).viewTimelineName || 'none', '') },
+      { span: 6, content: sel('축', 'viewTimelineAxis', (s as any).viewTimelineAxis || 'block', ['block','inline','x','y']) },
     ]) + sp() +
     grid12([
-      { span: 12, content: inp('View-timeline inset', 'viewTimelineInset', (s as any).viewTimelineInset || 'auto', '') },
+      { span: 12, content: inp('뷰 타임라인 인셋', 'viewTimelineInset', (s as any).viewTimelineInset || 'auto', '') },
     ]) + sp() +
     grid12([
-      { span: 12, content: inp('Timeline scope', 'timelineScope', (s as any).timelineScope || 'none', '') },
+      { span: 12, content: inp('타임라인 범위', 'timelineScope', (s as any).timelineScope || 'none', '') },
     ]) + sp() +
     '<div style="display:flex;justify-content:flex-end;gap:6px;">' +
-      '<button class="dm-btn" data-dm-effect-action="preset-scroll-progress" title="Bind animation to root scroll progress" style="padding:3px 8px;font-size:9px;">Bind to page scroll</button>' +
-      '<button class="dm-btn" data-dm-effect-action="clear-scroll-driven" title="Reset all scroll/view-timeline properties" style="padding:3px 8px;font-size:9px;">Clear</button>' +
+      '<button class="dm-btn" data-dm-effect-action="preset-scroll-progress" title="루트 스크롤 진행률에 애니메이션 연결" style="padding:3px 8px;font-size:9px;">페이지 스크롤에 연결</button>' +
+      '<button class="dm-btn" data-dm-effect-action="clear-scroll-driven" title="스크롤 및 뷰 타임라인 속성 초기화" style="padding:3px 8px;font-size:9px;">지우기</button>' +
     '</div>'
   );
   // Motion lives in its own section (rendered below Effects). Interaction
@@ -8872,7 +8873,7 @@ function renderDesignTab(): string {
   const motionAdvOpen = !!advancedOpen.motion;
   const motionAdvancedHtml = motionRawPieces.length
     ? advancedDisclosure('motion', motionAdvOpen,
-        '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--dm-text-dim);margin-bottom:8px;">Advanced (raw CSS)</div>' +
+        '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--dm-text-dim);margin-bottom:8px;">고급 설정 (CSS 직접 입력)</div>' +
         motionRawPieces.join(''))
     : '';
   const motionContent = motionPieces.join('') + motionAdvancedHtml;
@@ -8899,7 +8900,7 @@ function renderDesignTab(): string {
   const effectsContent = shadowTokenChip('boxShadow', 'Shadow') + shadowTokenChip('textShadow', 'Text shadow') +
     (effectEntries.length > 0
       ? effectRows
-      : '<div style="font-size:11px;color:var(--dm-text-dim);text-align:center;padding:14px 0;">Click + to add an effect.</div>');
+      : '<div style="font-size:11px;color:var(--dm-text-dim);text-align:center;padding:14px 0;">+를 눌러 효과를 추가하세요.</div>');
 
   // ── Layout guide ────────────────────────────────────────────────
   // Figma-style overlay of column / row / grid bars on the selected
@@ -8920,7 +8921,7 @@ function renderDesignTab(): string {
     const codeDisplay = formatColorForDisplay(layer.color);
     const expanded = expandedGuideIdx === idx;
     // Primary row — slim: Type + Count/Size + expand + eye + trash.
-    const grip = '<span class="dm-section-action" data-dm-guide-drag="' + idx + '" title="Drag to reorder" style="cursor:grab;flex-shrink:0;">' + icon('gripVertical', 12) + '</span>';
+    const grip = '<span class="dm-section-action" data-dm-guide-drag="' + idx + '" title="드래그하여 순서 변경" style="cursor:grab;flex-shrink:0;">' + icon('gripVertical', 12) + '</span>';
     const kindSel = '<select class="dm-select" data-dm-prop="__guide_kind__' + idx + '" style="flex:1;min-width:0;font-size:11px;">' +
       ['grid','columns','rows'].map(k => '<option value="' + k + '"' + (layer.kind === k ? ' selected' : '') + '>' + k.charAt(0).toUpperCase() + k.slice(1) + '</option>').join('') +
       '</select>';
@@ -8943,12 +8944,12 @@ function renderDesignTab(): string {
       : 'Show guide';
     const eyeBtn = '<button class="dm-fill-action" data-dm-guide-toggle="' + idx + '" title="' + eyeTitle + '" data-active="' + (visible ? 'true' : 'false') + '"' +
       (guidesSectionHidden ? ' style="opacity:0.4;"' : '') + '>' + icon(visible ? 'eye' : 'eyeOff', 12) + '</button>';
-    const trashBtn = '<button class="dm-fill-action dm-fill-action-hover" data-dm-guide-remove="' + idx + '" title="Remove guide" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>';
+    const trashBtn = '<button class="dm-fill-action dm-fill-action-hover" data-dm-guide-remove="' + idx + '" title="가이드 제거" style="color:var(--dm-danger);">' + icon('trash', 12) + '</button>';
     const primaryRow = '<div class="dm-fill-row-solid">' + grip + kindSel + countOrSizeInput + expandBtn + eyeBtn + trashBtn + '</div>';
     // Colour swatch + hex inline cell, used in the expanded body. Reuses
     // the fill row's solid pattern so the swatch / picker behaviour is
     // identical to the rest of the panel.
-    const swatchBtn = '<button type="button" class="dm-fill-swatch" data-dm-color-trigger="' + colorProp + '" title="Pick a colour" style="background:' + safeCssColor(swatchBg) + ';outline:' + (swatchOpen ? '2px solid var(--dm-accent)' : 'none') + ';outline-offset:1px;"></button>';
+    const swatchBtn = '<button type="button" class="dm-fill-swatch" data-dm-color-trigger="' + colorProp + '" title="색상 선택" style="background:' + safeCssColor(swatchBg) + ';outline:' + (swatchOpen ? '2px solid var(--dm-accent)' : 'none') + ';outline-offset:1px;"></button>';
     // No data-dm-tokens-trigger here, unlike Fill / Stroke: site-colour
     // tokens don't apply to a guide overlay, same reasoning as the compact
     // colour panel below.
@@ -8982,12 +8983,12 @@ function renderDesignTab(): string {
         body =
           colorRow + sp() +
           grid12([
-            { span: 6, content: sel('Type', '__guide_align__' + idx, layer.align, alignOpts) },
+            { span: 6, content: sel('유형', '__guide_align__' + idx, layer.align, alignOpts) },
             { span: 6, content: inp(sizeLabel, '__guide_size__' + idx, layer.size || 'auto') },
           ]) + sp() +
           grid12([
-            { span: 6, content: inp('Margin', '__guide_margin__' + idx, layer.margin || '0px') },
-            { span: 6, content: inp('Gutter', '__guide_gutter__' + idx, layer.gutter || '20px') },
+            { span: 6, content: inp('바깥 여백', '__guide_margin__' + idx, layer.margin || '0px') },
+            { span: 6, content: inp('여백', '__guide_gutter__' + idx, layer.gutter || '20px') },
           ]);
       }
       body = '<div style="margin-top:6px;padding:8px;background:var(--dm-bg);border:1px solid var(--dm-separator);border-radius:5px;">' + body + '</div>';
@@ -8997,8 +8998,8 @@ function renderDesignTab(): string {
   const guideRowsHtml = guideLayers.map(renderLayoutGuideRow).join('');
   const atGuideLimit = guideLayers.length >= LAYOUT_GUIDE_LIMIT;
   const addGuideBtn = atGuideLimit ? '' :
-    '<button class="dm-btn" data-dm-guide-add title="Add layout guide" style="margin-top:8px;display:flex;align-items:center;gap:6px;padding:8px;width:100%;justify-content:center;">' +
-    icon('plus', 12) + '<span>Add layout guide</span></button>';
+    '<button class="dm-btn" data-dm-guide-add title="레이아웃 가이드 추가" style="margin-top:8px;display:flex;align-items:center;gap:6px;padding:8px;width:100%;justify-content:center;">' +
+    icon('plus', 12) + '<span>레이아웃 가이드 추가</span></button>';
   const layoutGuideContent = guideRowsHtml + addGuideBtn;
   // Section-level show/hide — drawn to the right of the section title,
   // before the chevron. Toggling clears or restores the overlay
@@ -9044,12 +9045,12 @@ function renderRouteGroups(activeHtml: string): string {
     try { const url = new URL(group.url); label = url.pathname + url.search + (/^#!?\//.test(url.hash) ? url.hash : ''); } catch {}
     const buttonStyle = 'background:none;border:1px solid var(--dm-separator);border-radius:4px;padding:5px 7px;color:inherit;cursor:pointer;font:inherit;font-size:10px;';
     const confirm = deletingRouteKey === group.routeKey
-      ? '<div role="group" aria-label="Confirm route deletion" style="padding:10px 12px;background:var(--dm-danger-bg);color:var(--dm-text);font-size:11px;line-height:1.5;">Delete all changes for this route? This cannot be undone.<div style="display:flex;gap:8px;margin-top:8px;"><button data-dm-action="cancel-delete-route" style="' + buttonStyle + '">취소</button><button data-dm-action="confirm-delete-route" data-dm-route-key="' + key + '" style="' + buttonStyle + 'color:var(--dm-danger);">Delete route changes</button></div></div>' : '';
+      ? '<div role="group" aria-label="경로 삭제 확인" style="padding:10px 12px;background:var(--dm-danger-bg);color:var(--dm-text);font-size:11px;line-height:1.5;">이 경로의 모든 변경사항을 삭제할까요? 되돌릴 수 없습니다.<div style="display:flex;gap:8px;margin-top:8px;"><button data-dm-action="cancel-delete-route" style="' + buttonStyle + '">취소</button><button data-dm-action="confirm-delete-route" data-dm-route-key="' + key + '" style="' + buttonStyle + 'color:var(--dm-danger);">경로 변경사항 삭제</button></div></div>' : '';
     return '<section data-dm-route-group="' + key + '" data-dm-route-active="' + active + '" style="border-bottom:1px solid var(--dm-separator-strong);color:' + (active ? 'var(--dm-text)' : 'var(--dm-text-secondary)') + ';background:' + (active ? 'var(--dm-bg)' : 'var(--dm-bg-secondary)') + ';">' +
       '<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;font-size:12px;font-weight:600;">' + escapeAttr(label) + '</span>' +
       '<span aria-label="' + count + ' changes" style="flex-shrink:0;font-size:10px;padding:2px 6px;border-radius:8px;background:var(--dm-btn-bg);">' + count + '</span>' +
-      (active ? '<span class="dm-route-action dm-route-current" aria-current="page">Current</span>' : '<button class="dm-route-action" data-dm-action="open-route" data-dm-route-key="' + key + '">Open route</button>') +
-      '<button data-dm-action="delete-route" data-dm-route-key="' + key + '" aria-label="Delete changes for ' + escapeAttr(label) + '" title="Delete this route’s changes" style="' + buttonStyle + 'color:var(--dm-danger);">' + icon('trash', 12) + '</button></div>' +
+      (active ? '<span class="dm-route-action dm-route-current" aria-current="page">현재</span>' : '<button class="dm-route-action" data-dm-action="open-route" data-dm-route-key="' + key + '">경로 열기</button>') +
+      '<button data-dm-action="delete-route" data-dm-route-key="' + key + '" aria-label="Delete changes for ' + escapeAttr(label) + '" title="이 경로의 변경사항 삭제" style="' + buttonStyle + 'color:var(--dm-danger);">' + icon('trash', 12) + '</button></div>' +
       confirm + (active ? activeHtml : '') + '</section>';
   }).join('');
 }
@@ -9102,7 +9103,7 @@ function renderChangesTab(): string {
       // Import button mirrors the one in the populated-state action row,
       // so first-time + empty-state users can pull a saved session in
       // without any prior context.
-      '<label title="Replace every change with an imported JSON file" style="margin-top:14px;padding:6px 12px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:inline-flex;align-items:center;gap:6px;">' +
+      '<label title="가져온 JSON으로 모든 변경사항 교체" style="margin-top:14px;padding:6px 12px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;display:inline-flex;align-items:center;gap:6px;">' +
       icon('upload', 11) + ' Import changes' +
       '<input type="file" accept=".json,application/json" data-dm-import-changes style="display:none;"/></label>' +
     '</div>';
@@ -9177,14 +9178,14 @@ function renderChangesTab(): string {
     : 'Click to temporarily hide your edits and preview the original';
   const previewToggleBtn = '<button data-dm-action="' + previewToggleAction + '" title="' + previewToggleTitle + '" style="' + (previewingOriginal ? inactiveStyle : activeStyle) + '">' + icon(previewingOriginal ? 'eyeOff' : 'eye', 10) + ' Changes</button>';
   const previewBanner = previewingOriginal
-    ? '<div style="padding:6px 12px;background:var(--dm-accent-bg);border-bottom:1px solid var(--dm-accent-border);font-size:10px;color:var(--dm-accent);text-align:center;">Previewing original — click Changes to see your edits</div>'
+    ? '<div style="padding:6px 12px;background:var(--dm-accent-bg);border-bottom:1px solid var(--dm-accent-border);font-size:10px;color:var(--dm-accent);text-align:center;">원본 미리보기 중 — 변경사항을 눌러 편집 결과 보기</div>'
     : '';
 
   // Action row 1 — buttons. Changes toggle / Clear all / Export / Import.
   // Import is a styled <label> wrapping a hidden file input, mirroring the
   // presets export/import pattern in Settings.
-  const exportBtn = '<button data-dm-action="export-changes" title="Download every tracked change as a JSON file" style="' + inactiveStyle + '">' + icon('download', 10) + ' Export</button>';
-  const importBtn = '<label title="Replace every change with an imported JSON file" style="' + inactiveStyle + '">' + icon('upload', 10) + ' Import<input type="file" accept=".json,application/json" data-dm-import-changes style="display:none;"/></label>';
+  const exportBtn = '<button data-dm-action="export-changes" title="모든 변경사항을 JSON으로 다운로드" style="' + inactiveStyle + '">' + icon('download', 10) + ' Export</button>';
+  const importBtn = '<label title="가져온 JSON으로 모든 변경사항 교체" style="' + inactiveStyle + '">' + icon('upload', 10) + ' Import<input type="file" accept=".json,application/json" data-dm-import-changes style="display:none;"/></label>';
   const clearBtn = '<button data-dm-action="clear-all-changes" style="padding:4px 10px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:4px;color:var(--dm-danger);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:4px;">' + icon('trash', 10) + ' Clear all</button>';
   // Two clusters: primary (Changes toggle + Clear all) on the left, file
   // I/O (Export + Import) on the right. `justify-content:space-between`
@@ -9220,12 +9221,12 @@ function renderChangesTab(): string {
   const searchRow = '<div style="display:flex;gap:6px;align-items:center;padding:6px 10px;border-bottom:1px solid var(--dm-separator);">' +
     '<div style="display:flex;align-items:center;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;padding:0 6px;flex:1;min-width:0;">' +
     '<span style="color:var(--dm-text-dim);display:flex;flex-shrink:0;">' + icon('search', 10) + '</span>' +
-    '<input type="text" class="dm-input" data-dm-changes-search value="' + escapeAttr(changesSearch) + '" placeholder="Search changes…" style="background:none;border:none;padding:5px 6px;flex:1;min-width:0;font-size:10px;"/>' +
-    (changesSearch ? '<button data-dm-action="clear-changes-search" title="Clear search" style="background:none;border:none;color:var(--dm-text-dim);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('x', 10) + '</button>' : '') +
+    '<input type="text" class="dm-input" data-dm-changes-search value="' + escapeAttr(changesSearch) + '" placeholder="변경사항 검색…" style="background:none;border:none;padding:5px 6px;flex:1;min-width:0;font-size:10px;"/>' +
+    (changesSearch ? '<button data-dm-action="clear-changes-search" title="검색어 지우기" style="background:none;border:none;color:var(--dm-text-dim);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('x', 10) + '</button>' : '') +
     '</div>' +
-    '<div class="dm-changes-grouping"><select data-dm-changes-grouping aria-label="Group changes by">' +
-    '<option value="element"' + (changesGrouping === 'element' ? ' selected' : '') + '>Elements</option>' +
-    '<option value="component"' + (changesGrouping === 'component' ? ' selected' : '') + '>Components</option></select><span aria-hidden="true">' + icon('chevronDown', 12) + '</span></div>' +
+    '<div class="dm-changes-grouping"><select data-dm-changes-grouping aria-label="변경사항 그룹 기준">' +
+    '<option value="element"' + (changesGrouping === 'element' ? ' selected' : '') + '>요소</option>' +
+    '<option value="component"' + (changesGrouping === 'component' ? ' selected' : '') + '>컴포넌트</option></select><span aria-hidden="true">' + icon('chevronDown', 12) + '</span></div>' +
     expandIconBtn + sortIconBtn +
     '</div>';
 
@@ -9272,7 +9273,7 @@ function renderChangesTab(): string {
   };
   const commentsSubRow = showCommentsSub
     ? '<div style="display:flex;gap:4px;align-items:center;padding:4px 10px;border-bottom:1px solid var(--dm-separator);flex-wrap:wrap;background:var(--dm-bg);">' +
-        '<span style="font-size:9px;color:var(--dm-text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-right:4px;">Comments:</span>' +
+        '<span style="font-size:9px;color:var(--dm-text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-right:4px;">의견:</span>' +
         cchip('all', 'All') + cchip('open', 'Open') + cchip('resolved', 'Resolved') +
       '</div>'
     : '';
@@ -9301,7 +9302,7 @@ function renderChangesTab(): string {
   };
   const statusSubRow = showStatusSub
     ? '<div style="display:flex;gap:4px;align-items:center;padding:4px 10px;border-bottom:1px solid var(--dm-separator);flex-wrap:wrap;background:var(--dm-bg);">' +
-        '<span style="font-size:9px;color:var(--dm-text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-right:4px;">Status:</span>' +
+        '<span style="font-size:9px;color:var(--dm-text-dim);text-transform:uppercase;letter-spacing:0.4px;margin-right:4px;">상태:</span>' +
         schip('all') + schip('todo') + schip('in_progress') + schip('resolved') +
       '</div>'
     : '';
@@ -9329,22 +9330,22 @@ function renderChangesTab(): string {
   const deleteCommentOverlay = deletingCommentId
     ? '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:60;display:flex;align-items:center;justify-content:center;">' +
       '<div style="background:var(--dm-bg);border:1px solid var(--dm-separator-strong);border-radius:10px;padding:16px;width:250px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.3);">' +
-      '<div style="font-size:12px;font-weight:600;color:var(--dm-text);margin-bottom:6px;">Delete comment?</div>' +
+      '<div style="font-size:12px;font-weight:600;color:var(--dm-text);margin-bottom:6px;">의견을 삭제할까요?</div>' +
       '<div style="font-size:10px;color:var(--dm-text-secondary);margin-bottom:14px;line-height:1.5;">The comment, its pin, and any unsaved replies will be removed. This can\'t be undone.</div>' +
       '<div style="display:flex;gap:6px;">' +
       '<button data-dm-action="cancel-delete-comment-confirm" style="flex:1;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">취소</button>' +
-      '<button data-dm-action="confirm-delete-comment-confirm" style="flex:1;padding:6px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:6px;color:var(--dm-danger);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">Delete</button>' +
+      '<button data-dm-action="confirm-delete-comment-confirm" style="flex:1;padding:6px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:6px;color:var(--dm-danger);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">삭제</button>' +
       '</div></div></div>'
     : '';
 
   const revertGroupOverlay = revertingGroupKey
     ? '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:60;display:flex;align-items:center;justify-content:center;">' +
       '<div style="background:var(--dm-bg);border:1px solid var(--dm-separator-strong);border-radius:10px;padding:16px;width:250px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.3);">' +
-      '<div style="font-size:12px;font-weight:600;color:var(--dm-text);margin-bottom:6px;">Revert this change group?</div>' +
+      '<div style="font-size:12px;font-weight:600;color:var(--dm-text);margin-bottom:6px;">이 변경 그룹을 되돌릴까요?</div>' +
       '<div style="font-size:10px;color:var(--dm-text-secondary);margin-bottom:14px;line-height:1.5;">All changes and comments in this group will be removed. This can\'t be undone.</div>' +
       '<div style="display:flex;gap:6px;">' +
       '<button data-dm-action="cancel-revert-group" style="flex:1;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">취소</button>' +
-      '<button data-dm-action="confirm-revert-group" style="flex:1;padding:6px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:6px;color:var(--dm-danger);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">Revert group</button>' +
+      '<button data-dm-action="confirm-revert-group" style="flex:1;padding:6px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:6px;color:var(--dm-danger);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">그룹 되돌리기</button>' +
       '</div></div></div>'
     : '';
 
@@ -9424,10 +9425,10 @@ function renderChangesTab(): string {
     const header = componentHeader + '<div class="dm-change-group-header" data-dm-change-group="' + escapeAttr(key) + '"' + (isStale ? ' style="opacity:0.7;"' : '') + '>' +
       '<span style="color:var(--dm-text-dim);display:flex;">' + icon(chevIcon as keyof typeof icons, 10) + '</span>' +
       '<span style="font-family:inherit;font-size:10px;color:var(--dm-text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;" title="' + escapeAttr(group.selector) + (isStale ? ' (element no longer reachable)' : '') + '">' + escapeAttr(group.label || group.selector) + '</span>' +
-      (isStale ? '<span style="font-size:8px;padding:1px 6px;border-radius:9999px;background:rgba(0,0,0,0.06);color:var(--dm-text-dim);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;">stale</span>' : '') +
+      (isStale ? '<span style="font-size:8px;padding:1px 6px;border-radius:9999px;background:rgba(0,0,0,0.06);color:var(--dm-text-dim);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;">오래된 변경</span>' : '') +
       '<span style="font-size:9px;background:var(--dm-accent-bg);color:var(--dm-accent);border-radius:8px;padding:1px 6px;flex-shrink:0;">' + count + '</span>' +
-      (group.elementId ? '<button data-dm-select-change-el="' + escapeAttr(group.elementId) + '" title="Select element" style="background:none;border:none;color:var(--dm-text-dim);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('crosshair', 10) + '</button>' : '') +
-      '<button data-dm-revert-group="' + escapeAttr(key) + '" title="Revert all changes in this group" style="background:none;border:none;color:var(--dm-danger);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('trash', 10) + '</button>' +
+      (group.elementId ? '<button data-dm-select-change-el="' + escapeAttr(group.elementId) + '" title="요소 선택" style="background:none;border:none;color:var(--dm-text-dim);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('crosshair', 10) + '</button>' : '') +
+      '<button data-dm-revert-group="' + escapeAttr(key) + '" title="이 그룹의 모든 변경사항 되돌리기" style="background:none;border:none;color:var(--dm-danger);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('trash', 10) + '</button>' +
       '</div>';
 
     const isMultiSelectGroup = key.startsWith('multi-select:');
@@ -9437,7 +9438,7 @@ function renderChangesTab(): string {
     // selection is stable across re-renders.
     const checkbox = (cid: string) => {
       const checked = changesSelected.has(cid);
-      return '<input type="checkbox" data-dm-change-checkbox="' + escapeAttr(cid) + '"' + (checked ? ' checked' : '') + ' style="accent-color:var(--dm-accent);width:12px;height:12px;flex-shrink:0;cursor:pointer;" aria-label="Select change for bulk revert"/>';
+      return '<input type="checkbox" data-dm-change-checkbox="' + escapeAttr(cid) + '"' + (checked ? ' checked' : '') + ' style="accent-color:var(--dm-accent);width:12px;height:12px;flex-shrink:0;cursor:pointer;" aria-label="일괄 되돌리기 대상 선택"/>';
     };
 
     const renderItem = (item: typeof group.items[number], opts?: { extraIndent?: boolean }): string => {
@@ -9474,8 +9475,8 @@ function renderChangesTab(): string {
           '<div style="flex:1;min-width:0;' + ((c as any).status === 'resolved' ? 'text-decoration:line-through;' : '') + '">' + innerLabel + '</div>' +
           breakpointBadge(c) +
           changeStatusBadge((c as any).status) +
-          '<button data-dm-batch-apply="' + cid + '" title="' + zapTitle + '" style="' + zapStyle + '" aria-label="Batch apply">' + (isBatched ? icon('zap', 10).replace('fill="none"', 'fill="currentColor"') : icon('zap', 10)) + countBadge + '</button>' +
-          '<button class="dm-change-revert" data-dm-remove-change="' + cid + '" title="Revert" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;">' + icon('trash', 10) + '</button></div>';
+          '<button data-dm-batch-apply="' + cid + '" title="' + zapTitle + '" style="' + zapStyle + '" aria-label="일괄 적용">' + (isBatched ? icon('zap', 10).replace('fill="none"', 'fill="currentColor"') : icon('zap', 10)) + countBadge + '</button>' +
+          '<button class="dm-change-revert" data-dm-remove-change="' + cid + '" title="되돌리기" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;">' + icon('trash', 10) + '</button></div>';
       } else if (item.type === 'text') {
         const c = item.data;
         const cid = c.id;
@@ -9488,7 +9489,7 @@ function renderChangesTab(): string {
           '<div style="flex:1;min-width:0;' + ((c as any).status === 'resolved' ? 'text-decoration:line-through;' : '') + '">' + inner + '</div>' +
           breakpointBadge(c) +
           changeStatusBadge((c as any).status) +
-          '<button class="dm-change-revert" data-dm-remove-change="' + cid + '" title="Revert" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;">' + icon('trash', 10) + '</button></div>';
+          '<button class="dm-change-revert" data-dm-remove-change="' + cid + '" title="되돌리기" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;">' + icon('trash', 10) + '</button></div>';
       } else if (item.type === 'dom') {
         const c = item.data;
         const colors: Record<string, string> = { delete: 'var(--dm-danger)', duplicate: 'var(--dm-purple)', move: '#f59e0b', insert: 'var(--dm-success)', text: 'var(--dm-accent)' };
@@ -9502,10 +9503,10 @@ function renderChangesTab(): string {
         const fmt = (loc: { parentSelector: string; index: number }) =>
           escapeAttr(loc.parentSelector) + ' › position ' + (loc.index + 1);
         const origLine = c.action === 'move' && c.origin
-          ? '<div style="font-size:9px;color:var(--dm-text-dim);font-family:inherit;margin-top:2px;line-height:1.4;"><span style="color:var(--dm-text-muted);">from</span> ' + fmt(c.origin) + '</div>'
+          ? '<div style="font-size:9px;color:var(--dm-text-dim);font-family:inherit;margin-top:2px;line-height:1.4;"><span style="color:var(--dm-text-muted);">이전</span> ' + fmt(c.origin) + '</div>'
           : '';
         const destLine = c.action === 'move' && c.destination
-          ? '<div style="font-size:9px;color:var(--dm-text-dim);font-family:inherit;margin-top:2px;line-height:1.4;"><span style="color:var(--dm-text-muted);">to</span> ' + fmt(c.destination) + '</div>'
+          ? '<div style="font-size:9px;color:var(--dm-text-dim);font-family:inherit;margin-top:2px;line-height:1.4;"><span style="color:var(--dm-text-muted);">이후</span> ' + fmt(c.destination) + '</div>'
           : '';
         return '<div class="dm-change-item" data-dm-select-change-el="' + escapeAttr(c.elementId || '') + '"' + rowTip + ' style="display:flex;align-items:flex-start;gap:6px;padding:6px 12px 6px 28px;border-bottom:1px solid var(--dm-separator);cursor:pointer;' + ((c as any).status === 'resolved' ? 'opacity:0.6;' : '') + '">' +
           checkbox(cid) +
@@ -9513,7 +9514,7 @@ function renderChangesTab(): string {
           '<div style="flex:1;min-width:0;' + ((c as any).status === 'resolved' ? 'text-decoration:line-through;' : '') + '">' +
           '<div style="font-size:10px;color:' + (colors[c.action] || 'var(--dm-text-muted)') + ';">' + c.action.toUpperCase() + ' &lt;' + c.tagName + '&gt;</div>' +
           origLine + destLine +
-          '</div>' + breakpointBadge(c) + changeStatusBadge((c as any).status) + '<button class="dm-change-revert" data-dm-remove-change="' + cid + '" title="Revert" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;">' + icon('trash', 10) + '</button></div>';
+          '</div>' + breakpointBadge(c) + changeStatusBadge((c as any).status) + '<button class="dm-change-revert" data-dm-remove-change="' + cid + '" title="되돌리기" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;">' + icon('trash', 10) + '</button></div>';
       } else if (item.type === 'token') {
         const c = item.data;
         const shortOld = escapeAttr((c.original || '').slice(0, 20));
@@ -9527,7 +9528,7 @@ function renderChangesTab(): string {
         return '<div class="dm-change-item"' + rowTip + ' style="display:flex;align-items:center;gap:6px;padding:6px 12px 6px ' + indentLeft + 'px;border-bottom:1px solid var(--dm-separator);">' +
           '<span style="color:var(--dm-accent);display:flex;flex-shrink:0;">' + icon('swatchBook', 10) + '</span>' +
           '<div style="flex:1;min-width:0;"><div style="font-size:10px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;"><span style="color:var(--dm-text-muted);font-family:inherit;">' + escapeAttr(c.cssVar) + '</span>' + chips + '<span><span style="color:var(--dm-danger);text-decoration:line-through;font-size:9px;">' + shortOld + '</span> → <span style="color:var(--dm-success);">' + shortNew + '</span></span></div></div>' +
-          '<button class="dm-change-revert" data-dm-token-reset="' + escapeAttr(c.cssVar) + '" data-dm-token-scope="' + escapeAttr(scopeSel) + '" title="Revert token to original" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;">' + icon('trash', 10) + '</button></div>';
+          '<button class="dm-change-revert" data-dm-token-reset="' + escapeAttr(c.cssVar) + '" data-dm-token-scope="' + escapeAttr(scopeSel) + '" title="토큰 원래 값 복원" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;">' + icon('trash', 10) + '</button></div>';
       } else {
         const c = item.data;
         const isViewing = c.id === viewingCommentId;
@@ -9560,13 +9561,13 @@ function renderChangesTab(): string {
             '<span style="color:var(--dm-yellow);display:flex;flex-shrink:0;">' + icon(kindIcon, 10) + '</span>' +
             '<span style="font-size:10px;font-weight:600;color:var(--dm-text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (isRegion ? 'region' : escapeAttr(c.selector || '')) + '</span>' +
             tsInfo +
-            '<button class="dm-change-revert" data-dm-delete-comment="' + c.id + '" title="Delete comment" aria-label="Delete comment" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('trash', 10) + '</button>' +
-            '<button data-dm-action="close-viewing-comment" aria-label="Close" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('x', 10) + '</button>' +
+            '<button class="dm-change-revert" data-dm-delete-comment="' + c.id + '" title="의견 삭제" aria-label="의견 삭제" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('trash', 10) + '</button>' +
+            '<button data-dm-action="close-viewing-comment" aria-label="닫기" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('x', 10) + '</button>' +
             '</div>' +
             '<div style="padding:0 12px 6px 28px;' + bodyStyle + '">' + renderCommentMarkdown(c.text) + '</div>' +
             '<div style="display:flex;gap:6px;padding:0 12px 8px 28px;flex-wrap:wrap;">' +
             resolveBtn +
-            '<button data-dm-edit-comment="' + c.id + '" aria-label="Edit comment" style="padding:3px 10px;background:rgba(139,92,246,0.12);border:1px solid var(--dm-purple-border);border-radius:3px;color:var(--dm-purple);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">Edit</button>' +
+            '<button data-dm-edit-comment="' + c.id + '" aria-label="의견 편집" style="padding:3px 10px;background:rgba(139,92,246,0.12);border:1px solid var(--dm-purple-border);border-radius:3px;color:var(--dm-purple);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">편집</button>' +
             '</div></div>';
         }
         return '<div class="dm-change-item" data-dm-comment-item="' + c.id + '" style="display:flex;align-items:start;gap:6px;padding:6px 12px 6px 28px;border-bottom:1px solid var(--dm-separator);background:' + (isResolved ? 'var(--dm-bg-secondary)' : 'var(--dm-purple-bg)') + ';cursor:pointer;opacity:' + (isResolved ? '0.85' : '1') + ';">' +
@@ -9577,10 +9578,10 @@ function renderChangesTab(): string {
           '<div style="' + bodyStyleCompact + '">' + renderCommentMarkdown(c.text) + '</div>' +
           '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">' +
           resolveBtnCompact +
-          '<button data-dm-edit-comment="' + c.id + '" aria-label="Edit comment" style="padding:2px 8px;background:rgba(139,92,246,0.12);border:1px solid var(--dm-purple-border);border-radius:3px;color:var(--dm-purple);cursor:pointer;font-size:9px;font-family:inherit;">Edit</button>' +
+          '<button data-dm-edit-comment="' + c.id + '" aria-label="의견 편집" style="padding:2px 8px;background:rgba(139,92,246,0.12);border:1px solid var(--dm-purple-border);border-radius:3px;color:var(--dm-purple);cursor:pointer;font-size:9px;font-family:inherit;">편집</button>' +
           '<span style="margin-left:auto;font-size:9px;color:var(--dm-text-dim);font-family:inherit;">' + escapeAttr(tsLabel + editedLabel) + '</span>' +
           '</div></div>' +
-          '<button class="dm-change-revert" data-dm-delete-comment="' + c.id + '" title="Delete comment" aria-label="Delete comment" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;margin-top:2px;">' + icon('trash', 10) + '</button>' +
+          '<button class="dm-change-revert" data-dm-delete-comment="' + c.id + '" title="의견 삭제" aria-label="의견 삭제" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:4px;flex-shrink:0;margin-top:2px;">' + icon('trash', 10) + '</button>' +
           '</div>';
       }
       return '';
@@ -9637,7 +9638,7 @@ function renderChangesTab(): string {
         '<span style="color:var(--dm-text-muted);font-weight:600;letter-spacing:0.4px;">' + labelPrefix + '</span> ' +
         '<span style="color:var(--dm-text);">' + escapeAttr(u.gLabel) + '</span></div>' +
         '<span style="font-size:9px;background:var(--dm-bg-secondary);color:var(--dm-text-dim);border-radius:8px;padding:1px 6px;flex-shrink:0;">' + u.items.length + '</span>' +
-        '<button data-dm-revert-subgroup="' + escapeAttr(u.gid) + '" title="Revert all in this group" style="background:none;border:none;color:var(--dm-danger);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('trash', 10) + '</button>' +
+        '<button data-dm-revert-subgroup="' + escapeAttr(u.gid) + '" title="이 그룹 모두 되돌리기" style="background:none;border:none;color:var(--dm-danger);cursor:pointer;display:flex;padding:2px;flex-shrink:0;">' + icon('trash', 10) + '</button>' +
         '</div>';
       const childrenHtml = isSubCollapsed
         ? ''
@@ -9652,10 +9653,10 @@ function renderChangesTab(): string {
   // with a small contextual empty state.
   const filteredEmpty = items.length === 0;
   const filteredEmptyHtml = filteredEmpty
-    ? '<div style="text-align:center;padding:28px 16px;color:var(--dm-text-dim);font-size:11px;line-height:1.7;">No changes match this filter / search.<br/><a data-dm-action="reset-changes-filter" style="color:var(--dm-accent);cursor:pointer;text-decoration:underline;">Clear filter</a></div>'
+    ? '<div style="text-align:center;padding:28px 16px;color:var(--dm-text-dim);font-size:11px;line-height:1.7;">검색 또는 필터에 맞는 변경사항이 없습니다.<br/><a data-dm-action="reset-changes-filter" style="color:var(--dm-accent);cursor:pointer;text-decoration:underline;">필터 해제</a></div>'
     : '';
 
-  return '<div style="position:relative;">' + headerHtml + renderRouteGroups(allItems.length === 0 ? '<div style="padding:16px 12px;font-size:11px;color:var(--dm-text-muted);">No changes on this route.</div>' : filteredEmpty ? filteredEmptyHtml : groupHtml) + clearAllOverlay + deleteCommentOverlay + revertGroupOverlay + '</div>';
+  return '<div style="position:relative;">' + headerHtml + renderRouteGroups(allItems.length === 0 ? '<div style="padding:16px 12px;font-size:11px;color:var(--dm-text-muted);">이 경로에 변경사항이 없습니다.</div>' : filteredEmpty ? filteredEmptyHtml : groupHtml) + clearAllOverlay + deleteCommentOverlay + revertGroupOverlay + '</div>';
 }
 
 /* ── Settings View ── */
@@ -9675,8 +9676,8 @@ function renderMcpServerCard(sS: string, sT: string, lS: string, activeBtn: stri
     // flips. Without these ids, morphdom would diff the wsPort number
     // input against the cloud-mode url text input at the same position
     // and Chrome would reject value="https://…" as non-numeric.
-    body = '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="' + lS + '">WebSocket Port</span><input id="dm-mcp-ws-port" type="number" class="dm-input" data-dm-setting="wsPort" value="' + escapeAttr(String(mcpPort)) + '" style="width:80px;text-align:right;"/></div>' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="' + lS + '">Auto-connect</span><input id="dm-mcp-auto-connect" type="checkbox" data-dm-setting="autoConnect"' + (mcpAutoConnect ? ' checked' : '') + ' style="accent-color:var(--dm-accent);"/></div>' +
+    body = '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="' + lS + '">WebSocket 포트</span><input id="dm-mcp-ws-port" type="number" class="dm-input" data-dm-setting="wsPort" value="' + escapeAttr(String(mcpPort)) + '" style="width:80px;text-align:right;"/></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="' + lS + '">자동 연결</span><input id="dm-mcp-auto-connect" type="checkbox" data-dm-setting="autoConnect"' + (mcpAutoConnect ? ' checked' : '') + ' style="accent-color:var(--dm-accent);"/></div>' +
       '<div style="font-size:9px;color:var(--dm-text-dimmer);margin-top:4px;line-height:1.4;">Port and auto-connect are stored locally. Run <code style="font-family:SF Mono,monospace;">npm start</code> in <code style="font-family:SF Mono,monospace;">packages/mcp-local</code> to bring up the bridge.</div>';
   } else {
     // Cloud + self-hosted share the same UI; only the URL field is
@@ -9686,8 +9687,8 @@ function renderMcpServerCard(sS: string, sT: string, lS: string, activeBtn: stri
     const mcpEndpoint = (mcpCloudUrl || '').replace(/\/$/, '') + '/mcp';
 
     const urlField = isSelf
-      ? '<div style="display:flex;flex-direction:column;gap:4px;"><span style="' + lS + '">Server URL</span><input id="dm-mcp-cloud-url" type="text" class="dm-input" data-dm-setting="cloudUrl" value="' + escapeAttr(mcpCloudUrl) + '" placeholder="https://your-deploy.vercel.app" style="font-size:10px;"/></div>'
-      : '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="' + lS + '">Server</span><span style="font-size:10px;color:var(--dm-text-secondary);font-family:inherit;">' + escapeAttr(mcpCloudUrl) + '</span></div>';
+      ? '<div style="display:flex;flex-direction:column;gap:4px;"><span style="' + lS + '">서버 URL</span><input id="dm-mcp-cloud-url" type="text" class="dm-input" data-dm-setting="cloudUrl" value="' + escapeAttr(mcpCloudUrl) + '" placeholder="https://your-deploy.vercel.app" style="font-size:10px;"/></div>'
+      : '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="' + lS + '">서버</span><span style="font-size:10px;color:var(--dm-text-secondary);font-family:inherit;">' + escapeAttr(mcpCloudUrl) + '</span></div>';
 
     if (!hasToken) {
       body = urlField +
@@ -9705,8 +9706,8 @@ function renderMcpServerCard(sS: string, sT: string, lS: string, activeBtn: stri
         ? '<span style="font-size:9px;color:var(--dm-text-dimmer);font-family:inherit;">' + escapeAttr(mcpCloudTenantId) + '</span>'
         : '';
       body = urlField +
-        '<div style="display:flex;align-items:center;gap:6px;justify-content:space-between;"><span style="' + lS + '">Token</span>' + tenantBadge + '</div>' +
-        '<div style="display:flex;align-items:center;gap:6px;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:6px;padding:6px 8px;"><code style="font-size:10px;font-family:SF Mono,monospace;color:var(--dm-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">' + escapeAttr(maskToken(mcpCloudToken)) + '</code><button data-dm-action="mcp-cloud-copy-token" title="Copy token" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:2px;">' + icon('copy', 11) + '</button></div>' +
+        '<div style="display:flex;align-items:center;gap:6px;justify-content:space-between;"><span style="' + lS + '">토큰</span>' + tenantBadge + '</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:6px;padding:6px 8px;"><code style="font-size:10px;font-family:SF Mono,monospace;color:var(--dm-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">' + escapeAttr(maskToken(mcpCloudToken)) + '</code><button data-dm-action="mcp-cloud-copy-token" title="토큰 복사" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:2px;">' + icon('copy', 11) + '</button></div>' +
         '<div style="display:flex;gap:6px;margin-top:6px;">' +
         '<button data-dm-action="mcp-cloud-copy-config" data-dm-payload="' + escapeAttr(mcpConfig) + '" style="flex:1;padding:6px 8px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:5px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;">' + icon('copy', 10) + ' Copy MCP config</button>' +
         '</div>' +
@@ -9718,7 +9719,7 @@ function renderMcpServerCard(sS: string, sT: string, lS: string, activeBtn: stri
   // The mode-keyed wrapper id forces morphdom to swap the whole branch
   // on a mode change, instead of trying to diff a number input against
   // a text input across the swap.
-  return '<div style="' + sS + '"><div style="' + sT + '">MCP Server</div>' + modeRow +
+  return '<div style="' + sS + '"><div style="' + sT + '">MCP 서버</div>' + modeRow +
     '<div id="dm-mcp-mode-' + mcpMode + '" style="display:flex;flex-direction:column;gap:6px;">' + body + '</div></div>';
 }
 
@@ -9738,8 +9739,8 @@ function breakpointBadge(c: { breakpoint?: Breakpoint; viewportWidth?: number })
 }
 
 function changeStatusBadge(s?: ChangeStatus): string {
-  if (s === 'in_progress') return '<span title="Agent is implementing this" style="background:rgba(245,158,11,0.18);color:#f59e0b;font-size:8px;font-weight:700;padding:1px 5px;border-radius:9999px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.3px;">WIP</span>';
-  if (s === 'resolved') return '<span title="Agent marked this done" style="background:rgba(34,197,94,0.18);color:rgb(34,197,94);font-size:8px;font-weight:700;padding:1px 5px;border-radius:9999px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.3px;">DONE</span>';
+  if (s === 'in_progress') return '<span title="에이전트가 적용 중입니다" style="background:rgba(245,158,11,0.18);color:#f59e0b;font-size:8px;font-weight:700;padding:1px 5px;border-radius:9999px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.3px;">작업 중</span>';
+  if (s === 'resolved') return '<span title="에이전트가 완료로 표시했습니다" style="background:rgba(34,197,94,0.18);color:rgb(34,197,94);font-size:8px;font-weight:700;padding:1px 5px;border-radius:9999px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.3px;">완료</span>';
   return '';
 }
 
@@ -9755,7 +9756,7 @@ function renderAgentCommandCard(sS: string, sT: string, lS: string): string {
     '<button data-dm-action="copy-agent-command" data-dm-tool="' + t.key + '" style="flex-shrink:0;padding:5px 8px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:5px;color:var(--dm-text-secondary);cursor:pointer;font-size:9px;font-family:inherit;display:flex;align-items:center;gap:4px;">' + icon('copy', 10) + ' Copy</button>' +
     '</div>'
   ).join('');
-  return '<div style="' + sS + '"><div style="' + sT + '">Set up your agent</div>' +
+  return '<div style="' + sS + '"><div style="' + sT + '">에이전트 설정</div>' +
     '<div style="font-size:9px;color:var(--dm-text-dimmer);margin-bottom:8px;line-height:1.4;">Copy the <code style="font-family:SF Mono,monospace;">/design-mode</code> command into your coding tool, then run it after editing. It reads your changes and comments over MCP and resolves them as it works.</div>' +
     '<div style="display:flex;flex-direction:column;gap:8px;">' + rows + '</div></div>';
 }
@@ -9852,31 +9853,31 @@ function renderSettingsView(): string {
     '<input type="text" data-dm-setting="nudge-amount" data-dm-numeric="1" inputmode="decimal" value="' + escapeAttr(String(nudgeAmount)) + '" style="width:64px;padding:6px 8px;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;color:var(--dm-text);font-family:inherit;font-size:11px;"/>' +
     '<span style="font-size:10px;color:var(--dm-text-dim);">px</span>' +
     '</div></div>' +
-    '<div style="' + sS + '"><div style="' + sT + '">Page cursor</div>' +
-    '<div style="font-size:10px;color:var(--dm-text-dim);margin-bottom:8px;">Show the Design Mode icon as the mouse cursor on the page while the panel is open.</div>' +
+    '<div style="' + sS + '"><div style="' + sT + '">페이지 커서</div>' +
+    '<div style="font-size:10px;color:var(--dm-text-dim);margin-bottom:8px;">패널이 열려 있을 때 페이지 커서를 Design Mode 아이콘으로 표시합니다.</div>' +
     '<div style="display:flex;gap:4px;">' +
-    '<button data-dm-custom-cursor="on" style="' + (customCursor ? activeBtn : inactiveBtn) + '">On</button>' +
-    '<button data-dm-custom-cursor="off" style="' + (!customCursor ? activeBtn : inactiveBtn) + '">Off</button>' +
+    '<button data-dm-custom-cursor="on" style="' + (customCursor ? activeBtn : inactiveBtn) + '">켜기</button>' +
+    '<button data-dm-custom-cursor="off" style="' + (!customCursor ? activeBtn : inactiveBtn) + '">끄기</button>' +
     '</div></div>' +
     (!launchCapabilities.floating ? '' :
-    '<div style="' + sS + '"><div style="' + sT + '">Launch</div>' +
+    '<div style="' + sS + '"><div style="' + sT + '">실행 방식</div>' +
     '<div style="font-size:10px;color:var(--dm-text-dim);margin-bottom:8px;">Where the toolbar icon and Alt+D open Design Mode. Pin on top starts a floating opener — your browser needs a click in that window to pin.</div>' +
-    '<div role="group" aria-label="Launch surface" style="display:flex;gap:4px;">' +
-    '<button data-dm-launch-surface="side-panel" aria-pressed="' + (launchSurface === 'side-panel') + '" style="' + (launchSurface === 'side-panel' ? activeBtn : inactiveBtn) + '">Side panel</button>' +
-    '<button data-dm-launch-surface="floating" aria-pressed="' + (launchSurface === 'floating') + '" style="' + (launchSurface === 'floating' ? activeBtn : inactiveBtn) + '">Floating</button>' +
-    (pipAvailable ? '<button data-dm-launch-surface="picture-in-picture" aria-pressed="' + (launchSurface === 'picture-in-picture') + '" style="' + (launchSurface === 'picture-in-picture' ? activeBtn : inactiveBtn) + '">Pin on top</button>' : '') +
+    '<div role="group" aria-label="실행 화면" style="display:flex;gap:4px;">' +
+    '<button data-dm-launch-surface="side-panel" aria-pressed="' + (launchSurface === 'side-panel') + '" style="' + (launchSurface === 'side-panel' ? activeBtn : inactiveBtn) + '">사이드 패널</button>' +
+    '<button data-dm-launch-surface="floating" aria-pressed="' + (launchSurface === 'floating') + '" style="' + (launchSurface === 'floating' ? activeBtn : inactiveBtn) + '">플로팅 창</button>' +
+    (pipAvailable ? '<button data-dm-launch-surface="picture-in-picture" aria-pressed="' + (launchSurface === 'picture-in-picture') + '" style="' + (launchSurface === 'picture-in-picture' ? activeBtn : inactiveBtn) + '">항상 위에 표시</button>' : '') +
     '</div></div>') +
-    '<div style="' + sS + '"><div style="' + sT + '">Screenshot Capture</div>' +
+    '<div style="' + sS + '"><div style="' + sT + '">화면 캡처</div>' +
     '<div style="font-size:10px;color:var(--dm-text-dim);margin-bottom:8px;">What the camera button and Alt+Shift+S do — viewport when nothing real is selected, otherwise the selected element.</div>' +
     '<div style="display:flex;gap:4px;">' +
-    '<button data-dm-capture-mode="clipboard" style="' + (captureMode === 'clipboard' ? activeBtn : inactiveBtn) + '">Clipboard</button>' +
-    '<button data-dm-capture-mode="download" style="' + (captureMode === 'download' ? activeBtn : inactiveBtn) + '">Download</button>' +
-    '<button data-dm-capture-mode="both" style="' + (captureMode === 'both' ? activeBtn : inactiveBtn) + '">Both</button>' +
+    '<button data-dm-capture-mode="clipboard" style="' + (captureMode === 'clipboard' ? activeBtn : inactiveBtn) + '">클립보드</button>' +
+    '<button data-dm-capture-mode="download" style="' + (captureMode === 'download' ? activeBtn : inactiveBtn) + '">다운로드</button>' +
+    '<button data-dm-capture-mode="both" style="' + (captureMode === 'both' ? activeBtn : inactiveBtn) + '">둘 다</button>' +
     '</div></div>' +
-    '<div style="' + sS + '"><div style="' + sT + '">Theme</div><div style="display:flex;gap:4px;">' +
-    '<button data-dm-theme="system" style="' + themeActive('system') + '">System</button>' +
-    '<button data-dm-theme="dark" style="' + themeActive('dark') + '">Dark</button>' +
-    '<button data-dm-theme="light" style="' + themeActive('light') + '">Light</button></div></div>' +
+    '<div style="' + sS + '"><div style="' + sT + '">테마</div><div style="display:flex;gap:4px;">' +
+    '<button data-dm-theme="system" style="' + themeActive('system') + '">시스템</button>' +
+    '<button data-dm-theme="dark" style="' + themeActive('dark') + '">다크</button>' +
+    '<button data-dm-theme="light" style="' + themeActive('light') + '">라이트</button></div></div>' +
     // Footer actions — Reset + Shortcuts. Reset wipes the locally-stored
     // settings (theme, color format, capture mode, MCP port + auto-connect,
     // inspector colours) so the next session starts at defaults.
@@ -9890,10 +9891,10 @@ function renderSettingsView(): string {
 function renderPipLaunchInterstitial(): string {
   return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:14px;padding:24px;text-align:center;color:var(--dm-text-secondary);">' +
     '<span style="display:flex;color:var(--dm-accent);">' + icon('pictureInPicture2', 28) + '</span>' +
-    '<div style="font-size:14px;font-weight:600;color:var(--dm-text);">Pin on top</div>' +
+    '<div style="font-size:14px;font-weight:600;color:var(--dm-text);">항상 위에 표시</div>' +
     '<div style="font-size:12px;line-height:1.45;max-width:280px;">Chrome can only pin this panel above other windows from a click here. Pin it now — this window stays open in the background while you edit.</div>' +
-    '<button data-dm-action="pip-pin" autofocus style="padding:8px 16px;background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:6px;color:var(--dm-accent);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;">Pin on top</button>' +
-    '<button data-dm-action="dismiss-pip-launch" style="background:none;border:none;color:var(--dm-text-dim);cursor:pointer;font-family:inherit;font-size:11px;text-decoration:underline;">Continue in floating window</button>' +
+    '<button data-dm-action="pip-pin" autofocus style="padding:8px 16px;background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);border-radius:6px;color:var(--dm-accent);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;">항상 위에 표시</button>' +
+    '<button data-dm-action="dismiss-pip-launch" style="background:none;border:none;color:var(--dm-text-dim);cursor:pointer;font-family:inherit;font-size:11px;text-decoration:underline;">플로팅 창에서 계속</button>' +
     '</div>';
 }
 
@@ -9980,8 +9981,8 @@ function renderShortcutsPopover(): string {
   const fixed = DEFAULT_SHORTCUTS.filter(sc => FIXED_SHORTCUT_ACTIONS.has(sc.action));
   const fixedGroup = fixed.length
     ? '<div style="border-top:1px solid var(--dm-separator);padding-top:10px;">' +
-      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--dm-text-dim);margin-bottom:2px;">Fixed</div>' +
-      '<div style="font-size:9px;color:var(--dm-text-dimmer);margin-bottom:6px;line-height:1.4;">Built-in keys — not remappable.</div>' +
+      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--dm-text-dim);margin-bottom:2px;">고정</div>' +
+      '<div style="font-size:9px;color:var(--dm-text-dimmer);margin-bottom:6px;line-height:1.4;">기본 단축키 — 변경할 수 없습니다.</div>' +
       fixed.map(row).join('') +
       '</div>'
     : '';
@@ -9989,7 +9990,7 @@ function renderShortcutsPopover(): string {
     '<div data-dm-action="noop" data-dm-shortcuts-card style="background:var(--dm-bg);border:1px solid var(--dm-separator-strong);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);width:100%;max-width:425px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">' +
     '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--dm-separator);flex-shrink:0;">' +
     '<span style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--dm-text);">' + icon('keyboard', 13) + ' Keyboard shortcuts</span>' +
-    '<button data-dm-action="close-shortcuts" aria-label="Close" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:2px;">' + icon('x', 14) + '</button>' +
+    '<button data-dm-action="close-shortcuts" aria-label="닫기" style="background:none;border:none;color:var(--dm-text-muted);cursor:pointer;display:flex;padding:2px;">' + icon('x', 14) + '</button>' +
     '</div>' +
     '<div style="padding:12px 14px;overflow-y:auto;">' + groups + fixedGroup + '</div>' +
     '</div></div>';
@@ -10004,14 +10005,14 @@ function renderHelpView(): string {
   return '<div class="dm-overlay-page" style="padding:16px;">' +
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">' +
     '<button data-dm-action="back-from-help" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('chevronLeft', 14) + '</button>' +
-    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">Help</span></div>' +
+    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">도움말</span></div>' +
     '<div style="display:flex;flex-direction:column;gap:12px;">' +
     '<button data-dm-action="show-shortcuts" style="' + secondaryBtn + '">' + icon('keyboard', 12) + ' Keyboard shortcuts</button>' +
     '<div style="' + card + '">' +
     '<p style="margin:0 0 12px 0;font-size:12px;line-height:1.5;color:var(--dm-text-secondary);">Found a bug or want to request a feature? File it on GitHub — please include your Chrome version and repro steps.</p>' +
     '<a href="https://github.com/SandeepBaskaran/design-mode/issues/new/choose" data-dm-help-target="issues" target="_blank" rel="noopener noreferrer" style="' + primaryBtn + '">Report an issue ' + icon('externalLink', 12) + '</a>' +
     '<div style="height:8px;"></div>' +
-    '<button data-dm-action="copy-diagnostics" style="' + secondaryBtn + '">' + icon('copy', 12) + ' <span data-dm-copy-label>Copy diagnostics</span></button>' +
+    '<button data-dm-action="copy-diagnostics" style="' + secondaryBtn + '">' + icon('copy', 12) + ' <span data-dm-copy-label>진단 정보 복사</span></button>' +
     '</div>' +
     '<div style="' + card + '"><div style="display:flex;flex-direction:column;gap:8px;">' +
     '<a href="https://github.com/SandeepBaskaran/design-mode#readme" data-dm-help-target="readme" target="_blank" rel="noopener noreferrer" style="' + linkStyle + '">Read the docs ↗</a>' +
@@ -10032,12 +10033,12 @@ function renderFileAccessView(): string {
   return '<div style="padding:16px;">' +
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">' +
     '<span style="display:flex;color:var(--dm-text-secondary);">' + icon('fileText', 14) + '</span>' +
-    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">Local file</span></div>' +
+    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">로컬 파일</span></div>' +
     '<div style="' + card + '">' +
     '<p style="margin:0 0 12px 0;font-size:12px;line-height:1.5;color:var(--dm-text-secondary);">' +
     (IS_FIREFOX ? 'Firefox has not allowed Design Mode to access this local file. Enable local-file access in the add-on’s permissions:' : 'Chrome blocks extensions from local files by default. To edit this file, allow Design Mode to access file URLs:') + '</p>' +
     '<ol style="margin:0 0 12px 0;padding-left:18px;">' +
-    step(IS_FIREFOX ? 'Type <strong style="color:var(--dm-text);">about:addons</strong> in Firefox’s address bar, select Design Mode, then open <strong style="color:var(--dm-text);">Permissions</strong>.' : 'Open Design Mode’s extension settings — the button below takes you there.') +
+    step(IS_FIREFOX ? 'Type <strong style="color:var(--dm-text);">about:addons</strong> in Firefox’s address bar, select Design Mode, then open <strong style="color:var(--dm-text);">권한</strong>.' : 'Open Design Mode’s extension settings — the button below takes you there.') +
     step('Turn on <strong style="color:var(--dm-text);">“' + (IS_FIREFOX ? 'Access local files on your computer' : 'Allow access to file URLs') + '”</strong>.') +
     step(IS_FIREFOX ? 'Come back to this file tab, reload the page, and reopen the sidebar.' : 'Chrome reloads the extension — come back to this tab and reopen the panel.') +
     '</ol>' +
@@ -10069,13 +10070,13 @@ function renderHoverGuideView(): string {
   return '<div style="padding:16px;">' +
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">' +
     '<span style="display:flex;color:var(--dm-text-secondary);">' + icon('mousePointer2', 14) + '</span>' +
-    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">Hover is off in responsive mode</span></div>' +
+    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">반응형 모드에서 마우스 오버가 꺼져 있습니다</span></div>' +
     '<div style="' + card + '">' +
     '<p style="margin:0 0 10px 0;font-size:12px;line-height:1.5;color:var(--dm-text-secondary);">Your browser is emulating touch, and touch has no hover — so element preview is off. Tapping still selects.</p>' +
-    '<p style="margin:0 0 6px 0;font-size:11px;font-weight:600;color:var(--dm-text-muted);text-transform:uppercase;letter-spacing:0.3px;">Get hover back</p>' +
+    '<p style="margin:0 0 6px 0;font-size:11px;font-weight:600;color:var(--dm-text-muted);text-transform:uppercase;letter-spacing:0.3px;">마우스 오버 복원</p>' +
     '<ul style="margin:0 0 12px 0;padding-left:18px;">' + steps + '</ul>' +
-    '<p style="font-size:12px;line-height:1.5;color:var(--dm-text-secondary);">The panel returns to normal on its own when hover is available again.</p>' +
-    '<button data-dm-action="hover-guide-proceed" style="' + primaryBtn + '">Continue anyway — tap to select</button>' +
+    '<p style="font-size:12px;line-height:1.5;color:var(--dm-text-secondary);">마우스 오버가 가능해지면 패널이 자동 복원됩니다.</p>' +
+    '<button data-dm-action="hover-guide-proceed" style="' + primaryBtn + '">계속 진행 — 눌러서 선택</button>' +
     '</div>' +
     '</div>';
 }
@@ -10099,7 +10100,7 @@ function renderContributeView(): string {
   const shareRow =
     '<button data-dm-action="copy-share-text" style="' + rowBtn + '">' +
       '<span style="' + rowIcon + '">' + icon('share2', 14) + '</span>' +
-      '<span style="' + rowText + '" data-dm-share-label>Share with your network</span>' +
+      '<span style="' + rowText + '" data-dm-share-label>주변에 공유</span>' +
       '<span style="' + rowExt + '">' + icon('copy', 11) + '</span>' +
     '</button>';
 
@@ -10111,11 +10112,11 @@ function renderContributeView(): string {
   return '<div class="dm-overlay-page" style="padding:16px;">' +
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">' +
     '<button data-dm-action="back-from-contribute" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('chevronLeft', 14) + '</button>' +
-    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">Contribute</span></div>' +
+    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">프로젝트 참여</span></div>' +
     '<p style="margin:0 0 18px 2px;font-size:12px;line-height:1.55;color:var(--dm-text-secondary);">Design Mode is free, forever — and open source. If it’s useful to you, here are a few ways to help.</p>' +
     '<div style="display:flex;flex-direction:column;gap:16px;">' +
 
-    '<div><div style="' + sectionLabel + '">Spread the word</div>' +
+    '<div><div style="' + sectionLabel + '">소개하기</div>' +
     '<div style="' + card + '"><div style="display:flex;flex-direction:column;gap:8px;">' +
     row('star', 'Star the repo on GitHub', 'https://github.com/SandeepBaskaran/design-mode') +
     (IS_SAFARI ? '' : IS_FIREFOX
@@ -10125,14 +10126,14 @@ function renderContributeView(): string {
     shareRow +
     '</div></div></div>' +
 
-    '<div><div style="' + sectionLabel + '">Help improve it</div>' +
+    '<div><div style="' + sectionLabel + '">개선에 참여하기</div>' +
     '<div style="' + card + '"><div style="display:flex;flex-direction:column;gap:8px;">' +
     row('alertTriangle', 'Report an issue', 'https://github.com/SandeepBaskaran/design-mode/issues/new/choose') +
     row('messageCircle', 'Start a discussion', 'https://github.com/SandeepBaskaran/design-mode/discussions') +
     row('gitPullRequest', 'Open a pull request', 'https://github.com/SandeepBaskaran/design-mode/compare') +
     '</div></div></div>' +
 
-    '<div><div style="' + sectionLabel + '">Support the project</div>' +
+    '<div><div style="' + sectionLabel + '">프로젝트 후원</div>' +
     '<div style="' + card + '">' +
     sponsorBtn +
     '<p style="margin:10px 0 0 0;font-size:11px;line-height:1.5;color:var(--dm-text-secondary);">Helps cover Cloud MCP costs (tool-call limits, infra) so those stay generous for everyone.</p>' +
@@ -10257,7 +10258,7 @@ function render() {
     // the real panel UI lives in the PiP iframe.
     html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:12px;color:var(--dm-text-secondary);">' +
       '<span style="display:flex;color:var(--dm-text-dim);">' + icon('pictureInPicture2', 24) + '</span>' +
-      '<div style="font-size:12px;">Panel is pinned on top</div>' +
+      '<div style="font-size:12px;">패널이 항상 위에 고정되었습니다</div>' +
       '<button data-dm-action="pip-dock-back-from-launcher" style="background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:5px;color:var(--dm-text-secondary);padding:5px 12px;cursor:pointer;font-family:inherit;font-size:11px;">' + (IS_FIREFOX ? 'Prepare docking — finish from page toolbar' : 'Back to side panel') + '</button>' +
       '</div>';
   } else if (pipLaunchPending && !isPip) {
@@ -10271,16 +10272,16 @@ function render() {
   } else if (contributeOpen) {
     html = renderHeader() + renderContributeView() + renderCaptureToast();
   } else if (IS_SAFARI && inspectorError) {
-    html = renderHeader() + '<section style="padding:20px;line-height:1.5;"><h2 style="font-size:15px;">Reconnect to the active page</h2>' +
+    html = renderHeader() + '<section style="padding:20px;line-height:1.5;"><h2 style="font-size:15px;">현재 페이지에 다시 연결</h2>' +
       '<p role="alert" style="margin:12px 0;">' + escapeAttr(inspectorError) + '</p>' +
       '<p style="margin-bottom:12px;">Keep Web Inspector docked. Select a normal HTTP/HTTPS page, then pick an element again. Website access is managed in Safari Settings → Extensions.</p>' +
-      '<button class="dm-btn" data-dm-action="inspector-repick">Pick element on active tab</button>' +
-      '<button class="dm-btn" style="margin-top:8px;" data-dm-action="inspector-reload">Reload editor connection</button></section>';
+      '<button class="dm-btn" data-dm-action="inspector-repick">활성 탭에서 요소 선택</button>' +
+      '<button class="dm-btn" style="margin-top:8px;" data-dm-action="inspector-reload">편집기 연결 새로고침</button></section>';
   } else if (tokensOpen) {
     html = '<div style="display:flex;flex-direction:column;height:100vh;overflow:hidden;">' +
       renderHeader() + renderTokensView() + renderCaptureToast() + '</div>';
   } else if (pageUnavailable) {
-    html = renderHeader() + '<div role="status" style="box-sizing:border-box;width:100vw;max-width:100%;padding:24px 16px;text-align:center;overflow-wrap:anywhere;"><h2 style="font-size:16px;">Page unavailable</h2><p>Design Mode cannot inspect this page. Open a regular website, then reopen the panel.</p></div>';
+    html = renderHeader() + '<div role="status" style="box-sizing:border-box;width:100vw;max-width:100%;padding:24px 16px;text-align:center;overflow-wrap:anywhere;"><h2 style="font-size:16px;">페이지에 접근할 수 없습니다</h2><p>이 페이지를 검사할 수 없습니다. 일반 웹사이트에서 패널을 다시 여세요.</p></div>';
   } else if (fileAccessBlocked) {
     html = renderHeader() + renderFileAccessView() + renderCaptureToast();
   } else if (!hoverAvailable && !hoverGuideProceeded) {

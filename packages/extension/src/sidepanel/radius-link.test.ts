@@ -20,12 +20,12 @@ for (const linked of [false, true]) for (const prop of [...props, 'borderRadius'
   });
 }
 test('radius toggle is explicit and accessible; changes use a single dispatch', () => {
-  assert.match(source, /data-dm-corner-link aria-label="Link corner radii" aria-pressed=/);
+  assert.match(source, /data-dm-corner-link aria-label="모서리 반경 연결" aria-pressed=/);
   assert.match(source, /if \(cornerLinkBtn\).*cornerRadiusLinked = !cornerRadiusLinked/);
   assert.doesNotMatch(source, /Promise.all\(borderRadii/);
 });
 test('Motion raw Transform shares the real CSS property and detects matrix-only transforms', () => {
   assert.match(source, /const transformIsSet = \(!!s.transform && s.transform !== 'none'\)/);
   const block = source.slice(source.indexOf('if (transformIsSet) motionRawPieces.push('), source.indexOf('// Motion Path —'));
-  assert.match(block, /inp\('Transform', 'transform', s.transform \|\| 'none', ''\)/);
+  assert.match(block, /inp\('변형', 'transform', s.transform \|\| 'none', ''\)/);
 });

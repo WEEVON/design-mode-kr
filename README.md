@@ -2,7 +2,7 @@
 
 브라우저에서 웹페이지를 직접 편집하고 정확한 변경사항을 기록해 AI 코딩 에이전트에 전달하는 무료 오픈소스 확장 프로그램입니다. 화면 편집은 미리보기이며 실제 소스는 저장소 접근 권한이 있는 에이전트가 수정합니다.
 
-위브온 한국어판은 [원본 Design Mode](https://github.com/SandeepBaskaran/design-mode)를 기반으로 하며 MIT 라이선스와 MCP 규격을 유지합니다. 현재 UI 한글화 작업 중입니다.
+위브온 한국어판은 [원본 Design Mode](https://github.com/SandeepBaskaran/design-mode)를 기반으로 하며 MIT 라이선스와 MCP 규격을 유지합니다. 주요 UI를 한글화했으며 일부 고급 옵션과 메시지는 영문으로 남아 있습니다.
 
 ![Design Mode 사이드 패널](website/public/cover.png)
 
@@ -17,6 +17,10 @@
 
 ## 한국어판 설치 (Chrome)
 
+[한국어판 미리보기 ZIP 다운로드](https://github.com/WEEVON/design-mode-kr/releases/tag/ko-preview-20261127) → 압축 해제 → Chrome의 개발자 모드에서 압축 해제한 폴더 로드.
+
+### 소스에서 직접 빌드
+
 Node.js 18 이상이 필요합니다. 원본 릴리스 환경인 Node.js 20 및 npm 10을 권장합니다.
 
 ```bash
@@ -26,7 +30,7 @@ npm ci
 npm run build:extension
 ```
 
-Chrome에서 chrome://extensions → 개발자 모드 → 압축해제된 확장 프로그램 로드 → packages/extension/dist 폴더를 선택합니다. 수정 후 다시 빌드하고 확장을 새로고침합니다. 한국어판 빌드 및 브라우저 검증은 아직 완료되지 않았습니다.
+Chrome에서 chrome://extensions → 개발자 모드 → 압축해제된 확장 프로그램 로드 → packages/extension/dist 폴더를 선택합니다. 수정 후 다시 빌드하고 확장을 새로고침합니다. TypeScript 검사, 빌드 및 확장 자동 테스트 573개를 통과했습니다. 실제 Chrome에서 설치 및 MCP 연결 검증은 별도로 필요합니다.
 
 원본 배포판은 [Chrome 웹스토어](https://chromewebstore.google.com/detail/design-mode/ighgobegfcmjagombgnfhgioflinojih), [Firefox 140+](https://addons.mozilla.org/firefox/addon/design-mode-add-on/), [Safari 임시 확장](https://github.com/SandeepBaskaran/design-mode/releases/latest)에서 받을 수 있습니다. 이 링크는 한국어판이 아닙니다. Safari에서는 designmode-for-safari.zip을 임시 확장으로 추가하며 종료 시 제거됩니다.
 
