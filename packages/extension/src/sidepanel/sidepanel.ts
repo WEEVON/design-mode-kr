@@ -6259,7 +6259,7 @@ function renderTokensView(): string {
     '<label class="dm-token-io-btn dm-token-io-btn-labelled" title="Import design-system JSON">' +
       icon('upload', 11) + '<span>Import</span>' +
       '<input type="file" accept=".json" data-dm-tokens-import style="display:none;"/></label>' +
-    '<button data-dm-action="tokens-export" class="dm-token-io-btn dm-token-io-btn-labelled" title="Export the detected design system as JSON">' + icon('download', 11) + '<span>Export</span></button>' +
+    '<button data-dm-action="tokens-export" class="dm-token-io-btn dm-token-io-btn-labelled" title="감지된 디자인 시스템을 JSON으로 내보내기">' + icon('download', 11) + '<span>내보내기</span></button>' +
     '<button data-dm-action="refresh-tokens" class="dm-token-io-btn" title="Rescan the page">' + icon('rotateCw', 11) + '</button>' +
     '</div>';
 
@@ -6706,7 +6706,7 @@ function renderDefinedTab(allowedKinds: Set<PresetKindLocal>, searchFilter: stri
   const addPanel = presetAddingKind === null
     ? '<div class="dm-defined-cta"><button data-dm-action="add-preset-open" class="dm-defined-add-btn"' +
         (hasSelection ? '' : ' disabled') +
-        ' title="' + (hasSelection ? 'Save the selected element’s styles as a preset' : 'Select an element on the page first') + '">' +
+        ' title="' + (hasSelection ? '선택한 요소의 스타일을 프리셋으로 저장' : '먼저 페이지에서 요소를 선택하세요') + '">' +
         icon('plus', 11) + '<span>Add preset</span></button></div>'
     : available.length === 0
       ? '<div class="dm-defined-add-form">' +
@@ -6726,7 +6726,7 @@ function renderDefinedTab(allowedKinds: Set<PresetKindLocal>, searchFilter: stri
                 '<input type="text" class="dm-input dm-defined-name" data-dm-defined-name placeholder="Preset name" autofocus />' +
               '</div>' +
               '<div style="display:flex;justify-content:flex-end;gap:6px;">' +
-                '<button data-dm-action="add-preset-cancel" class="dm-defined-form-btn dm-defined-form-cancel">Cancel</button>' +
+                '<button data-dm-action="add-preset-cancel" class="dm-defined-form-btn dm-defined-form-cancel">취소</button>' +
                 '<button data-dm-action="add-preset-save" class="dm-defined-form-btn dm-defined-form-save">' + icon('save', 10) + ' Save</button>' +
               '</div>' +
             '</div>' +
@@ -6749,7 +6749,7 @@ function renderDefinedTab(allowedKinds: Set<PresetKindLocal>, searchFilter: stri
         visiblePresets.map(p => {
           const appliedGroup = appliedPresetGroups.get(p.id);
           const applied = !!appliedGroup && styleChanges.some(change => change.groupId === appliedGroup);
-          const applyTitle = hasSelection ? 'Apply to the selected element' : 'Select an element on the page first';
+          const applyTitle = hasSelection ? '선택한 요소에 적용' : '먼저 페이지에서 요소를 선택하세요';
           const actionBtn = applied
             ? '<button class="dm-preset-applied" data-dm-action="unapply-preset" data-preset-id="' + escapeAttr(p.id) + '" title="Revert the styles this preset added">' + icon('undo', 10) + ' Applied</button>'
             : '<button class="dm-preset-apply" data-dm-action="apply-preset" data-preset-id="' + escapeAttr(p.id) + '"' +
@@ -6918,7 +6918,7 @@ function mcpStatusDisplay(): { dotStyle: string; textColor: string; label: strin
   return {
     dotStyle: 'width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,0.4);flex-shrink:0;',
     textColor: '#22c55e',
-    label: 'Connected',
+    label: '연결됨',
     detail: isCloud
       ? 'Cloud relay connected and serving an agent.'
       : 'MCP connected and serving an agent.',
@@ -6997,19 +6997,19 @@ function renderCommentCard(): string {
   return '<div style="padding:10px 12px;border-bottom:1px solid var(--dm-separator-strong);background:var(--dm-purple-bg);">' +
     '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">' +
     '<span style="color:var(--dm-purple);display:flex;">' + icon('messageSquare', 14) + '</span>' +
-    '<span style="font-size:11px;font-weight:600;color:var(--dm-text);">' + (isEditing ? 'Edit Comment' : 'Add Comment') + '</span>' +
+    '<span style="font-size:11px;font-weight:600;color:var(--dm-text);">' + (isEditing ? '의견 수정' : '의견 추가') + '</span>' +
     '<span style="font-size:9px;color:var(--dm-text-dim);font-family:inherit;">' + tagLabel + '</span></div>' +
     '<textarea data-dm-comment-input style="width:100%;min-height:60px;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:6px;color:var(--dm-text);font-size:11px;padding:8px;outline:none;resize:vertical;font-family:inherit;box-sizing:border-box;">' + escapeAttr(commentText) + '</textarea>' +
     '<div style="display:flex;gap:6px;margin-top:8px;justify-content:flex-end;">' +
-    '<button data-dm-action="cancel-comment" style="padding:5px 12px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:5px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">Cancel</button>' +
-    '<button data-dm-action="submit-comment" ' + (isEditing && !commentDirty ? 'disabled style="padding:5px 12px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.1);border-radius:5px;color:rgba(139,92,246,0.4);cursor:default;font-size:10px;font-weight:500;font-family:inherit;opacity:0.5;"' : 'style="padding:5px 12px;background:rgba(139,92,246,0.15);border:1px solid var(--dm-purple-border);border-radius:5px;color:var(--dm-purple);cursor:pointer;font-size:10px;font-weight:500;font-family:inherit;"') + '>' + (isEditing ? 'Save' : 'Add') + '</button></div></div>';
+    '<button data-dm-action="cancel-comment" style="padding:5px 12px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:5px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">취소</button>' +
+    '<button data-dm-action="submit-comment" ' + (isEditing && !commentDirty ? 'disabled style="padding:5px 12px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.1);border-radius:5px;color:rgba(139,92,246,0.4);cursor:default;font-size:10px;font-weight:500;font-family:inherit;opacity:0.5;"' : 'style="padding:5px 12px;background:rgba(139,92,246,0.15);border:1px solid var(--dm-purple-border);border-radius:5px;color:var(--dm-purple);cursor:pointer;font-size:10px;font-weight:500;font-family:inherit;"') + '>' + (isEditing ? '저장' : '추가') + '</button></div></div>';
 }
 
 function renderTabs(): string {
   const tabs: { key: Tab; label: string; iconName: keyof typeof icons; badge?: number }[] = [
-    { key: 'layers', label: 'Layers', iconName: 'layers' },
-    { key: 'design', label: 'Design', iconName: 'sliders' },
-    { key: 'changes', label: 'Changes', iconName: 'sparkles', badge: siteChangeCount() },
+    { key: 'layers', label: '레이어', iconName: 'layers' },
+    { key: 'design', label: '디자인', iconName: 'sliders' },
+    { key: 'changes', label: '변경사항', iconName: 'sparkles', badge: siteChangeCount() },
   ];
   return '<div style="display:flex;padding:4px 12px;gap:2px;border-bottom:1px solid var(--dm-separator);flex-shrink:0;">' +
     tabs.map(tt => {
@@ -7022,11 +7022,11 @@ function renderTabs(): string {
 function renderLiveFeedbackStatus(): string {
   if (mcpMode !== 'local' || !feedbackSession) return '';
   const stopped = feedbackSession.state === 'stopped';
-  const label = stopped ? 'Stopped' : feedbackSession.state === 'waiting' ? 'Waiting for feedback' : 'Implementing';
+  const label = stopped ? '중지됨' : feedbackSession.state === 'waiting' ? '피드백 대기 중' : '적용 중';
   const detail = stopped ? 'The extension cannot cancel commands already running in your agent; they may still finish. Run /design-mode again to start a new loop.' : feedbackSession.state === 'waiting' ? 'Make your edits, then Send to your AI agent.' : 'You can keep editing. Send the next round when the agent is waiting.';
   return '<div style="padding:8px 12px 0;display:flex;gap:8px;align-items:center;">' +
-    '<div role="status" aria-live="polite" style="flex:1;min-width:0;font-size:10px;line-height:1.5;color:var(--dm-text-secondary);"><strong style="color:var(--dm-text);">Live feedback · ' + label + '</strong><div>' + detail + '</div></div>' +
-    (stopped ? '' : '<button data-dm-action="stop-live-feedback" title="End feedback rounds. Commands already running in your agent may still finish." style="padding:6px 9px;border-radius:5px;border:1px solid var(--dm-btn-border);background:var(--dm-btn-bg);color:var(--dm-danger);font:inherit;font-size:11px;cursor:pointer;">Stop</button>') + '</div>';
+    '<div role="status" aria-live="polite" style="flex:1;min-width:0;font-size:10px;line-height:1.5;color:var(--dm-text-secondary);"><strong style="color:var(--dm-text);">실시간 피드백 · ' + label + '</strong><div>' + detail + '</div></div>' +
+    (stopped ? '' : '<button data-dm-action="stop-live-feedback" title="End feedback rounds. Commands already running in your agent may still finish." style="padding:6px 9px;border-radius:5px;border:1px solid var(--dm-btn-border);background:var(--dm-btn-bg);color:var(--dm-danger);font:inherit;font-size:11px;cursor:pointer;">중지</button>') + '</div>';
 }
 
 function renderStickyBottom(): string {
@@ -7037,13 +7037,13 @@ function renderStickyBottom(): string {
   // instead of sending (and is not counted as a send). The tooltip previews which of the two it will be.
   const implementing = mcpMode === 'local' && feedbackSession?.state === 'implementing';
   const sendDis = previewingOriginal || !hasChanges || sendingFeedback || implementing;
-  let sendTitle = 'Send changes from every route on this site to your coding agent';
-  if (implementing) sendTitle = 'The agent is implementing this round. Wait before sending the next one.';
+  let sendTitle = '이 사이트의 모든 경로에서 변경한 내용을 코딩 에이전트로 전송';
+  if (implementing) sendTitle = '에이전트가 현재 변경사항을 적용 중입니다. 적용 후 다음 변경사항을 전송하세요.';
   if (previewingOriginal) sendTitle = 'Disable “Preview original” first.';
-  else if (!hasChanges) sendTitle = 'No changes to send.';
+  else if (!hasChanges) sendTitle = '전송할 변경사항이 없습니다.';
   else if (mcpState === 'offline') sendTitle = 'Not connected to an agent yet — click to finish setup here. Nothing is sent until it is.';
   else if (mcpState === 'running') sendTitle = 'No coding agent is connected yet — click to finish setup here. Nothing is sent until one is.';
-  const copyTitle = previewingOriginal ? 'Disable “Preview original” first.' : !hasChanges ? 'No changes to copy.' : 'Copy changes from every route on this site, including collapsed groups';
+  const copyTitle = previewingOriginal ? 'Disable “Preview original” first.' : !hasChanges ? '복사할 변경사항이 없습니다.' : '접힌 그룹을 포함한 모든 경로의 변경사항 복사';
   const copyS = 'flex:1;padding:8px 12px;border-radius:8px;font-size:11px;font-weight:500;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;' +
     (copyDis ? 'background:var(--dm-btn-bg-disabled);border:1px solid var(--dm-btn-border-disabled);color:var(--dm-text-dim);cursor:default;opacity:0.5;pointer-events:none;' : 'background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);color:var(--dm-text-secondary);cursor:pointer;');
   // pointer-events:auto on the disabled send button so hover/title still
@@ -7051,8 +7051,8 @@ function renderStickyBottom(): string {
   const sendS = 'flex:1;padding:8px 12px;border-radius:8px;font-size:11px;font-weight:500;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;' +
     (sendDis ? 'background:var(--dm-btn-bg-disabled);border:1px solid var(--dm-btn-border-disabled);color:var(--dm-text-dim);cursor:not-allowed;opacity:0.5;' : 'background:var(--dm-accent-bg);border:1px solid var(--dm-accent-border);color:var(--dm-accent);cursor:pointer;');
   return '<div style="border-top:1px solid var(--dm-separator-strong);flex-shrink:0;background:var(--dm-bg);position:sticky;bottom:0;z-index:10;">' + renderLiveFeedbackStatus() + '<div class="dm-handoff-actions" style="display:flex;gap:8px;padding:10px 12px;">' +
-    '<button id="dm-copy-prompt-btn" data-dm-action="copy-prompt"' + (copyDis ? ' disabled aria-disabled="true"' : '') + ' title="' + escapeAttr(copyTitle) + '" style="' + copyS + '">' + icon('clipboard', 13) + ' Copy as Prompt</button>' +
-    '<button id="dm-send-agent-btn" data-dm-action="send-to-agent"' + (sendDis ? ' disabled aria-disabled="true"' : '') + ' title="' + escapeAttr(sendTitle) + '" style="' + sendS + '">' + icon('send', 13) + (Date.now() < feedbackSentUntil ? ' Sent!' : ' Send to your AI agent') + '</button></div></div>';
+    '<button id="dm-copy-prompt-btn" data-dm-action="copy-prompt"' + (copyDis ? ' disabled aria-disabled="true"' : '') + ' title="' + escapeAttr(copyTitle) + '" style="' + copyS + '">' + icon('clipboard', 13) + ' 프롬프트 복사</button>' +
+    '<button id="dm-send-agent-btn" data-dm-action="send-to-agent"' + (sendDis ? ' disabled aria-disabled="true"' : '') + ' title="' + escapeAttr(sendTitle) + '" style="' + sendS + '">' + icon('send', 13) + (Date.now() < feedbackSentUntil ? ' 전송 완료!' : ' AI 에이전트로 전송') + '</button></div></div>';
 }
 
 // First-run guidance for "Send to Agent": shown when the button is clicked
@@ -7197,7 +7197,7 @@ function renderLayersTab(): string {
   const searchBar = '<div style="padding:8px 12px;border-bottom:1px solid var(--dm-separator);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
     '<div style="position:relative;flex:1;min-width:60px;">' +
     '<span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--dm-text-dim);display:flex;pointer-events:none;">' + icon('search', 12) + '</span>' +
-    '<input type="text" class="dm-layer-search" data-dm-layer-search placeholder="Search layers..." value="' + escapeAttr(layerSearch) + '"/></div>' +
+    '<input type="text" class="dm-layer-search" data-dm-layer-search placeholder="레이어 검색..." value="' + escapeAttr(layerSearch) + '"/></div>' +
     '<button data-dm-action="toggle-layer-multi-select" aria-label="Multi-select layers" aria-pressed="' + layerMultiSelectMode + '" title="Multi-select layers (Shift-click selects a range)" style="display:flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--dm-separator);border-radius:6px;background:' + (layerMultiSelectMode ? 'var(--dm-accent-bg)' : 'transparent') + ';color:' + (layerMultiSelectMode ? 'var(--dm-accent)' : 'var(--dm-text-secondary)') + ';cursor:pointer;font-size:10px;font-family:inherit;flex-shrink:0;">' + icon('checkSquare', 12) + ' Multi-select</button>' +
     selectionChip +
     '</div>';
@@ -9044,7 +9044,7 @@ function renderRouteGroups(activeHtml: string): string {
     try { const url = new URL(group.url); label = url.pathname + url.search + (/^#!?\//.test(url.hash) ? url.hash : ''); } catch {}
     const buttonStyle = 'background:none;border:1px solid var(--dm-separator);border-radius:4px;padding:5px 7px;color:inherit;cursor:pointer;font:inherit;font-size:10px;';
     const confirm = deletingRouteKey === group.routeKey
-      ? '<div role="group" aria-label="Confirm route deletion" style="padding:10px 12px;background:var(--dm-danger-bg);color:var(--dm-text);font-size:11px;line-height:1.5;">Delete all changes for this route? This cannot be undone.<div style="display:flex;gap:8px;margin-top:8px;"><button data-dm-action="cancel-delete-route" style="' + buttonStyle + '">Cancel</button><button data-dm-action="confirm-delete-route" data-dm-route-key="' + key + '" style="' + buttonStyle + 'color:var(--dm-danger);">Delete route changes</button></div></div>' : '';
+      ? '<div role="group" aria-label="Confirm route deletion" style="padding:10px 12px;background:var(--dm-danger-bg);color:var(--dm-text);font-size:11px;line-height:1.5;">Delete all changes for this route? This cannot be undone.<div style="display:flex;gap:8px;margin-top:8px;"><button data-dm-action="cancel-delete-route" style="' + buttonStyle + '">취소</button><button data-dm-action="confirm-delete-route" data-dm-route-key="' + key + '" style="' + buttonStyle + 'color:var(--dm-danger);">Delete route changes</button></div></div>' : '';
     return '<section data-dm-route-group="' + key + '" data-dm-route-active="' + active + '" style="border-bottom:1px solid var(--dm-separator-strong);color:' + (active ? 'var(--dm-text)' : 'var(--dm-text-secondary)') + ';background:' + (active ? 'var(--dm-bg)' : 'var(--dm-bg-secondary)') + ';">' +
       '<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;font-size:12px;font-weight:600;">' + escapeAttr(label) + '</span>' +
       '<span aria-label="' + count + ' changes" style="flex-shrink:0;font-size:10px;padding:2px 6px;border-radius:8px;background:var(--dm-btn-bg);">' + count + '</span>' +
@@ -9097,7 +9097,7 @@ function renderChangesTab(): string {
 
   if (allItems.length === 0 && siteChangeCount() === 0) return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--dm-text-dim);text-align:center;padding:40px;">' +
       '<div style="margin-bottom:12px;color:var(--dm-text-dimmer);">' + icon('sparkles', 32) + '</div>' +
-      '<div style="font-size:12px;font-weight:500;color:var(--dm-text-muted);">No changes yet</div>' +
+      '<div style="font-size:12px;font-weight:500;color:var(--dm-text-muted);">아직 변경사항이 없습니다</div>' +
       '<div style="font-size:11px;margin-top:6px;color:var(--dm-text-dim);max-width:260px;line-height:1.5;">Edits you make on the page show up here, ready to copy as a prompt or send straight to your agent. Picking up where you left off? Import a previously exported JSON.</div>' +
       // Import button mirrors the one in the populated-state action row,
       // so first-time + empty-state users can pull a saved session in
@@ -9317,11 +9317,11 @@ function renderChangesTab(): string {
   const clearAllOverlay = clearAllConfirming
     ? '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:60;display:flex;align-items:center;justify-content:center;">' +
       '<div style="background:var(--dm-bg);border:1px solid var(--dm-separator-strong);border-radius:10px;padding:16px;width:250px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.3);">' +
-      '<div style="font-size:12px;font-weight:600;color:var(--dm-text);margin-bottom:6px;">Clear all changes?</div>' +
+      '<div style="font-size:12px;font-weight:600;color:var(--dm-text);margin-bottom:6px;">모든 변경사항을 지울까요?</div>' +
       '<div style="font-size:10px;color:var(--dm-text-secondary);margin-bottom:14px;line-height:1.5;">Removes every tracked style, text, DOM, and comment change on every route of this site. Resets the undo stack. This can\'t be undone.</div>' +
       '<div style="display:flex;gap:6px;">' +
-      '<button data-dm-action="cancel-clear-all" style="flex:1;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">Cancel</button>' +
-      '<button data-dm-action="confirm-clear-all" style="flex:1;padding:6px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:6px;color:var(--dm-danger);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">Clear all</button>' +
+      '<button data-dm-action="cancel-clear-all" style="flex:1;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">취소</button>' +
+      '<button data-dm-action="confirm-clear-all" style="flex:1;padding:6px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:6px;color:var(--dm-danger);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">모두 지우기</button>' +
       '</div></div></div>'
     : '';
 
@@ -9332,7 +9332,7 @@ function renderChangesTab(): string {
       '<div style="font-size:12px;font-weight:600;color:var(--dm-text);margin-bottom:6px;">Delete comment?</div>' +
       '<div style="font-size:10px;color:var(--dm-text-secondary);margin-bottom:14px;line-height:1.5;">The comment, its pin, and any unsaved replies will be removed. This can\'t be undone.</div>' +
       '<div style="display:flex;gap:6px;">' +
-      '<button data-dm-action="cancel-delete-comment-confirm" style="flex:1;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">Cancel</button>' +
+      '<button data-dm-action="cancel-delete-comment-confirm" style="flex:1;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">취소</button>' +
       '<button data-dm-action="confirm-delete-comment-confirm" style="flex:1;padding:6px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:6px;color:var(--dm-danger);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">Delete</button>' +
       '</div></div></div>'
     : '';
@@ -9343,7 +9343,7 @@ function renderChangesTab(): string {
       '<div style="font-size:12px;font-weight:600;color:var(--dm-text);margin-bottom:6px;">Revert this change group?</div>' +
       '<div style="font-size:10px;color:var(--dm-text-secondary);margin-bottom:14px;line-height:1.5;">All changes and comments in this group will be removed. This can\'t be undone.</div>' +
       '<div style="display:flex;gap:6px;">' +
-      '<button data-dm-action="cancel-revert-group" style="flex:1;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">Cancel</button>' +
+      '<button data-dm-action="cancel-revert-group" style="flex:1;padding:6px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:6px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">취소</button>' +
       '<button data-dm-action="confirm-revert-group" style="flex:1;padding:6px;background:var(--dm-danger-bg);border:1px solid var(--dm-danger-border);border-radius:6px;color:var(--dm-danger);cursor:pointer;font-size:10px;font-family:inherit;font-weight:500;">Revert group</button>' +
       '</div></div></div>'
     : '';
@@ -9776,7 +9776,7 @@ function renderMcpView(): string {
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
     '<div style="display:flex;align-items:center;gap:6px;"><span style="' + dotStyle + '"></span>' +
     '<span style="font-size:12px;font-weight:600;color:' + textColor + ';">' + escapeAttr(label) + '</span></div>' +
-    '<button data-dm-action="refresh-mcp" title="Re-ping the MCP server" style="display:flex;align-items:center;gap:4px;padding:5px 8px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:5px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">' + icon('rotateCw', 11) + ' Refresh status</button>' +
+    '<button data-dm-action="refresh-mcp" title="MCP 서버 연결 다시 확인" style="display:flex;align-items:center;gap:4px;padding:5px 8px;background:var(--dm-btn-bg);border:1px solid var(--dm-btn-border);border-radius:5px;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;">' + icon('rotateCw', 11) + ' 상태 새로고침</button>' +
     '</div>' +
     '<div style="font-size:10px;color:var(--dm-text-dim);line-height:1.4;">' + escapeAttr(detail) + '</div>' +
     '</div>';
@@ -9787,7 +9787,7 @@ function renderMcpView(): string {
     '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">MCP</span></div>' +
     '<div style="display:flex;flex-direction:column;gap:12px;">' +
     statusCard +
-    (mcpMode === 'local' && mcpState === 'offline' ? '<button data-dm-action="connect-mcp" style="' + inactiveBtn + '">Connect</button>' : '') +
+    (mcpMode === 'local' && mcpState === 'offline' ? '<button data-dm-action="connect-mcp" style="' + inactiveBtn + '">연결</button>' : '') +
     renderMcpServerCard(sS, sT, lS, activeBtn, inactiveBtn) +
     renderAgentCommandCard(sS, sT, lS) +
     '</div></div>';
@@ -9807,7 +9807,7 @@ function renderSettingsView(): string {
   return '<div class="dm-overlay-page" style="padding:16px;">' +
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">' +
     '<button data-dm-action="back-from-settings" style="background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;display:flex;padding:4px;">' + icon('chevronLeft', 14) + '</button>' +
-    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">Settings</span></div>' +
+    '<span style="font-size:14px;font-weight:600;color:var(--dm-text);">설정</span></div>' +
     '<div style="display:flex;flex-direction:column;gap:12px;">' +
     (() => {
       const swatch = (key: string, val: string) =>
@@ -9818,35 +9818,35 @@ function renderSettingsView(): string {
       const row = (label: string, key: string, val: string) =>
         '<div style="display:flex;justify-content:space-between;align-items:center;"><span style="' + lS + '">' + label + '</span>' + swatch(key, val) + '</div>';
       const resetBtn =
-        '<button data-dm-action="reset-inspector-overlay-colors" title="Restore default colours" style="display:flex;align-items:center;gap:3px;background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;padding:2px 4px;border-radius:3px;">' +
+        '<button data-dm-action="reset-inspector-overlay-colors" title="기본 색상 복원" style="display:flex;align-items:center;gap:3px;background:none;border:none;color:var(--dm-text-secondary);cursor:pointer;font-size:10px;font-family:inherit;padding:2px 4px;border-radius:3px;">' +
           icon('rotateCcw', 11) +
-          '<span>Reset</span>' +
+          '<span>초기화</span>' +
         '</button>';
       return '<div style="' + sS + '">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
-          '<div style="' + sT + 'margin-bottom:0;">Inspector overlay</div>' +
+          '<div style="' + sT + 'margin-bottom:0;">요소 검사 오버레이</div>' +
           resetBtn +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:6px;">' +
-          row('Hover color', 'hoverColor', inspectorHoverColor) +
-          row('Selection color', 'selectColor', inspectorSelectColor) +
-          row('Margin overlay', 'marginColor', overlayMarginColor) +
-          row('Padding overlay', 'paddingColor', overlayPaddingColor) +
+          row('마우스 오버 색상', 'hoverColor', inspectorHoverColor) +
+          row('선택 색상', 'selectColor', inspectorSelectColor) +
+          row('바깥 여백 표시', 'marginColor', overlayMarginColor) +
+          row('안쪽 여백 표시', 'paddingColor', overlayPaddingColor) +
         '</div>' +
       '</div>';
     })() +
-    '<div style="' + sS + '"><div style="' + sT + '">Color Format</div><div style="display:flex;gap:4px;">' +
+    '<div style="' + sS + '"><div style="' + sT + '">색상 형식</div><div style="display:flex;gap:4px;">' +
     '<button data-dm-color-format="hex" style="' + (cfHex ? activeBtn : inactiveBtn) + '">HEX</button>' +
     '<button data-dm-color-format="rgba" style="' + (cfRgba ? activeBtn : inactiveBtn) + '">RGBA</button>' +
     '<button data-dm-color-format="hsl" style="' + (cfHsl ? activeBtn : inactiveBtn) + '">HSL</button>' +
     '</div></div>' +
-    '<div style="' + sS + '"><div style="' + sT + '">Input unit</div>' +
+    '<div style="' + sS + '"><div style="' + sT + '">입력 단위</div>' +
     '<div style="font-size:10px;color:var(--dm-text-dim);margin-bottom:8px;">How sizes are shown in the editor — W/H, padding, margin, border-width. The page CSS is unchanged either way; only the display + the value the change tracker stores switches.</div>' +
     '<div style="display:flex;gap:4px;">' +
     '<button data-dm-input-unit="px" style="' + (inputUnit === 'px' ? activeBtn : inactiveBtn) + '">PX</button>' +
     '<button data-dm-input-unit="rem" style="' + (inputUnit === 'rem' ? activeBtn : inactiveBtn) + '">REM</button>' +
     '</div></div>' +
-    '<div style="' + sS + '"><div style="' + sT + '">Nudge amount</div>' +
+    '<div style="' + sS + '"><div style="' + sT + '">키보드 이동 간격</div>' +
     '<div style="font-size:10px;color:var(--dm-text-dim);margin-bottom:8px;">Shift+Arrow step for number fields in the Design panel. Arrow keys alone nudge by 1.</div>' +
     '<div style="display:flex;align-items:center;gap:6px;">' +
     '<input type="text" data-dm-setting="nudge-amount" data-dm-numeric="1" inputmode="decimal" value="' + escapeAttr(String(nudgeAmount)) + '" style="width:64px;padding:6px 8px;background:var(--dm-input-bg);border:1px solid var(--dm-input-border);border-radius:5px;color:var(--dm-text);font-family:inherit;font-size:11px;"/>' +
@@ -11014,7 +11014,7 @@ function setupDelegation() {
           break;
         case 'add-preset-open': {
           if (!info) {
-            showCaptureToast('error', 'Select an element on the page first.');
+            showCaptureToast('error', '먼저 페이지에서 요소를 선택하세요.');
             break;
           }
           presetAddingKind = 'typography';
@@ -11032,7 +11032,7 @@ function setupDelegation() {
           break;
         }
         case 'add-preset-save': {
-          if (!info) { showCaptureToast('error', 'Select an element on the page first.'); break; }
+          if (!info) { showCaptureToast('error', '먼저 페이지에서 요소를 선택하세요.'); break; }
           const kindEl = root.querySelector<HTMLSelectElement>('[data-dm-defined-kind]');
           const nameEl = root.querySelector<HTMLInputElement>('[data-dm-defined-name]');
           const kind = (kindEl?.value || 'typography') as PresetKindLocal;
@@ -11054,7 +11054,7 @@ function setupDelegation() {
           break;
         }
         case 'apply-preset': {
-          if (!info) { showCaptureToast('error', 'Select an element on the page first.'); break; }
+          if (!info) { showCaptureToast('error', '먼저 페이지에서 요소를 선택하세요.'); break; }
           const pid = actionBtn.dataset.presetId;
           const preset = customPresets.find(p => p.id === pid);
           if (!preset || !pid) break;
